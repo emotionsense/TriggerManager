@@ -1,0 +1,6 @@
+bin/*
+*.class
+*.project
+res/*
+lib/*
+libs/*
