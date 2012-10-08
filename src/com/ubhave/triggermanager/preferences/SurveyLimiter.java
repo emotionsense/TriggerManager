@@ -12,7 +12,8 @@ public class SurveyLimiter
 		{
 			if (preferences.userAllowsNotification(calendar))
 			{
-//				if (interval)
+				long lastNotification = preferences.lastNotification();
+				if (Math.abs(System.currentTimeMillis() - lastNotification) > preferences.getInterval())
 				{
 					return true;
 				}

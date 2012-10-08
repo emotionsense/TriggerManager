@@ -11,6 +11,7 @@ public class UserPreferences
 	private final static String PREFERENCES = "trigger_preferences";
 	private final static String BEFORE = "before";
 	private final static String AFTER = "after";
+	private final static String INTERVAL = "interval";
 
 	private final static String CAP = "cap";
 
@@ -39,6 +40,11 @@ public class UserPreferences
 	{
 		return getInt(CAP, 2);
 	}
+	
+	public int getInterval()
+	{
+		return getInt(INTERVAL, 0);
+	}
 
 	public void setBeforeTime(int hour)
 	{
@@ -58,6 +64,13 @@ public class UserPreferences
 	{
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(CAP, cap);
+		editor.commit();
+	}
+	
+	public void setSurveyInterval(int minutes)
+	{
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(INTERVAL, minutes);
 		editor.commit();
 	}
 

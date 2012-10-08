@@ -18,6 +18,7 @@ public class TriggerManager implements TriggerManagerInterface
 	private static Object lock = new Object();
 	
 	private final UserPreferences preferences;
+	private final Context context;
 
 	public static TriggerManager getSensorManager(Context context)
 	{
@@ -33,12 +34,18 @@ public class TriggerManager implements TriggerManagerInterface
 
 	private TriggerManager(final Context appContext)
 	{
+		context = appContext;
 		preferences = new UserPreferences(appContext);
 	}
 	
 	public UserPreferences getPreferences()
 	{
 		return preferences;
+	}
+	
+	public Context getContext()
+	{
+		return context;
 	}
 
 	@Override

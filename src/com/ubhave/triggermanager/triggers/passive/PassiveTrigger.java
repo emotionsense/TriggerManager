@@ -3,12 +3,12 @@ package com.ubhave.triggermanager.triggers.passive;
 import java.util.Random;
 
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.config.Constants;
-import com.ubhave.sensormanager.config.SensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.logs.ESLogger;
-import com.ubhave.sensormanager.sensors.AbstractSensor;
+import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerManager;
 import com.ubhave.triggermanager.preferences.UserPreferences;
 import com.ubhave.triggermanager.triggers.Trigger;
@@ -18,63 +18,28 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	
 	private final static long SURVEY_INTERVAL = 1000 * 60 * 60 * 2;
 	
-	private final int sensorType;
+	private final int sensorType, subscriptionId;
 	private final String LOG_TAG;
 	private final double SAMPLE_PROBABILITY;
 	
-	public PassiveTrigger(String survey, int sensorType, String LOG_TAG, double p)
+	public PassiveTrigger(String survey, int sensorType, String LOG_TAG, double p) throws TriggerException, ESException
 	{
 		super(survey);
 		this.sensorType = sensorType;
 		this.LOG_TAG = LOG_TAG;
 		this.SAMPLE_PROBABILITY = p;
-		registerWithManager();
+		subscriptionId = registerWithManager();
 	}
 	
-	private void registerWithManager()
+	private int registerWithManager() throws ESException
 	{
-		try
+		if (Constants.TEST_MODE)
 		{
-			if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "Registering with sensor: "+sensorType);
-			}
-			TriggerManager manager = TriggerManager.getSensorManager(SurveyApplication.getContext());
-			SensorConfig config = AbstractSensor.getDefaultSensorConfig(sensorType);
-			manager.registerSensorDataListener(sensorType, config, this);
+			ESLogger.log(LOG_TAG, "Registering with sensor: "+sensorType);
 		}
-		catch (ESException e)
-		{
-			if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "Exception, wating 10 seconds ("+sensorType+")");
-			}
-			Thread waitThread = new Thread()
-			{
-				@Override
-				public void run()
-				{
-					try
-					{
-						int waited = 0;
-						while (waited < 1000 * 10)
-						{
-							sleep(100);
-							waited += 100;
-						}
-					}
-					catch (InterruptedException e)
-					{
-						// do nothing
-					}
-					finally
-					{
-						registerWithManager();
-					}
-				}
-			};
-			waitThread.start();
-		}
+		
+		ESSensorManager sensorManager = ESSensorManager.getSensorManager(manager.getContext());
+		return sensorManager.subscribeToSensorData(sensorType, this);
 	}
 	
 	@Override
@@ -82,8 +47,8 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	{
 		try
 		{
-			TriggerManager manager = TriggerManager.getSensorManager(SurveyApplication.getContext());
-			manager.unregisterSensorDataListener(sensorType, this);
+			ESSensorManager sensorManager = ESSensorManager.getSensorManager(manager.getContext());
+			sensorManager.unsubscribeFromSensorData(subscriptionId);
 		}
 		catch (ESException e)
 		{
