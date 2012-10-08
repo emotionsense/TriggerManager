@@ -2,11 +2,13 @@ package com.ubhave.triggermanager.triggers.passive;
 
 import java.util.Random;
 
+import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.ScreenData;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.SensorList;
+import com.ubhave.triggermanager.TriggerException;
 
 public class ScreenActivityTrigger extends PassiveTrigger
 {
@@ -14,7 +16,7 @@ public class ScreenActivityTrigger extends PassiveTrigger
 	private boolean screenOn;
 	private Thread waitThread;
 
-	public ScreenActivityTrigger(String targetSurvey)
+	public ScreenActivityTrigger(String targetSurvey) throws TriggerException, ESException
 	{
 		super(targetSurvey, SensorList.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
 	}

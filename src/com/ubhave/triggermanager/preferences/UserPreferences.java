@@ -43,7 +43,7 @@ public class UserPreferences
 	
 	public int getInterval()
 	{
-		return getInt(INTERVAL, 0);
+		return getInt(INTERVAL, 1000 * 60 * 60 * 2);
 	}
 
 	public void setBeforeTime(int hour)

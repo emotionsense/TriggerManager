@@ -1,12 +1,9 @@
 package com.ubhave.triggermanager.triggers.active.mic;
 
-import com.lathia.experiencesense.SurveyApplication;
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.util.Constants;
-import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.ESSensorManager;
+import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pullsensor.MicrophoneData;
+import com.ubhave.sensormanager.logs.ESLogger;
 
 public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 {
@@ -39,42 +36,35 @@ public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 	@Override
 	public void onDataSensed(SensorData sensorData)
 	{
-		try
+		if (Constants.TEST_MODE)
 		{
-			if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "onDataSensed() " + senseCycle);
-			}
+			ESLogger.log(LOG_TAG, "onDataSensed() " + senseCycle);
+		}
 
-			senseCycle++;
-			MicrophoneData recording = (MicrophoneData) sensorData;
-			if (sampleObtained)
+		senseCycle++;
+		MicrophoneData recording = (MicrophoneData) sensorData;
+		if (sampleObtained)
+		{
+			if (recording.isSilent())
 			{
-				if (recording.isSilent())
-				{
-					postSampleSilentCycles++;
-				}
-				
-				if (postSampleSilentCycles == MIN_SILENCE_CYCLES)
-				{
-					if (Constants.TEST_MODE)
-					{
-						ESLogger.log(LOG_TAG, "Trigger for notification");
-					}
-
-					TriggerManager.getSensorManager(SurveyApplication.getContext()).unregisterSensorDataListener(Constants.SENSOR_TYPE_MICROPHONE, this);
-					callForSurvey(ADHERE_TO_CAP);
-				}
+				postSampleSilentCycles++;
 			}
-			else if (!recording.isSilent() || senseCycle == Constants.TRIGGER_MAX_CYCLES)
+			
+			if (postSampleSilentCycles == MIN_SILENCE_CYCLES)
 			{
-				sampleObtained = true;
-				postSampleSilentCycles = 0;
+				if (Constants.TEST_MODE)
+				{
+					ESLogger.log(LOG_TAG, "Trigger for notification");
+				}
+
+				super.unregisterFromMicrophone();
+				callForSurvey(ADHERE_TO_CAP);
 			}
 		}
-		catch (ESException e)
+		else if (!recording.isSilent() || senseCycle == TRIGGER_MAX_CYCLES)
 		{
-			ESLogger.error(LOG_TAG, e);
+			sampleObtained = true;
+			postSampleSilentCycles = 0;
 		}
 	}
 }

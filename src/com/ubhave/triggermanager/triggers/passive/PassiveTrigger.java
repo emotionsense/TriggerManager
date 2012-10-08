@@ -9,14 +9,10 @@ import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
-import com.ubhave.triggermanager.TriggerManager;
-import com.ubhave.triggermanager.preferences.UserPreferences;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class PassiveTrigger extends Trigger implements SensorDataListener
 {	
-	
-	private final static long SURVEY_INTERVAL = 1000 * 60 * 60 * 2;
 	
 	private final int sensorType, subscriptionId;
 	private final String LOG_TAG;
@@ -59,23 +55,15 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	@Override
 	protected void callForSurvey(boolean adhereToCap)
 	{
-		long lastNotification = UserPreferences.lastNotification();
-		if (Math.abs(System.currentTimeMillis() - lastNotification) > SURVEY_INTERVAL)
+		double sampleProbability = (new Random()).nextDouble();
+		if (sampleProbability <= SAMPLE_PROBABILITY)
 		{
-			double sampleProbability = (new Random()).nextDouble();
-			if (sampleProbability <= SAMPLE_PROBABILITY)
-			{
-				ESLogger.log(LOG_TAG, "Calling for survey!");
-				super.callForSurvey(adhereToCap);
-			}
-			else if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "Not calling for survey: P(sample) = "+sampleProbability);
-			}
+			ESLogger.log(LOG_TAG, "Calling for survey!");
+			super.callForSurvey(adhereToCap);
 		}
 		else if (Constants.TEST_MODE)
 		{
-			ESLogger.log(LOG_TAG, "Not proceeding to survey (min inter-survey interval not met)");
+			ESLogger.log(LOG_TAG, "Not calling for survey: P(sample) = "+sampleProbability);
 		}
 	}
 	
