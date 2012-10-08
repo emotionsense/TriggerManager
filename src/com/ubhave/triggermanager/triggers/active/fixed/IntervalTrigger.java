@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
+import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public class IntervalTrigger extends StaticTrigger
@@ -31,8 +32,9 @@ public class IntervalTrigger extends StaticTrigger
 		}
 	}
 
-	public IntervalTrigger(JSONObject data) throws TriggerException
+	public IntervalTrigger(TriggerReceiver listener, JSONObject data) throws TriggerException
 	{
+		super(listener);
 		minutes = init((String) data.get(MINUTE), 60);
 		hours = init((String) data.get(HOUR), 24);
 		days = init((String) data.get(DAY), 7);

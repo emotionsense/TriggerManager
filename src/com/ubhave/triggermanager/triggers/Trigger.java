@@ -1,6 +1,11 @@
 package com.ubhave.triggermanager.triggers;
 
+import java.util.Calendar;
+
 import com.ubhave.triggermanager.TriggerManager;
+import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.preferences.SurveyLimiter;
+import com.ubhave.triggermanager.preferences.UserPreferences;
 
 public abstract class Trigger
 {	
@@ -16,15 +21,23 @@ public abstract class Trigger
 	protected static final String ALL = "*";
 
 	protected final TriggerManager manager;
+	private final TriggerReceiver listener;
 	
-	public Trigger()
+	
+	public Trigger(TriggerReceiver listener)
 	{
 		manager = TriggerManager.getSensorManager(null);
+		this.listener = listener;
 	}
 
 	protected void callForSurvey(boolean ignoreCap)
 	{
-		manager.trigger();
+		UserPreferences preferences = manager.getPreferences();
+		if (SurveyLimiter.surveyAllowed(preferences))
+		{
+			listener.onNotificationTriggered();
+			preferences.surveySent(Calendar.getInstance());
+		}
 	}
 	
 	public abstract void kill();

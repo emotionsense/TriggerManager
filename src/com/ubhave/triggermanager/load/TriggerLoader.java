@@ -3,23 +3,23 @@ package com.ubhave.triggermanager.load;
 
 public class TriggerLoader extends JSONLoader
 {
-	private final static String LOG_TAG = "TriggerLoader";
-	private final static String TRIGGERS = "triggers";
-
-	// Types of triggers
-	// Numbering: [General Type][Sensor][Number]
-	// 1. Active
-	private static final int MIC_IMMEDIATE = 10101;
-	private static final int MIC_WAIT_FOR_SILENCE = 10102;
-	
-	// 2. Passive
-	private static final int CALL_STATE = 20101;
-	private static final int SMS_RECEIVED = 20201;
-	private static final int PHONE_SCREEN_ON = 20301;
-	
-	// 3. Static
-	private static final int FIXED_INTERVAL = 30001;
-	private static final int FINAL_SURVEY = 30002;
+//	private final static String LOG_TAG = "TriggerLoader";
+//	private final static String TRIGGERS = "triggers";
+//
+//	// Types of triggers
+//	// Numbering: [General Type][Sensor][Number]
+//	// 1. Active
+//	private static final int MIC_IMMEDIATE = 10101;
+//	private static final int MIC_WAIT_FOR_SILENCE = 10102;
+//	
+//	// 2. Passive
+//	private static final int CALL_STATE = 20101;
+//	private static final int SMS_RECEIVED = 20201;
+//	private static final int PHONE_SCREEN_ON = 20301;
+//	
+//	// 3. Static
+//	private static final int FIXED_INTERVAL = 30001;
+//	private static final int FINAL_SURVEY = 30002;
 	
 //	private static void stopAllSensing()
 //	{

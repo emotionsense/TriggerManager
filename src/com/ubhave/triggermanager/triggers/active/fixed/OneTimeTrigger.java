@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
+import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public class OneTimeTrigger extends StaticTrigger
@@ -27,8 +28,9 @@ public class OneTimeTrigger extends StaticTrigger
 		}
 	}
 
-	public OneTimeTrigger(JSONObject data) throws TriggerException
+	public OneTimeTrigger(TriggerReceiver listener, JSONObject data) throws TriggerException
 	{
+		super(listener);
 		try
 		{
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy");

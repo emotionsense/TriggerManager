@@ -9,6 +9,7 @@ import com.ubhave.sensormanager.data.pushsensor.ScreenData;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.SensorList;
 import com.ubhave.triggermanager.TriggerException;
+import com.ubhave.triggermanager.TriggerReceiver;
 
 public class ScreenActivityTrigger extends PassiveTrigger
 {
@@ -16,9 +17,9 @@ public class ScreenActivityTrigger extends PassiveTrigger
 	private boolean screenOn;
 	private Thread waitThread;
 
-	public ScreenActivityTrigger() throws TriggerException, ESException
+	public ScreenActivityTrigger(TriggerReceiver listener) throws TriggerException, ESException
 	{
-		super(SensorList.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
+		super(listener, SensorList.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
 	}
 
 	@Override

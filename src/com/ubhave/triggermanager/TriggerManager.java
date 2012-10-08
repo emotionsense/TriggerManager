@@ -1,12 +1,9 @@
 package com.ubhave.triggermanager;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-
 import android.content.Context;
-import android.content.Intent;
+import android.widget.Toast;
 
-import com.ubhave.triggermanager.preferences.SurveyLimiter;
+import com.ubhave.sensormanager.ESException;
 import com.ubhave.triggermanager.preferences.UserPreferences;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
@@ -107,26 +104,31 @@ public class TriggerManager implements TriggerManagerInterface
 //		endAllTriggers();
 ////		triggers = TriggerLoader.loadTriggers();
 //	}
-	
-	public void trigger()
-	{
-		if (SurveyLimiter.surveyAllowed(preferences))
-		{
-			// TODO
-			preferences.surveySent(Calendar.getInstance());
-		}
-	}
 
 	@Override
 	public int addTrigger(int triggerType, TriggerReceiver listener)
 	{
-		return triggers.addTrigger(s)
+		try {
+			Trigger trigger = TriggerList.createTrigger(triggerType, listener);
+			return triggers.addTrigger(trigger, listener);
+		}
+		catch(ESException e)
+		{
+			// TODO
+			Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+			return 0;
+		}
+		catch(TriggerException e)
+		{
+			// TODO
+			Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+			return 0;
+		}
 	}
 
 	@Override
 	public void removeTrigger(int triggerId)
 	{
-		// TODO Auto-generated method stub
-		
+		triggers.removeTrigger(triggerId);
 	}
 }

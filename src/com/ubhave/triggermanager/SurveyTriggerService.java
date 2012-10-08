@@ -34,14 +34,14 @@ public class SurveyTriggerService extends Service
 				}
 				triggerManager.endAllTriggers();
 			}
-			else if (action.equals(TriggerManager.RELOAD_INTENT))
-			{
-				if (Constants.TEST_MODE)
-				{
-					ESLogger.log(LOG_TAG, "Receiving: " + action);
-				}
-				triggerManager.reloadAllTriggers();
-			}
+//			else if (action.equals(TriggerManager.RELOAD_INTENT))
+//			{
+//				if (Constants.TEST_MODE)
+//				{
+//					ESLogger.log(LOG_TAG, "Receiving: " + action);
+//				}
+//				triggerManager.reloadAllTriggers();
+//			}
 		}
 	}
 	

@@ -6,15 +6,16 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.SmsData;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.SensorList;
+import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.triggers.passive.PassiveTrigger;
 
 public class SMSTrigger extends PassiveTrigger
 {
 	private final static String LOG_TAG = "SMSTrigger";
 
-	public SMSTrigger() throws ESException
+	public SMSTrigger(TriggerReceiver listener) throws ESException
 	{
-		super(SensorList.SENSOR_TYPE_SMS, LOG_TAG, 1.0);
+		super(listener, SensorList.SENSOR_TYPE_SMS, LOG_TAG, 1.0);
 	}
 
 	@Override
