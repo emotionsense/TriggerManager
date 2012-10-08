@@ -41,7 +41,7 @@ public class NonSilentSampleTrigger extends MicrophoneBasedTrigger
 					ESLogger.log(LOG_TAG, "Trigger for notification");
 				}
 				
-				ESSensorManager.getSensorManager(SurveyApplication.getContext()).unregisterSensorDataListener(SensorList.SENSOR_TYPE_MICROPHONE, this);
+				TriggerManager.getSensorManager(SurveyApplication.getContext()).unregisterSensorDataListener(SensorList.SENSOR_TYPE_MICROPHONE, this);
 				callForSurvey(ADHERE_TO_CAP);
 			}
 			else if (Constants.TEST_MODE)

@@ -39,7 +39,7 @@ public abstract class MicrophoneBasedTrigger extends RandomFrequencyTrigger
 			}
 			
 			senseCycle = 0;
-			ESSensorManager manager = ESSensorManager.getSensorManager(SurveyApplication.getContext());
+			TriggerManager manager = TriggerManager.getSensorManager(SurveyApplication.getContext());
 			manager.registerSensorDataListener(SensorList.SENSOR_TYPE_MICROPHONE, getSensorConfig(), this);
 			
 			if (Constants.TEST_MODE)

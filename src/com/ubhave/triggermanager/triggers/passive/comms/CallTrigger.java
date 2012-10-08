@@ -1,9 +1,9 @@
 package com.ubhave.triggermanager.triggers.passive.comms;
 
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.util.Constants;
+import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.PhoneStateData;
+import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.SensorList;
 import com.ubhave.triggermanager.triggers.passive.PassiveTrigger;
 

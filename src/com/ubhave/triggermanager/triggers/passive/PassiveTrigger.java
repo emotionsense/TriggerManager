@@ -2,16 +2,15 @@ package com.ubhave.triggermanager.triggers.passive;
 
 import java.util.Random;
 
-import com.lathia.experiencesense.SurveyApplication;
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.userprefs.UserPreferences;
-import com.lathia.experiencesense.util.Constants;
 import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.ESSensorManager;
+import com.ubhave.sensormanager.SensorDataListener;
+import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.config.SensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.AbstractSensor;
-import com.ubhave.sensormanager.sensors.SensorDataListener;
+import com.ubhave.triggermanager.TriggerManager;
+import com.ubhave.triggermanager.preferences.UserPreferences;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class PassiveTrigger extends Trigger implements SensorDataListener
@@ -40,7 +39,7 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 			{
 				ESLogger.log(LOG_TAG, "Registering with sensor: "+sensorType);
 			}
-			ESSensorManager manager = ESSensorManager.getSensorManager(SurveyApplication.getContext());
+			TriggerManager manager = TriggerManager.getSensorManager(SurveyApplication.getContext());
 			SensorConfig config = AbstractSensor.getDefaultSensorConfig(sensorType);
 			manager.registerSensorDataListener(sensorType, config, this);
 		}
@@ -83,7 +82,7 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	{
 		try
 		{
-			ESSensorManager manager = ESSensorManager.getSensorManager(SurveyApplication.getContext());
+			TriggerManager manager = TriggerManager.getSensorManager(SurveyApplication.getContext());
 			manager.unregisterSensorDataListener(sensorType, this);
 		}
 		catch (ESException e)
