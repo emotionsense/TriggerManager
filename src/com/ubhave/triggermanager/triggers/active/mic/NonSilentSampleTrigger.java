@@ -4,6 +4,7 @@ import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pullsensor.MicrophoneData;
 import com.ubhave.sensormanager.logs.ESLogger;
+import com.ubhave.triggermanager.TriggerException;
 
 public class NonSilentSampleTrigger extends MicrophoneBasedTrigger
 {
@@ -15,7 +16,7 @@ public class NonSilentSampleTrigger extends MicrophoneBasedTrigger
 	
 	private final static String LOG_TAG = "NonSilentSampleTrigger";
 	
-	public NonSilentSampleTrigger(String targetSurvey)
+	public NonSilentSampleTrigger(String targetSurvey) throws TriggerException
 	{
 		super(targetSurvey);
 	}

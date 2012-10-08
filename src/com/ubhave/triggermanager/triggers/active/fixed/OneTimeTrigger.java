@@ -7,8 +7,9 @@ import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
 
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.util.Constants;
+import com.ubhave.sensormanager.config.Constants;
+import com.ubhave.sensormanager.logs.ESLogger;
+import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public class OneTimeTrigger extends StaticTrigger
@@ -26,7 +27,7 @@ public class OneTimeTrigger extends StaticTrigger
 		}
 	}
 
-	public OneTimeTrigger(String target, JSONObject data)
+	public OneTimeTrigger(String target, JSONObject data) throws TriggerException
 	{
 		super(target);
 		try

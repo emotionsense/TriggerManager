@@ -5,8 +5,9 @@ import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
 
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.util.Constants;
+import com.ubhave.sensormanager.config.Constants;
+import com.ubhave.sensormanager.logs.ESLogger;
+import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public class IntervalTrigger extends StaticTrigger
@@ -30,7 +31,7 @@ public class IntervalTrigger extends StaticTrigger
 		}
 	}
 
-	public IntervalTrigger(String target, JSONObject data)
+	public IntervalTrigger(String target, JSONObject data) throws TriggerException
 	{
 		super(target);
 		minutes = init((String) data.get(MINUTE), 60);
@@ -61,7 +62,7 @@ public class IntervalTrigger extends StaticTrigger
 			String[] values = value.split(",");
 			for (String v : values)
 			{
-				data[new Integer(v)] = true;
+				data[Integer.valueOf(v)] = true;
 			}
 		}
 		return data;

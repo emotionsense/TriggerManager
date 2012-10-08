@@ -31,7 +31,8 @@ public abstract class Trigger
 
 	protected void callForSurvey(boolean ignoreCap)
 	{
-		manager.trigger();
+		// TODO
+		manager.trigger(null, "Title", "Text");
 	}
 	
 	public abstract void kill();

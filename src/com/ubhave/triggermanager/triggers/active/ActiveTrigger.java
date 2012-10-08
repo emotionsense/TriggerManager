@@ -4,6 +4,7 @@ import java.util.Timer;
 
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class ActiveTrigger extends Trigger implements SensorDataListener
@@ -11,7 +12,7 @@ public abstract class ActiveTrigger extends Trigger implements SensorDataListene
 	
 	protected Timer surveyTimer;
 	
-	public ActiveTrigger(String survey)
+	public ActiveTrigger(String survey) throws TriggerException
 	{
 		super(survey);
 		this.surveyTimer = new Timer();

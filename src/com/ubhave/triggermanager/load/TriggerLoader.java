@@ -1,26 +1,5 @@
 package com.ubhave.triggermanager.load;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import android.util.Log;
-
-import com.lathia.experiencesense.json.JSONLoader;
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.util.Constants;
-import com.ubhave.triggermanager.triggers.Trigger;
-import com.ubhave.triggermanager.triggers.active.fixed.IntervalTrigger;
-import com.ubhave.triggermanager.triggers.active.fixed.OneTimeTrigger;
-import com.ubhave.triggermanager.triggers.active.mic.NonSilentSampleTrigger;
-import com.ubhave.triggermanager.triggers.active.mic.PostSampleSilenceTrigger;
-import com.ubhave.triggermanager.triggers.passive.ScreenActivityTrigger;
-import com.ubhave.triggermanager.triggers.passive.comms.CallTrigger;
-import com.ubhave.triggermanager.triggers.passive.comms.SMSTrigger;
 
 public class TriggerLoader extends JSONLoader
 {
@@ -78,98 +57,98 @@ public class TriggerLoader extends JSONLoader
 //		}
 //	}
 
-	public static ArrayList<Trigger> loadTriggers()
-	{
-		try
-		{
-			String rawJSON = loadFileContents(Constants.TRIGGER_JSON_FILE);
-			if (rawJSON != null)
-			{
-				JSONParser p = new JSONParser();
-				JSONObject data = (JSONObject) p.parse(rawJSON);
-
-				ArrayList<Trigger> triggerList = new ArrayList<Trigger>();
-				JSONArray triggers = (JSONArray) data.get(TRIGGERS);
-				for (Object triggerdata : triggers)
-				{
-					JSONObject trigger = (JSONObject) triggerdata;
-					int type = ((Long) trigger.get(Trigger.TYPE)).intValue();
-					String target = (String) trigger.get(Trigger.TARGET_SURVEY);
-					
-					// Active Triggers
-					if (type == MIC_IMMEDIATE)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Mic Immediate Trigger");
-						triggerList.add(new NonSilentSampleTrigger(target));
-					}
-					else if (type == MIC_WAIT_FOR_SILENCE)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Mic Non-Immediate Trigger");
-						triggerList.add(new PostSampleSilenceTrigger(target));
-					}
-					
-					// Passive Triggers
-					else if (type == CALL_STATE)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Call state Trigger");
-						triggerList.add(new CallTrigger(target));
-					}
-					else if (type == SMS_RECEIVED)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: SMS received Trigger");
-						triggerList.add(new SMSTrigger(target));
-					}
-					else if (type == PHONE_SCREEN_ON)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Screen Trigger");
-						triggerList.add(new ScreenActivityTrigger(target));
-					}
-					
-					// Fixed Time Triggers
-					else if (type == FIXED_INTERVAL)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Fixed Interval Trigger");
-						triggerList.add(new IntervalTrigger(target, trigger));
-					}
-					else if (type == FINAL_SURVEY)
-					{
-						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Final Trigger");
-						triggerList.add(new OneTimeTrigger(target, trigger));
-					}
-				}
-				
-				if (triggerList.isEmpty())
-				{
-//					stopAllSensing();
-				}
-				else {
-//					try {
-//						ESSensorManager.getSensorManager(SurveyApplication.getContext()).startAllSensors();
-//					}
-//					catch(ESException e)
+//	public static ArrayList<Trigger> loadTriggers()
+//	{
+//		try
+//		{
+//			String rawJSON = loadFileContents(Constants.TRIGGER_JSON_FILE);
+//			if (rawJSON != null)
+//			{
+//				JSONParser p = new JSONParser();
+//				JSONObject data = (JSONObject) p.parse(rawJSON);
+//
+//				ArrayList<Trigger> triggerList = new ArrayList<Trigger>();
+//				JSONArray triggers = (JSONArray) data.get(TRIGGERS);
+//				for (Object triggerdata : triggers)
+//				{
+//					JSONObject trigger = (JSONObject) triggerdata;
+//					int type = ((Long) trigger.get(Trigger.TYPE)).intValue();
+//					String target = (String) trigger.get(Trigger.TARGET_SURVEY);
+//					
+//					// Active Triggers
+//					if (type == MIC_IMMEDIATE)
 //					{
-//						 TODO
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Mic Immediate Trigger");
+//						triggerList.add(new NonSilentSampleTrigger(target));
 //					}
-					
-				}
-				return triggerList;
-			}
-			else if (Constants.TEST_MODE)
-			{
-				Log.d(LOG_TAG, "rawJSON is null!");
-			}
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (ParseException e)
-		{
-			e.printStackTrace();
-		}
-		
-//		stopAllSensing();
-		return null;
-	}
+//					else if (type == MIC_WAIT_FOR_SILENCE)
+//					{
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Mic Non-Immediate Trigger");
+//						triggerList.add(new PostSampleSilenceTrigger(target));
+//					}
+//					
+//					// Passive Triggers
+//					else if (type == CALL_STATE)
+//					{
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Call state Trigger");
+//						triggerList.add(new CallTrigger(target));
+//					}
+//					else if (type == SMS_RECEIVED)
+//					{
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: SMS received Trigger");
+//						triggerList.add(new SMSTrigger(target));
+//					}
+//					else if (type == PHONE_SCREEN_ON)
+//					{
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Screen Trigger");
+//						triggerList.add(new ScreenActivityTrigger(target));
+//					}
+//					
+//					// Fixed Time Triggers
+//					else if (type == FIXED_INTERVAL)
+//					{
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Fixed Interval Trigger");
+//						triggerList.add(new IntervalTrigger(target, trigger));
+//					}
+//					else if (type == FINAL_SURVEY)
+//					{
+//						if (Constants.TEST_MODE) ESLogger.log(LOG_TAG, "Adding: Final Trigger");
+//						triggerList.add(new OneTimeTrigger(target, trigger));
+//					}
+//				}
+//				
+//				if (triggerList.isEmpty())
+//				{
+////					stopAllSensing();
+//				}
+//				else {
+////					try {
+////						ESSensorManager.getSensorManager(SurveyApplication.getContext()).startAllSensors();
+////					}
+////					catch(ESException e)
+////					{
+////						 TODO
+////					}
+//					
+//				}
+//				return triggerList;
+//			}
+//			else if (Constants.TEST_MODE)
+//			{
+//				Log.d(LOG_TAG, "rawJSON is null!");
+//			}
+//		}
+//		catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		catch (ParseException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		
+////		stopAllSensing();
+//		return null;
+//	}
 
 }

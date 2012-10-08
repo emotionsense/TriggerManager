@@ -1,7 +1,5 @@
 package com.ubhave.triggermanager;
 
-import com.lathia.experiencesense.ServiceAlarmReceiver;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +14,7 @@ public class RebootBroadcastReceiver extends BroadcastReceiver
 		context.startService(intent);
 		
 		// start experience sense service
-        ServiceAlarmReceiver.startAlarm(context);
+//        ServiceAlarmReceiver.startAlarm(context);
 	}
 
 }

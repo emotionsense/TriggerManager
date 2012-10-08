@@ -7,9 +7,10 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.lathia.experiencesense.log.ESLogger;
-import com.lathia.experiencesense.userprefs.UserPreferences;
-import com.lathia.experiencesense.util.Constants;
+import com.ubhave.sensormanager.config.Constants;
+import com.ubhave.sensormanager.logs.ESLogger;
+import com.ubhave.triggermanager.TriggerException;
+import com.ubhave.triggermanager.preferences.UserPreferences;
 
 public abstract class RandomFrequencyTrigger extends ActiveTrigger
 {
@@ -30,15 +31,11 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 		@Override
 		public void run()
 		{
-			if (UserPreferences.userAllowsNotification(Calendar.getInstance()))
+			if (Constants.TEST_MODE)
 			{
-				if (Constants.TEST_MODE)
-				{
-					ESLogger.log(LOG_TAG, "Random Timer firing");
-				}
-				sampleForSurvey();
+				ESLogger.log(LOG_TAG, "Random Timer firing");
 			}
-			
+			sampleForSurvey();
 		}
 	}
 	
@@ -54,12 +51,11 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	private Timer schedulerTimer;
 	private Random random;
 
-	public RandomFrequencyTrigger(String target)
+	public RandomFrequencyTrigger(String target) throws TriggerException
 	{
 		super(target);
 		random = new Random();
 		scheduleNotifications();
-		
 		
 		// Random surveys will be re-scheduled at midnight each night
 		schedulerTimer = new Timer();
@@ -93,7 +89,7 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	
 	private void scheduleNotifications()
 	{
-		int maxSurveys = UserPreferences.getSurveyCap();
+		int maxSurveys = manager.getPreferences().getSurveyCap();
 		if (Constants.TEST_MODE)
 		{
 			ESLogger.log(LOG_TAG, "Scheduling "+maxSurveys+" notifications");
@@ -125,8 +121,10 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	
 	private ArrayList<Integer> pickTimes(int frequency)
 	{
-		int before = minutes(UserPreferences.getBeforeTime());
-		int after = minutes(UserPreferences.getAfterTime()) - 60;
+		UserPreferences preferences = manager.getPreferences();
+		
+		int before = minutes(preferences.getBeforeTime());
+		int after = minutes(preferences.getAfterTime()) - 60;
 		if (Constants.TEST_MODE)
 		{
 			ESLogger.log(LOG_TAG, "User preference: ["+before+", "+after+"]");

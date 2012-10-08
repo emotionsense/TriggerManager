@@ -4,6 +4,7 @@ import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pullsensor.MicrophoneData;
 import com.ubhave.sensormanager.logs.ESLogger;
+import com.ubhave.triggermanager.TriggerException;
 
 public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 {
@@ -21,7 +22,7 @@ public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 	private boolean sampleObtained;
 	private int postSampleSilentCycles;
 
-	public PostSampleSilenceTrigger(String targetSurvey)
+	public PostSampleSilenceTrigger(String targetSurvey) throws TriggerException
 	{
 		super(targetSurvey);
 	}
