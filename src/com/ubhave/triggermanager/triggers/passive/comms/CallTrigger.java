@@ -6,7 +6,6 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.PhoneStateData;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.SensorList;
-import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.triggers.passive.PassiveTrigger;
 
 public class CallTrigger extends PassiveTrigger
@@ -14,9 +13,9 @@ public class CallTrigger extends PassiveTrigger
 	private final static String LOG_TAG = "CallTrigger";
 	private boolean isInCall;
 
-	public CallTrigger(String targetSurvey) throws TriggerException, ESException
+	public CallTrigger() throws ESException
 	{
-		super(targetSurvey, SensorList.SENSOR_TYPE_PHONE_STATE, LOG_TAG, 1.1);
+		super(SensorList.SENSOR_TYPE_PHONE_STATE, LOG_TAG, 1.1);
 		isInCall = false;
 	}
 

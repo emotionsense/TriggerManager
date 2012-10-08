@@ -16,9 +16,9 @@ public class ScreenActivityTrigger extends PassiveTrigger
 	private boolean screenOn;
 	private Thread waitThread;
 
-	public ScreenActivityTrigger(String targetSurvey) throws TriggerException, ESException
+	public ScreenActivityTrigger() throws TriggerException, ESException
 	{
-		super(targetSurvey, SensorList.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
+		super(SensorList.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
 	}
 
 	@Override

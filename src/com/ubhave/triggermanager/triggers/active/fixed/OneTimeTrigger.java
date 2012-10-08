@@ -27,9 +27,8 @@ public class OneTimeTrigger extends StaticTrigger
 		}
 	}
 
-	public OneTimeTrigger(String target, JSONObject data) throws TriggerException
+	public OneTimeTrigger(JSONObject data) throws TriggerException
 	{
-		super(target);
 		try
 		{
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy");

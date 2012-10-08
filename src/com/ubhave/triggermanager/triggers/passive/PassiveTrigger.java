@@ -8,7 +8,6 @@ import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.logs.ESLogger;
-import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class PassiveTrigger extends Trigger implements SensorDataListener
@@ -18,9 +17,8 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	private final String LOG_TAG;
 	private final double SAMPLE_PROBABILITY;
 	
-	public PassiveTrigger(String survey, int sensorType, String LOG_TAG, double p) throws TriggerException, ESException
+	public PassiveTrigger(int sensorType, String LOG_TAG, double p) throws ESException
 	{
-		super(survey);
 		this.sensorType = sensorType;
 		this.LOG_TAG = LOG_TAG;
 		this.SAMPLE_PROBABILITY = p;

@@ -3,20 +3,14 @@ package com.ubhave.triggermanager.triggers.active.mic;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.triggers.active.RandomFrequencyTrigger;
 
 public abstract class MicrophoneBasedTrigger extends RandomFrequencyTrigger
 {
 
-	private final static String LOG_TAG = "MicrophoneBasedTrigger";
+//	private final static String LOG_TAG = "MicrophoneBasedTrigger";
 	protected final static int TRIGGER_MAX_CYCLES = 60;
 	private int subscriptionId;
-	
-	public MicrophoneBasedTrigger(String targetSurvey) throws TriggerException
-	{
-		super(targetSurvey);
-	}
 	
 //	private SensorConfig getSensorConfig()
 //	{

@@ -13,7 +13,8 @@ public interface TriggerManagerInterface
 	
 	public int getNotificationId();
 	
-	public int addTrigger(int triggerType);
+	public int addTrigger(int triggerType, TriggerReceiver listener);
 	public void removeTrigger(int triggerId);
+	public void endAllTriggers();
 
 }

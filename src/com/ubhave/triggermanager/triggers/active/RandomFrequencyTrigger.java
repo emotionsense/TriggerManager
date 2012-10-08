@@ -9,7 +9,6 @@ import java.util.TimerTask;
 
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
-import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.preferences.UserPreferences;
 
 public abstract class RandomFrequencyTrigger extends ActiveTrigger
@@ -51,9 +50,8 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	private Timer schedulerTimer;
 	private Random random;
 
-	public RandomFrequencyTrigger(String target) throws TriggerException
+	public RandomFrequencyTrigger()
 	{
-		super(target);
 		random = new Random();
 		scheduleNotifications();
 		

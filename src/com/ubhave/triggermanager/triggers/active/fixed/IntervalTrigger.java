@@ -31,9 +31,8 @@ public class IntervalTrigger extends StaticTrigger
 		}
 	}
 
-	public IntervalTrigger(String target, JSONObject data) throws TriggerException
+	public IntervalTrigger(JSONObject data) throws TriggerException
 	{
-		super(target);
 		minutes = init((String) data.get(MINUTE), 60);
 		hours = init((String) data.get(HOUR), 24);
 		days = init((String) data.get(DAY), 7);

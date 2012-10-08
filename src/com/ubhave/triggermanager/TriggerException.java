@@ -6,6 +6,7 @@ public class TriggerException extends Exception
 	
 	// error codes
 	public static final int NO_CONTEXT = 8000;
+	public static final int INVALID_STATE = 8001;
 
 	private int errorCode;
 	private String message;
