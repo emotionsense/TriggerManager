@@ -5,10 +5,14 @@
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
 
-    <application android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme">
+    <!-- Triggers -->
+        <service android:name="com.ubhave.triggermanager.triggers.SurveyTriggerService" />
+        <receiver android:name="com.ubhave.triggermanager.triggers.RebootBroadcastReceivers.RebootBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
 
-    </application>
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
 
 </manifest>

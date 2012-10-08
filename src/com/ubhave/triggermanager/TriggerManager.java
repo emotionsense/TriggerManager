@@ -55,6 +55,12 @@ public class TriggerManager implements TriggerManagerInterface
 	{
 		return context;
 	}
+	
+	@Override
+	public int getNotificationId()
+	{
+		return NOTIFICATION_ID;
+	}
 
 	@Override
 	public void setDoNotDisturbBefore(int hour)
@@ -72,6 +78,24 @@ public class TriggerManager implements TriggerManagerInterface
 	public void setMaximumDailySurveys(int cap)
 	{
 		preferences.setSurveyCap(cap);
+	}
+	
+	@Override
+	public int getDoNotDisturbBefore()
+	{
+		return preferences.getBeforeTime();
+	}
+	
+	@Override
+	public int getDoNotDisturbAfter()
+	{
+		return preferences.getAfterTime();
+	}
+	
+	@Override
+	public int getMaximumDailySurveys()
+	{
+		return preferences.getSurveyCap();
 	}
 	
 	public void endAllTriggers()
