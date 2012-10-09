@@ -6,8 +6,8 @@
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
 
     <!-- Triggers -->
-        <service android:name="com.ubhave.triggermanager.triggers.SurveyTriggerService" />
-        <receiver android:name="com.ubhave.triggermanager.triggers.RebootBroadcastReceivers.RebootBroadcastReceiver" >
+        <service android:name=".triggers.SurveyTriggerService" />
+        <receiver android:name=".triggers.RebootBroadcastReceivers.RebootBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 

@@ -1,4 +1,4 @@
-package com.ubhave.triggermanager.triggers.active.fixed;
+package com.ubhave.triggermanager.triggers.active.fixedtime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

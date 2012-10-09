@@ -1,4 +1,4 @@
-package com.ubhave.triggermanager.triggers.active.fixed;
+package com.ubhave.triggermanager.triggers.active.fixedtime;
 
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.triggermanager.TriggerReceiver;
