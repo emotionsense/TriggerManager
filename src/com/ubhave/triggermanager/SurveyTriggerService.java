@@ -60,7 +60,7 @@ public class SurveyTriggerService extends Service
 				{
 					ESLogger.log(LOG_TAG, "Trigger service starting");
 					super.onCreate();
-					triggerManager = TriggerManager.getSensorManager(this);
+					triggerManager = TriggerManager.getTriggerManager(this);
 					
 					receiver = new SurveyBroadCastReceiver();
 					IntentFilter filter = new IntentFilter();

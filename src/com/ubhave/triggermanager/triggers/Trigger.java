@@ -26,7 +26,7 @@ public abstract class Trigger
 	
 	public Trigger(TriggerReceiver listener)
 	{
-		manager = TriggerManager.getSensorManager(null);
+		manager = TriggerManager.getTriggerManager(null);
 		this.listener = listener;
 	}
 

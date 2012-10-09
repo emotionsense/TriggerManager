@@ -22,7 +22,7 @@ public class TriggerManager implements TriggerManagerInterface
 	private final Context context;
 	private final TriggerList triggers;
 
-	public static TriggerManager getSensorManager(Context context)
+	public static TriggerManager getTriggerManager(Context context)
 	{
 		if (triggerManager == null)
 		{
