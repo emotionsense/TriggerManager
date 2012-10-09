@@ -50,12 +50,6 @@ public class TriggerManager implements TriggerManagerInterface
 	{
 		return context;
 	}
-	
-	@Override
-	public int getNotificationId()
-	{
-		return NOTIFICATION_ID;
-	}
 
 	@Override
 	public void setDoNotDisturbBefore(int hour)

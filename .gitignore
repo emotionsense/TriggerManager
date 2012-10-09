@@ -5,3 +5,4 @@ res/*
 lib/*
 libs/*
 gen/*
+*.classpath
