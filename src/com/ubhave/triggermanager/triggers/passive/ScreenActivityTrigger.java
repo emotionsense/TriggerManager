@@ -2,12 +2,14 @@ package com.ubhave.triggermanager.triggers.passive;
 
 import java.util.Random;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.ScreenData;
 import com.ubhave.sensormanager.logs.ESLogger;
-import com.ubhave.sensormanager.sensors.SensorList;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 
@@ -17,9 +19,9 @@ public class ScreenActivityTrigger extends PassiveTrigger
 	private boolean screenOn;
 	private Thread waitThread;
 
-	public ScreenActivityTrigger(TriggerReceiver listener) throws TriggerException, ESException
+	public ScreenActivityTrigger(Context context, TriggerReceiver listener) throws TriggerException, ESException
 	{
-		super(listener, SensorList.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
+		super(context, listener, SensorUtils.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class ScreenActivityTrigger extends PassiveTrigger
 					try
 					{
 						int waited = 0;
-						int wait_time = ((new Random()).nextInt(60)+30)*1000;
+						int wait_time = 5000;//((new Random()).nextInt(60)+30)*1000;
 						if (Constants.TEST_MODE)
 						{
 							ESLogger.log(LOG_TAG, "Waiting for: "+wait_time);

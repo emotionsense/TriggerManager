@@ -7,10 +7,11 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.preferences.UserPreferences;
 
 public abstract class RandomFrequencyTrigger extends ActiveTrigger
 {
@@ -51,9 +52,9 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	private Timer schedulerTimer;
 	private Random random;
 
-	public RandomFrequencyTrigger(TriggerReceiver listener)
+	public RandomFrequencyTrigger(Context context, TriggerReceiver listener)
 	{
-		super(listener);
+		super(context, listener);
 		random = new Random();
 		scheduleNotifications();
 		
@@ -89,7 +90,7 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	
 	private void scheduleNotifications()
 	{
-		int maxSurveys = manager.getPreferences().getSurveyCap();
+		int maxSurveys = preferences.getSurveyCap();
 		if (Constants.TEST_MODE)
 		{
 			ESLogger.log(LOG_TAG, "Scheduling "+maxSurveys+" notifications");
@@ -121,8 +122,6 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	
 	private ArrayList<Integer> pickTimes(int frequency)
 	{
-		UserPreferences preferences = manager.getPreferences();
-		
 		int before = minutes(preferences.getBeforeTime());
 		int after = minutes(preferences.getAfterTime()) - 60;
 		if (Constants.TEST_MODE)

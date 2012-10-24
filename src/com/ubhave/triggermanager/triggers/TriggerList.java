@@ -2,6 +2,7 @@ package com.ubhave.triggermanager.triggers;
 
 import java.util.Random;
 
+import android.content.Context;
 import android.util.SparseArray;
 
 import com.ubhave.sensormanager.ESException;
@@ -23,16 +24,16 @@ public class TriggerList
 //	private static final int TRIGGER_FINAL_SURVEY = 30002;
 	public static final int TRIGGER_ACCELEROMETER = 4001;
 	
-	public static Trigger createTrigger(int type, TriggerReceiver listener) throws ESException, TriggerException
+	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener) throws ESException, TriggerException
 	{
 		switch(type)
 		{
 //		case MIC_IMMEDIATE: return new NonSilentSampleTrigger();
 //		case MIC_WAIT_FOR_SILENCE: return new PostSampleSilenceTrigger();
-		case TRIGGER_CALL_STATE: return new CallTrigger(listener);
-		case TRIGGER_SMS_RECEIVED: return new SMSTrigger(listener);
-		case TRIGGER_PHONE_SCREEN_ON: return new ScreenActivityTrigger(listener);
-		case TRIGGER_ACCELEROMETER: return new AccelerometerTrigger(listener);
+		case TRIGGER_CALL_STATE: return new CallTrigger(context, listener);
+		case TRIGGER_SMS_RECEIVED: return new SMSTrigger(context, listener);
+		case TRIGGER_PHONE_SCREEN_ON: return new ScreenActivityTrigger(context, listener);
+		case TRIGGER_ACCELEROMETER: return new AccelerometerTrigger(context, listener);
 //		case FIXED_INTERVAL: return new IntervalTrigger(); // needs config
 //		case FINAL_SURVEY: return new OneTimeTrigger(); // needs config
 		default: throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: "+type);

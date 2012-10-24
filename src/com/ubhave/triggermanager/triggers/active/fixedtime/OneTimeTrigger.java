@@ -7,6 +7,8 @@ import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
@@ -28,9 +30,9 @@ public class OneTimeTrigger extends StaticTrigger
 		}
 	}
 
-	public OneTimeTrigger(TriggerReceiver listener, JSONObject data) throws TriggerException
+	public OneTimeTrigger(Context context, TriggerReceiver listener, JSONObject data) throws TriggerException
 	{
-		super(listener);
+		super(context, listener);
 		try
 		{
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy");

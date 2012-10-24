@@ -2,8 +2,9 @@ package com.ubhave.triggermanager.triggers.passive;
 
 import java.util.Random;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
@@ -18,9 +19,9 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	private final String LOG_TAG;
 	private final double SAMPLE_PROBABILITY;
 	
-	public PassiveTrigger(TriggerReceiver listener, int sensorType, String LOG_TAG, double p) throws ESException
+	public PassiveTrigger(Context context, TriggerReceiver listener, int sensorType, String LOG_TAG, double p) throws ESException
 	{
-		super(listener);
+		super(context, listener);
 		this.sensorType = sensorType;
 		this.LOG_TAG = LOG_TAG;
 		this.SAMPLE_PROBABILITY = p;
@@ -34,7 +35,6 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 			ESLogger.log(LOG_TAG, "Registering with sensor: "+sensorType);
 		}
 		
-		ESSensorManager sensorManager = ESSensorManager.getSensorManager(manager.getContext());
 		return sensorManager.subscribeToSensorData(sensorType, this);
 	}
 	
@@ -43,7 +43,6 @@ public abstract class PassiveTrigger extends Trigger implements SensorDataListen
 	{
 		try
 		{
-			ESSensorManager sensorManager = ESSensorManager.getSensorManager(manager.getContext());
 			sensorManager.unsubscribeFromSensorData(subscriptionId);
 		}
 		catch (ESException e)

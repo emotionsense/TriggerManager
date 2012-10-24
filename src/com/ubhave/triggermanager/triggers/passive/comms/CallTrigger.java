@@ -1,11 +1,13 @@
 package com.ubhave.triggermanager.triggers.passive.comms;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.PhoneStateData;
 import com.ubhave.sensormanager.logs.ESLogger;
-import com.ubhave.sensormanager.sensors.SensorList;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.triggers.passive.PassiveTrigger;
 
@@ -14,9 +16,9 @@ public class CallTrigger extends PassiveTrigger
 	private final static String LOG_TAG = "CallTrigger";
 	private boolean isInCall;
 
-	public CallTrigger(TriggerReceiver listener) throws ESException
+	public CallTrigger(Context context, TriggerReceiver listener) throws ESException
 	{
-		super(listener, SensorList.SENSOR_TYPE_PHONE_STATE, LOG_TAG, 1.1);
+		super(context, listener, SensorUtils.SENSOR_TYPE_PHONE_STATE, LOG_TAG, 1.1);
 		isInCall = false;
 	}
 

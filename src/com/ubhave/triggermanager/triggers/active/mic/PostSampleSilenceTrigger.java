@@ -1,5 +1,7 @@
 package com.ubhave.triggermanager.triggers.active.mic;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pullsensor.MicrophoneData;
@@ -16,9 +18,9 @@ public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 	 * Constants.TRIGGER_MAX_CYCLES
 	 */
 
-	public PostSampleSilenceTrigger(TriggerReceiver listener)
+	public PostSampleSilenceTrigger(Context context, TriggerReceiver listener)
 	{
-		super(listener);
+		super(context, listener);
 	}
 
 	private final static String LOG_TAG = "SilentSampleTrigger";
@@ -46,7 +48,7 @@ public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 		MicrophoneData recording = (MicrophoneData) sensorData;
 		if (sampleObtained)
 		{
-			if (recording.isSilent())
+			if (isSilent(recording.getAmplitudeString()))
 			{
 				postSampleSilentCycles++;
 			}
@@ -62,7 +64,7 @@ public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 				callForSurvey(ADHERE_TO_CAP);
 			}
 		}
-		else if (!recording.isSilent() || senseCycle == TRIGGER_MAX_CYCLES)
+		else if (!isSilent(recording.getAmplitudeString()) || senseCycle == TRIGGER_MAX_CYCLES)
 		{
 			sampleObtained = true;
 			postSampleSilentCycles = 0;

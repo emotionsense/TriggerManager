@@ -2,6 +2,8 @@ package com.ubhave.triggermanager.triggers.active;
 
 import java.util.Timer;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.triggermanager.TriggerReceiver;
@@ -12,9 +14,9 @@ public abstract class ActiveTrigger extends Trigger implements SensorDataListene
 	
 	protected Timer surveyTimer;
 	
-	public ActiveTrigger(TriggerReceiver listener)
+	public ActiveTrigger(Context context, TriggerReceiver listener)
 	{
-		super(listener);
+		super(context, listener);
 		this.surveyTimer = new Timer();
 	}
 	

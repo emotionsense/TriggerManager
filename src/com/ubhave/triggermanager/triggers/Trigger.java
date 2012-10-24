@@ -2,15 +2,18 @@ package com.ubhave.triggermanager.triggers;
 
 import java.util.Calendar;
 
-import com.ubhave.triggermanager.TriggerManager;
+import android.content.Context;
+
+import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.ESSensorManager;
+import com.ubhave.sensormanager.ESSensorManagerInterface;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.preferences.SurveyLimiter;
 import com.ubhave.triggermanager.preferences.UserPreferences;
 
 public abstract class Trigger
-{	
-//	private static final String LOG_TAG = "Trigger";
-	
+{
+
 	protected final static boolean IGNORE_CAP = true;
 	protected final static boolean ADHERE_TO_CAP = false;
 
@@ -20,25 +23,34 @@ public abstract class Trigger
 	public static final String TARGET_SURVEY = "survey";
 	protected static final String ALL = "*";
 
-	protected final TriggerManager manager;
 	private final TriggerReceiver listener;
+	protected final Context context;
+	protected ESSensorManagerInterface sensorManager;
+	protected final UserPreferences preferences;
 	
-	
-	public Trigger(TriggerReceiver listener)
+	public Trigger(Context context, TriggerReceiver listener)
 	{
-		manager = TriggerManager.getTriggerManager(null);
+		this.context = context;
 		this.listener = listener;
+		this.preferences = new UserPreferences(context);
+		try
+		{
+			sensorManager = ESSensorManager.getSensorManager();
+		}
+		catch (ESException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	protected void callForSurvey(boolean ignoreCap)
 	{
-		UserPreferences preferences = manager.getPreferences();
 		if (SurveyLimiter.surveyAllowed(preferences))
 		{
 			listener.onNotificationTriggered();
 			preferences.surveySent(Calendar.getInstance());
 		}
 	}
-	
+
 	public abstract void kill();
 }

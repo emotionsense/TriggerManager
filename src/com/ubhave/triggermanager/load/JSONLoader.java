@@ -1,7 +1,5 @@
 package com.ubhave.triggermanager.load;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.json.simple.parser.JSONParser;
@@ -27,24 +25,25 @@ public abstract class JSONLoader
 
 	protected static String loadFileContents(String fn) throws IOException
 	{
-		try {
-			StringBuffer fileContents = new StringBuffer();
-			String line;
-			// TODO
-			
-//			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(Constants.CONFIG_DIR + "/" + fn)));
-			BufferedReader in = null;
-			while ((line = in.readLine()) != null)
-			{
-				fileContents.append(line);
-			}
-			in.close();
-			return fileContents.toString();
-		}
-		catch(FileNotFoundException e)
-		{
-			return null;
-		}
+//		try {
+//			StringBuffer fileContents = new StringBuffer();
+//			String line;
+//			// TODO
+//			
+////			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(Constants.CONFIG_DIR + "/" + fn)));
+//			BufferedReader in = null;
+//			while ((line = in.readLine()) != null)
+//			{
+//				fileContents.append(line);
+//			}
+//			in.close();
+//			return fileContents.toString();
+//		}
+//		catch(FileNotFoundException e)
+//		{
+//			return null;
+//		}
+		return null;
 	}
 
 }

@@ -5,6 +5,8 @@ import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
 
+import android.content.Context;
+
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
@@ -32,9 +34,9 @@ public class IntervalTrigger extends StaticTrigger
 		}
 	}
 
-	public IntervalTrigger(TriggerReceiver listener, JSONObject data) throws TriggerException
+	public IntervalTrigger(Context context, TriggerReceiver listener, JSONObject data) throws TriggerException
 	{
-		super(listener);
+		super(context, listener);
 		minutes = init((String) data.get(MINUTE), 60);
 		hours = init((String) data.get(HOUR), 24);
 		days = init((String) data.get(DAY), 7);
