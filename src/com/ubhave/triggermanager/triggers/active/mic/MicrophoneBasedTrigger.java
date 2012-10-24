@@ -7,7 +7,7 @@ import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.triggers.active.RandomFrequencyTrigger;
+import com.ubhave.triggermanager.triggers.active.fixedtime.RandomFrequencyTrigger;
 
 public abstract class MicrophoneBasedTrigger extends RandomFrequencyTrigger
 {

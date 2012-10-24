@@ -3,6 +3,7 @@ package com.ubhave.triggermanager.triggers.active.fixedtime;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
@@ -20,6 +21,7 @@ public class OneTimeTrigger extends StaticTrigger
 	private final static String LOG_TAG = "OneTimeTrigger";
 
 	private final static String TIME = "time";
+	protected Timer surveyTimer;
 
 	private class SurveyNotification extends TimerTask
 	{
@@ -33,6 +35,7 @@ public class OneTimeTrigger extends StaticTrigger
 	public OneTimeTrigger(Context context, TriggerReceiver listener, JSONObject data) throws TriggerException
 	{
 		super(context, listener);
+		this.surveyTimer = new Timer();
 		try
 		{
 			SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy");

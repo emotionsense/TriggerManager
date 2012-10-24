@@ -1,6 +1,7 @@
 package com.ubhave.triggermanager.triggers.active.fixedtime;
 
 import java.util.Calendar;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import org.json.simple.JSONObject;
@@ -24,6 +25,8 @@ public class IntervalTrigger extends StaticTrigger
 	private final boolean[] minutes;
 	private final boolean[] hours;
 	private final boolean[] days;
+	
+	protected Timer surveyTimer;
 
 	private class SurveyNotification extends TimerTask
 	{
@@ -37,6 +40,7 @@ public class IntervalTrigger extends StaticTrigger
 	public IntervalTrigger(Context context, TriggerReceiver listener, JSONObject data) throws TriggerException
 	{
 		super(context, listener);
+		this.surveyTimer = new Timer();
 		minutes = init((String) data.get(MINUTE), 60);
 		hours = init((String) data.get(HOUR), 24);
 		days = init((String) data.get(DAY), 7);

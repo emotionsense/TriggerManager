@@ -3,6 +3,7 @@ package com.ubhave.triggermanager.triggers;
 import java.util.Calendar;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
@@ -27,7 +28,7 @@ public abstract class Trigger
 	protected final Context context;
 	protected ESSensorManagerInterface sensorManager;
 	protected final UserPreferences preferences;
-	
+
 	public Trigger(Context context, TriggerReceiver listener)
 	{
 		this.context = context;
@@ -45,10 +46,14 @@ public abstract class Trigger
 
 	protected void callForSurvey(boolean ignoreCap)
 	{
-		if (SurveyLimiter.surveyAllowed(preferences))
+		if (SurveyLimiter.surveyAllowed(preferences) || ignoreCap)
 		{
 			listener.onNotificationTriggered();
 			preferences.surveySent(Calendar.getInstance());
+		}
+		else
+		{
+			Log.d("Trigger", "Notification not allowed");
 		}
 	}
 

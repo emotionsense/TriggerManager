@@ -1,7 +1,5 @@
 package com.ubhave.triggermanager.triggers.passive;
 
-import java.util.Random;
-
 import android.content.Context;
 
 import com.ubhave.sensormanager.ESException;
