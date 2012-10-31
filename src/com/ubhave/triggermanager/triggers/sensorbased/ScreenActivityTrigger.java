@@ -1,25 +1,23 @@
-package com.ubhave.triggermanager.triggers.passive;
+package com.ubhave.triggermanager.triggers.sensorbased;
 
 import android.content.Context;
 
 import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pushsensor.ScreenData;
-import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.triggers.SensorTrigger;
 
-public class ScreenActivityTrigger extends PassiveTrigger
+public class ScreenActivityTrigger extends SensorTrigger
 {
-	private final static String LOG_TAG = "ScreenActivityTrigger";
 	private boolean screenOn;
 	private Thread waitThread;
 
 	public ScreenActivityTrigger(Context context, TriggerReceiver listener) throws TriggerException, ESException
 	{
-		super(context, listener, SensorUtils.SENSOR_TYPE_SCREEN, LOG_TAG, 0.3);
+		super(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
 	}
 
 	@Override
@@ -28,19 +26,11 @@ public class ScreenActivityTrigger extends PassiveTrigger
 		ScreenData screen = (ScreenData) sensorData;
 		if (screen.isOn())
 		{
-			if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "Screen turned on, starting to wait");
-			}
 			screenOn = true;
 			startWaiting();
 		}
 		else
 		{
-			if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "Screen turned off");
-			}
 			screenOn = false;
 		}
 	}
@@ -58,10 +48,6 @@ public class ScreenActivityTrigger extends PassiveTrigger
 					{
 						int waited = 0;
 						int wait_time = 5000;//((new Random()).nextInt(60)+30)*1000;
-						if (Constants.TEST_MODE)
-						{
-							ESLogger.log(LOG_TAG, "Waiting for: "+wait_time);
-						}
 						while (waited < wait_time)
 						{
 							sleep(100);
@@ -83,21 +69,9 @@ public class ScreenActivityTrigger extends PassiveTrigger
 	private void doneWaiting()
 	{
 		waitThread = null;
-		if (Constants.TEST_MODE)
-		{
-			ESLogger.log(LOG_TAG, "Wait thread finished");
-		}
 		if (screenOn)
 		{
-			if (Constants.TEST_MODE)
-			{
-				ESLogger.log(LOG_TAG, "Calling for survey");
-			}
-			callForSurvey(ADHERE_TO_CAP);
-		}
-		else if (Constants.TEST_MODE)
-		{
-			ESLogger.log(LOG_TAG, "Screen turned off, not calling for survey");
+			callForSurvey();
 		}
 	}
 }

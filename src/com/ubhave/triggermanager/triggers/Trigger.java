@@ -1,61 +1,62 @@
 package com.ubhave.triggermanager.triggers;
 
-import java.util.Calendar;
+import java.util.Random;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.ESSensorManager;
-import com.ubhave.sensormanager.ESSensorManagerInterface;
+import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.preferences.SurveyLimiter;
-import com.ubhave.triggermanager.preferences.UserPreferences;
+import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.config.GlobalState;
 
 public abstract class Trigger
 {
 
-	protected final static boolean IGNORE_CAP = true;
-	protected final static boolean ADHERE_TO_CAP = false;
-
-	// JSON tags
-	public static final String TYPE = "type";
-	public static final String LAST_DATE = "finish";
-	public static final String TARGET_SURVEY = "survey";
-	protected static final String ALL = "*";
-
 	private final TriggerReceiver listener;
-	protected final Context context;
-	protected ESSensorManagerInterface sensorManager;
-	protected final UserPreferences preferences;
+	protected final GlobalState globalState;
+	protected final GlobalConfig globalConfig;
 
-	public Trigger(Context context, TriggerReceiver listener)
+	public Trigger(Context context, TriggerReceiver listener) throws TriggerException
 	{
-		this.context = context;
 		this.listener = listener;
-		this.preferences = new UserPreferences(context);
-		try
-		{
-			sensorManager = ESSensorManager.getSensorManager();
-		}
-		catch (ESException e)
-		{
-			e.printStackTrace();
-		}
+		this.globalState = GlobalState.getGlobalState(context);
+		this.globalConfig = GlobalConfig.getGlobalConfig(context);
 	}
 
-	protected void callForSurvey(boolean ignoreCap)
+	protected void callForSurvey()
 	{
-		if (SurveyLimiter.surveyAllowed(preferences) || ignoreCap)
+		double sampleProbability;
+		try {
+			sampleProbability = (Float) globalConfig.getParameter(GlobalConfig.NOTIFICATION_PROBABILITY);
+		}
+		catch (TriggerException e)
+		{
+			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
+		}
+		
+		double currentProbability = (new Random()).nextDouble();
+		if (currentProbability <= sampleProbability)
 		{
 			listener.onNotificationTriggered();
-			preferences.surveySent(Calendar.getInstance());
+			globalState.incrementNotificationsSent();
 		}
-		else
+		
+		
+//		else if (Constants.TEST_MODE)
+//		{
+//			ESLogger.log(LOG_TAG, "Not calling for survey: P(sample) = "+sampleProbability);
+//		}
+//		if (SurveyLimiter.surveyAllowed())
 		{
-			Log.d("Trigger", "Notification not allowed");
+			
 		}
+//		else
+//		{
+//			Log.d("Trigger", "Notification not allowed");
+//		}
 	}
 
 	public abstract void kill();
+
 }

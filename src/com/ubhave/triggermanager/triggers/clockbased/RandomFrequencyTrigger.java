@@ -1,4 +1,4 @@
-package com.ubhave.triggermanager.triggers.active.fixedtime;
+package com.ubhave.triggermanager.triggers.clockbased;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,12 +9,14 @@ import java.util.TimerTask;
 
 import android.content.Context;
 
-import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
+import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.triggers.active.ActiveTrigger;
+import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.triggers.Trigger;
 
-public abstract class RandomFrequencyTrigger extends ActiveTrigger
+public abstract class RandomFrequencyTrigger extends Trigger
 {
 	
 	/*
@@ -54,7 +56,7 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 	private Timer schedulerTimer;
 	private Random random;
 
-	public RandomFrequencyTrigger(Context context, TriggerReceiver listener)
+	public RandomFrequencyTrigger(Context context, TriggerReceiver listener) throws TriggerException
 	{
 		super(context, listener);
 		random = new Random();
@@ -70,36 +72,30 @@ public abstract class RandomFrequencyTrigger extends ActiveTrigger
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		
-		if (Constants.TEST_MODE)
-		{
-			ESLogger.log(LOG_TAG, "Notifications will be scheduled at: "+calendar.getTime().toString());
-		}
 		schedulerTimer.scheduleAtFixedRate(new Scheduler(), calendar.getTimeInMillis() - now, 1000 * 60 * 60 * 24);
 	}
 	
 	public void kill()
 	{
-		super.kill();
 		if (schedulerTimer != null)
 		{
 			schedulerTimer.cancel();
 			schedulerTimer = null;
 		}
-		if (Constants.TEST_MODE)
-		{
-			ESLogger.log(LOG_TAG, "Killing: "+LOG_TAG);
-		}
 	}
 	
 	private void scheduleNotifications()
 	{
-		int maxSurveys = preferences.getSurveyCap();
-		if (Constants.TEST_MODE)
-		{
-			ESLogger.log(LOG_TAG, "Scheduling "+maxSurveys+" notifications");
+		int maxSurveys;
+		try {
+			maxSurveys = (Integer) globalConfig.getParameter(GlobalConfig.MAXIMUM_DAILY_SURVEYS);
 		}
-		ArrayList<Integer> randomTimes = pickTimes(maxSurveys);
-		
+		catch (TriggerException e)
+		{
+			maxSurveys = Constants.DEFAULT_MAXIMUM_DAILY_SURVEYS;
+		}
+
+		ArrayList<Integer> randomTimes = pickTimes(maxSurveys);		
 		Calendar calendar = Calendar.getInstance();
 		long now = calendar.getTimeInMillis();
 		

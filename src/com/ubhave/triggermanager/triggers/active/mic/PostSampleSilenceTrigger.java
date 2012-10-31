@@ -2,11 +2,12 @@ package com.ubhave.triggermanager.triggers.active.mic;
 
 import android.content.Context;
 
-import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pullsensor.MicrophoneData;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.triggers.sensorbased.MicrophoneBasedTrigger;
 
 public class PostSampleSilenceTrigger extends MicrophoneBasedTrigger
 {

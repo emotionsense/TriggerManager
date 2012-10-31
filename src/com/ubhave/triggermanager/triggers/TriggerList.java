@@ -8,10 +8,10 @@ import android.util.SparseArray;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.triggers.passive.AccelerometerTrigger;
-import com.ubhave.triggermanager.triggers.passive.ScreenActivityTrigger;
-import com.ubhave.triggermanager.triggers.passive.comms.CallTrigger;
-import com.ubhave.triggermanager.triggers.passive.comms.SMSTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.AccelerometerTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.CallTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.SMSTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.ScreenActivityTrigger;
 
 public class TriggerList
 {

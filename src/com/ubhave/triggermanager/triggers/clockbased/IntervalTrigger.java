@@ -1,4 +1,4 @@
-package com.ubhave.triggermanager.triggers.active.fixedtime;
+package com.ubhave.triggermanager.triggers.clockbased;
 
 import java.util.Calendar;
 import java.util.Timer;
@@ -8,13 +8,13 @@ import org.json.simple.JSONObject;
 
 import android.content.Context;
 
-import com.ubhave.sensormanager.config.Constants;
 import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.triggers.Trigger;
 
-public class IntervalTrigger extends StaticTrigger
+public class IntervalTrigger extends Trigger
 {
 	private final static String LOG_TAG = "FixedTimeTrigger";
 
@@ -50,14 +50,14 @@ public class IntervalTrigger extends StaticTrigger
 
 	public void callForSurvey()
 	{
-		super.callForSurvey(Trigger.IGNORE_CAP);
+		super.callForSurvey();
 		surveyTimer.schedule(new SurveyNotification(), getNextTime());
 	}
 
 	private boolean[] init(String value, int length)
 	{
 		boolean[] data = new boolean[length];
-		if (value.equals(ALL) || value.length() == 0)
+		if (value.equals("*") || value.length() == 0)
 		{
 			for (int i = 0; i < data.length; i++)
 			{
@@ -97,10 +97,6 @@ public class IntervalTrigger extends StaticTrigger
 	@Override
 	public void kill()
 	{
-		super.kill();
-		if (Constants.TEST_MODE)
-		{
-			ESLogger.log(LOG_TAG, "Killing: "+LOG_TAG);
-		}
+		surveyTimer.cancel();
 	}
 }

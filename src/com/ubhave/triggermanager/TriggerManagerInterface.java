@@ -1,18 +1,20 @@
 package com.ubhave.triggermanager;
 
+import com.ubhave.sensormanager.ESException;
+
 public interface TriggerManagerInterface
 {
 	
-	public void setDoNotDisturbBefore(int hour);
-	public void setDoNotDisturbAfter(int hour);
-	public void setMaximumDailySurveys(int cap);
-	
-	public int getDoNotDisturbBefore();
-	public int getDoNotDisturbAfter();
-	public int getMaximumDailySurveys();
-	
-	public int addTrigger(int triggerType, TriggerReceiver listener);
+	/*
+	 * Trigger
+	 */
+	public int addTrigger(int triggerType, TriggerReceiver listener) throws ESException, TriggerException;
 	public void removeTrigger(int triggerId);
-	public void endAllTriggers();
+	
+	/*
+	 * User Preferences
+	 */
+	public void setGlobalConfig(String configKey, Object configValue);
+	public Object getGlobalConfigValue(String configKey) throws TriggerException;
 
 }
