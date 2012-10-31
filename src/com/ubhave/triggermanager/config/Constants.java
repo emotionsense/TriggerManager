@@ -13,6 +13,7 @@ public class Constants
 	
 	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE 		= 8 * 60;
 	public static final int DEFAULT_DO_NOT_DISTURB_AFTER 		= 22 * 60;
+	
 	public static final int DEFAULT_MAXIMUM_DAILY_SURVEYS 		= 2;
 	public static final int DEFAULT_MIN_TRIGGER_INTERVAL		= 120;
 	public static final int DEFAULT_NOTIFICATION_PROBABILITY	= 1;

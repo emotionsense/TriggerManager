@@ -10,7 +10,7 @@ public class GlobalConfig
 	public static final String DO_NOT_DISTURB_BEFORE = "beforeHour";
 	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
 	public static final String MAXIMUM_DAILY_SURVEYS = "maxSurveys";
-	public static final String MIN_TRIGGER_INTERVAL = "minInterval";
+	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
 
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
 	public static final String LOW_BATTERY_POLICY = "lowBattery";
@@ -46,27 +46,33 @@ public class GlobalConfig
 
 	public void setParameter(String parameterName, Object parameterValue)
 	{
-		SharedPreferences.Editor editor = preferences.edit();
-		if (parameterName.equals(NOTIFICATION_PROBABILITY))
+		synchronized (lock)
 		{
-			editor.putFloat(parameterName, (Float) parameterValue);
+			SharedPreferences.Editor editor = preferences.edit();
+			if (parameterName.equals(NOTIFICATION_PROBABILITY))
+			{
+				editor.putFloat(parameterName, (Float) parameterValue);
+			}
+			else
+			{
+				editor.putInt(parameterName, (Integer) parameterValue);
+			}
+			editor.commit();
 		}
-		else
-		{
-			editor.putInt(parameterName, (Integer) parameterValue);
-		}
-		editor.commit();
 	}
 
 	public Object getParameter(String parameterName) throws TriggerException
 	{
-		if (parameterName.equals(NOTIFICATION_PROBABILITY))
+		synchronized (lock)
 		{
-			return preferences.getFloat(parameterName, getDefault(parameterName));
-		}
-		else
-		{
-			return preferences.getInt(parameterName, getDefault(parameterName));
+			if (parameterName.equals(NOTIFICATION_PROBABILITY))
+			{
+				return preferences.getFloat(parameterName, getDefault(parameterName));
+			}
+			else
+			{
+				return preferences.getInt(parameterName, getDefault(parameterName));
+			}
 		}
 	}
 
@@ -78,7 +84,7 @@ public class GlobalConfig
 			return Constants.DEFAULT_DO_NOT_DISTURB_AFTER;
 		else if (key.equals(MAXIMUM_DAILY_SURVEYS))
 			return Constants.DEFAULT_MAXIMUM_DAILY_SURVEYS;
-		else if (key.equals(MIN_TRIGGER_INTERVAL))
+		else if (key.equals(MIN_TRIGGER_INTERVAL_MINUTES))
 			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL;
 		else if (key.equals(NOTIFICATION_PROBABILITY))
 			return Constants.DEFAULT_NOTIFICATION_PROBABILITY;

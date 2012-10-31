@@ -1,5 +1,8 @@
 package com.ubhave.triggermanager.config;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -39,21 +42,42 @@ public class GlobalState
 	{
 		preferences = context.getSharedPreferences(Constants.GLOBAL_STATE, Context.MODE_PRIVATE);
 	}
-
-	private void setParameter(String parameterName, Integer parameterValue)
-	{
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putInt(parameterName, parameterValue);
-		editor.commit();
-	}
 	
 	public void incrementNotificationsSent()
 	{
 		synchronized (lock)
 		{
-			int notifications = preferences.getInt(NOTIFICATIONS, 0) + 1;
-			setParameter(NOTIFICATIONS, notifications);
+			int notifications = getNotificationsSent() + 1;
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putInt(NOTIFICATIONS, notifications);
+			editor.putLong(LAST_NOTIFICATION, System.currentTimeMillis());
+			editor.commit();
 		}
+	}
+	
+	public int getNotificationsSent()
+	{
+		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		String dateKey = formatter.format(System.currentTimeMillis());
+		String currentDate = preferences.getString(CURRENT_DAY, null);
+		
+		if (currentDate == null || !dateKey.equals(currentDate))
+		{
+			synchronized (lock)
+			{
+				SharedPreferences.Editor editor = preferences.edit();
+				editor.putString(CURRENT_DAY, dateKey);
+				editor.putInt(NOTIFICATIONS, 0);
+				editor.commit();
+			}
+			return 0;
+		}
+		else return preferences.getInt(NOTIFICATIONS, 0);
+	}
+	
+	public long getLastNotificationTime()
+	{
+		return preferences.getLong(LAST_NOTIFICATION, 0);
 	}
 
 }
