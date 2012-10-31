@@ -1,7 +1,7 @@
 package com.ubhave.triggermanager.load;
 
 
-public class TriggerLoader extends JSONLoader
+public class TriggerLoader
 {
 //	private final static String LOG_TAG = "TriggerLoader";
 //	private final static String TRIGGERS = "triggers";
