@@ -12,6 +12,7 @@ public class GlobalConfig
 	public static final String MAXIMUM_DAILY_SURVEYS = "maxSurveys";
 	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
+	public static final String SENSE_TIME = "senseTime";
 
 	private static GlobalConfig globalConfig;
 	private static final Object lock = new Object();
@@ -83,9 +84,11 @@ public class GlobalConfig
 		else if (key.equals(MAXIMUM_DAILY_SURVEYS))
 			return Constants.DEFAULT_MAXIMUM_DAILY_SURVEYS;
 		else if (key.equals(MIN_TRIGGER_INTERVAL_MINUTES))
-			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL;
+			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES;
 		else if (key.equals(NOTIFICATION_PROBABILITY))
 			return Constants.DEFAULT_NOTIFICATION_PROBABILITY;
+		else if (key.equals(SENSE_TIME))
+			return Constants.DEFAULT_SENSE_TIME_MINUTES;
 		else
 			throw new TriggerException(TriggerException.INVALID_CONFIG_KEY, "Key: " + key + " does not exist");
 	}

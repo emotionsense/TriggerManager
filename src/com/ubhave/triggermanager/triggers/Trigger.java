@@ -27,40 +27,41 @@ public abstract class Trigger
 	protected void callForSurvey()
 	{
 		double sampleProbability;
-		try {
+		try
+		{
 			sampleProbability = (Float) globalConfig.getParameter(GlobalConfig.NOTIFICATION_PROBABILITY);
 		}
 		catch (TriggerException e)
 		{
 			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
 		}
-		
+
 		double currentProbability = (new Random()).nextDouble();
 		if (currentProbability <= sampleProbability)
 		{
 			listener.onNotificationTriggered();
 			globalState.incrementNotificationsSent();
 		}
-		
-		
-//		else if (Constants.TEST_MODE)
-//		{
-//			ESLogger.log(LOG_TAG, "Not calling for survey: P(sample) = "+sampleProbability);
-//		}
-//		if (SurveyLimiter.surveyAllowed())
+
+		// else if (Constants.TEST_MODE)
+		// {
+		// ESLogger.log(LOG_TAG,
+		// "Not calling for survey: P(sample) = "+sampleProbability);
+		// }
+		// if (SurveyLimiter.surveyAllowed())
 		{
-			
+
 		}
-//		else
-//		{
-//			Log.d("Trigger", "Notification not allowed");
-//		}
+		// else
+		// {
+		// Log.d("Trigger", "Notification not allowed");
+		// }
 	}
 
 	public abstract void kill();
-	
+
 	public abstract void pause();
-	
+
 	public abstract void resume();
 
 }

@@ -47,14 +47,14 @@ public class TriggerManager implements TriggerManagerInterface
 	{
 		triggers.removeTrigger(triggerId);
 	}
-	
+
 	@Override
 	public void pauseTrigger(int triggerId)
 	{
 		Trigger trigger = triggers.getTrigger(triggerId);
 		trigger.pause();
 	}
-	
+
 	@Override
 	public void unPauseTrigger(int triggerId)
 	{

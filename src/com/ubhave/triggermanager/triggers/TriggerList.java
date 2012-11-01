@@ -6,36 +6,46 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.triggers.sensorbased.AccelerometerTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.CallTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.SMSTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.ScreenActivityTrigger;
+import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
+import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
+import com.ubhave.triggermanager.triggers.hybrid.HybridTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.SensorTrigger;
 
 public class TriggerList
 {
-//	private static final int TRIGGER_MIC_IMMEDIATE = 10101;
-//	private static final int TRIGGER_MIC_WAIT_FOR_SILENCE = 10102;
-	public static final int TRIGGER_CALL_STATE = 20101;
-	public static final int TRIGGER_SMS_RECEIVED = 20201;
-	public static final int TRIGGER_PHONE_SCREEN_ON = 20301;
-//	private static final int TRIGGER_FIXED_INTERVAL = 30001;
-//	private static final int TRIGGER_FINAL_SURVEY = 30002;
-	public static final int TRIGGER_ACCELEROMETER = 4001;
+	public static final int CLOCK_TRIGGER_ONCE = 10000;
+	public static final int CLOCK_TRIGGER_ON_INTERVAL = 10001;
+	public static final int CLOCK_TRIGGER_DAILY_RANDOM = 10002;
+	
+	public static final int SENSOR_TRIGGER_ACCELEROMETER = 20000;
+	public static final int SENSOR_TRIGGER_MICROPHONE = 20001;
+	public static final int SENSOR_TRIGGER_CALLS = 20002;
+	public static final int SENSOR_TRIGGER_SMS = 20003;
+	public static final int SENSOR_TRIGGER_SCREEN = 20004;
+	
+	public static final int HYBRID_RANDOM_MICROPHONE = 30000;
+	public static final int HYBRID_RANDOM_ACCELEROMETER = 30001;
 	
 	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener) throws ESException, TriggerException
 	{
-		switch(type)
+		switch (type)
 		{
-//		case MIC_IMMEDIATE: return new NonSilentSampleTrigger();
-//		case MIC_WAIT_FOR_SILENCE: return new PostSampleSilenceTrigger();
-		case TRIGGER_CALL_STATE: return new CallTrigger(context, listener);
-		case TRIGGER_SMS_RECEIVED: return new SMSTrigger(context, listener);
-		case TRIGGER_PHONE_SCREEN_ON: return new ScreenActivityTrigger(context, listener);
-		case TRIGGER_ACCELEROMETER: return new AccelerometerTrigger(context, listener);
-//		case FIXED_INTERVAL: return new IntervalTrigger(); // needs config
-//		case FINAL_SURVEY: return new OneTimeTrigger(); // needs config
+//		case CLOCK_TRIGGER_ONCE: return new OneTimeTrigger(context, listener, date); // TODO
+		case CLOCK_TRIGGER_ON_INTERVAL: return new IntervalTrigger(context, listener);
+		case CLOCK_TRIGGER_DAILY_RANDOM: return new RandomFrequencyTrigger(context, listener);
+		
+		case SENSOR_TRIGGER_ACCELEROMETER: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_ACCELEROMETER);
+		case SENSOR_TRIGGER_CALLS: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_PHONE_STATE);
+		case SENSOR_TRIGGER_MICROPHONE: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_MICROPHONE);
+		case SENSOR_TRIGGER_SMS: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SMS);
+		case SENSOR_TRIGGER_SCREEN: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
+		
+		case HYBRID_RANDOM_MICROPHONE: return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_MICROPHONE, listener);
+		case HYBRID_RANDOM_ACCELEROMETER: return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_ACCELEROMETER, listener);
+		
 		default: throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: "+type);
 		}
 	}
