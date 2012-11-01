@@ -12,7 +12,7 @@ import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
 import com.ubhave.triggermanager.triggers.hybrid.HybridTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.SensorTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
 
 public class TriggerList
 {
@@ -37,11 +37,11 @@ public class TriggerList
 		case CLOCK_TRIGGER_ON_INTERVAL: return new IntervalTrigger(context, listener);
 		case CLOCK_TRIGGER_DAILY_RANDOM: return new RandomFrequencyTrigger(context, listener);
 		
-		case SENSOR_TRIGGER_ACCELEROMETER: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_ACCELEROMETER);
-		case SENSOR_TRIGGER_CALLS: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_PHONE_STATE);
-		case SENSOR_TRIGGER_MICROPHONE: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_MICROPHONE);
-		case SENSOR_TRIGGER_SMS: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SMS);
-		case SENSOR_TRIGGER_SCREEN: return new SensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
+		case SENSOR_TRIGGER_ACCELEROMETER: return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_ACCELEROMETER);
+		case SENSOR_TRIGGER_CALLS: return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_PHONE_STATE);
+		case SENSOR_TRIGGER_MICROPHONE: return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_MICROPHONE);
+		case SENSOR_TRIGGER_SMS: return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SMS);
+		case SENSOR_TRIGGER_SCREEN: return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
 		
 		case HYBRID_RANDOM_MICROPHONE: return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_MICROPHONE, listener);
 		case HYBRID_RANDOM_ACCELEROMETER: return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_ACCELEROMETER, listener);

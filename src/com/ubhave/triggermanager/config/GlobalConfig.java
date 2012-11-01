@@ -10,9 +10,10 @@ public class GlobalConfig
 	public static final String DO_NOT_DISTURB_BEFORE = "beforeHour";
 	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
 	public static final String MAXIMUM_DAILY_SURVEYS = "maxSurveys";
-	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
+	public static final String MIN_TRIGGER_INTERVAL_MILLIES = "minInterval";
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
-	public static final String SENSE_TIME = "senseTime";
+	public static final String SENSE_CYCLE_TOTAL_TIME_MILLIES = "senseTime";
+	public static final String INTER_EVENT_WAIT_TIME_MILLIES = "waitTime";
 
 	private static GlobalConfig globalConfig;
 	private static final Object lock = new Object();
@@ -83,12 +84,14 @@ public class GlobalConfig
 			return Constants.DEFAULT_DO_NOT_DISTURB_AFTER;
 		else if (key.equals(MAXIMUM_DAILY_SURVEYS))
 			return Constants.DEFAULT_MAXIMUM_DAILY_SURVEYS;
-		else if (key.equals(MIN_TRIGGER_INTERVAL_MINUTES))
-			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES;
+		else if (key.equals(MIN_TRIGGER_INTERVAL_MILLIES))
+			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES;
 		else if (key.equals(NOTIFICATION_PROBABILITY))
 			return Constants.DEFAULT_NOTIFICATION_PROBABILITY;
-		else if (key.equals(SENSE_TIME))
-			return Constants.DEFAULT_SENSE_TIME_MINUTES;
+		else if (key.equals(SENSE_CYCLE_TOTAL_TIME_MILLIES))
+			return Constants.DEFAULT_SENSE_TIME_MILLIES;
+		else if (key.equals(INTER_EVENT_WAIT_TIME_MILLIES))
+			return Constants.DEFAULT_WAIT_TIME_MILLIES;
 		else
 			throw new TriggerException(TriggerException.INVALID_CONFIG_KEY, "Key: " + key + " does not exist");
 	}

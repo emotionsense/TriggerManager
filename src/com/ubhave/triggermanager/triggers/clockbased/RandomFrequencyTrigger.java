@@ -107,7 +107,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		{
 			int before = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE);
 			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER) - 60;
-			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MINUTES);
+			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES) / (60 * 1000);
 
 			for (int i = 0; i < frequency; i++)
 			{

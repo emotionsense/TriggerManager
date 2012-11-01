@@ -23,7 +23,7 @@ public class SurveyLimiter
 				if (userAllowsNotification(calendar, config))
 				{
 					long lastNotification = state.getLastNotificationTime();
-					long interval = (Integer) config.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MINUTES) * 60 * 1000;
+					long interval = (Integer) config.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES);
 					if (Math.abs(System.currentTimeMillis() - lastNotification) > interval)
 					{
 						return true;

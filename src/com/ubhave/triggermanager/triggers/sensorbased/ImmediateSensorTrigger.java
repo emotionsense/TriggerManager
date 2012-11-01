@@ -15,17 +15,17 @@ import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.triggers.Trigger;
 
-public class SensorTrigger extends Trigger implements SensorDataListener
+public class ImmediateSensorTrigger extends Trigger implements SensorDataListener
 {
 	private final static String LOG_TAG = "SensorTrigger";
 	
 	protected final ESSensorManagerInterface sensorManager;
-	private final SensorDataClassifier classifier;
+	protected final SensorDataClassifier classifier;
 	
 	private final int sensorType;
 	private final int subscriptionId;
 
-	public SensorTrigger(Context context, TriggerReceiver listener, int sensorType) throws TriggerException, ESException
+	public ImmediateSensorTrigger(Context context, TriggerReceiver listener, int sensorType) throws TriggerException, ESException
 	{
 		super(context, listener);
 		sensorManager = ESSensorManager.getSensorManager(context);

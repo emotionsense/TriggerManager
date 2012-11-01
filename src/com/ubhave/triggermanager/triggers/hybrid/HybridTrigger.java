@@ -7,54 +7,47 @@ import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
-import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
 public class HybridTrigger extends Trigger implements TriggerReceiver
 {
 	private final Trigger clockTrigger;
-	private final Trigger sensorTrigger;
+	private final SensorTriggerListener sensorListener;
+
 	private final GlobalConfig config;
-	private final GlobalState state;
-	
+
 	private Thread waitThread;
-	private int wait_time;
 
 	public HybridTrigger(Context context, int clockType, int sensorType, TriggerReceiver listener) throws TriggerException, ESException
 	{
 		super(context, listener);
 		this.clockTrigger = TriggerList.createTrigger(context, clockType, this);
-		this.sensorTrigger = TriggerList.createTrigger(context, sensorType, listener);
+		sensorListener = new SensorTriggerListener(context, sensorType, this);
+
 		this.config = GlobalConfig.getGlobalConfig(context);
-		this.state = GlobalState.getGlobalState(context);
-		
-		sensorTrigger.pause();
 	}
 
 	@Override
 	public void onNotificationTriggered()
 	{
-		try
+		if (waitThread == null)
 		{
-			wait_time = (Integer) config.getParameter(GlobalConfig.SENSE_TIME) * (60 * 1000);
+			int wait_time;
+			try
+			{
+				wait_time = (Integer) config.getParameter(GlobalConfig.SENSE_CYCLE_TOTAL_TIME_MILLIES);
+			}
+			catch (TriggerException e)
+			{
+				wait_time = Constants.DEFAULT_WAIT_TIME_MILLIES;
+			}
+			sensorListener.resume();
+			startWaiting(wait_time);
 		}
-		catch (TriggerException e)
+		else
 		{
-			wait_time = Constants.DEFAULT_SENSE_TIME_MINUTES * (60 * 1000);
-		}
-		
-		startWaiting(wait_time);
-		sensorTrigger.resume();
-	}
-
-	private void doneWaiting()
-	{
-		sensorTrigger.pause();
-		long time = state.getLastNotificationTime();
-		if (Math.abs(System.currentTimeMillis() - time) > wait_time)
-		{
-			// event did not happen during waiting time
+			waitThread.interrupt();
 			callForSurvey();
 		}
 	}
@@ -84,19 +77,16 @@ public class HybridTrigger extends Trigger implements TriggerReceiver
 					try
 					{
 						int waited = 0;
-						
+
 						while (waited < wait_time)
 						{
 							sleep(1000);
 							waited += 1000;
 						}
+						callForSurvey();
 					}
 					catch (InterruptedException e)
 					{
-					}
-					finally
-					{
-						doneWaiting();
 					}
 				}
 			};
@@ -108,20 +98,19 @@ public class HybridTrigger extends Trigger implements TriggerReceiver
 	public void kill()
 	{
 		clockTrigger.kill();
-		sensorTrigger.kill();
+		sensorListener.kill();
 	}
 
 	@Override
 	public void pause()
 	{
 		clockTrigger.pause();
-		sensorTrigger.pause();
+		sensorListener.pause();
 	}
 
 	@Override
 	public void resume()
 	{
 		clockTrigger.resume();
-		sensorTrigger.resume();
 	}
 }
