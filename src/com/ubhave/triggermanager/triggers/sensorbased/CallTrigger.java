@@ -8,7 +8,7 @@ import com.ubhave.sensormanager.data.pushsensor.PhoneStateData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.triggers.SensorTrigger;
+
 public class CallTrigger extends SensorTrigger
 {
 	private boolean isInCall;

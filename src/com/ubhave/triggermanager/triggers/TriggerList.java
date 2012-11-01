@@ -66,6 +66,11 @@ public class TriggerList
 			triggerMap.delete(triggerId);
 		}
 	}
+	
+	public Trigger getTrigger(int triggerId)
+	{
+		return triggerMap.get(triggerId);
+	}
 
 	private int randomKey() throws TriggerException
 	{
@@ -79,14 +84,5 @@ public class TriggerList
 			loopCount++;
 		}
 		return triggerId;
-	}
-	
-	public void endAllTriggers()
-	{
-		for (int i=0; i<triggerMap.size(); i++)
-		{
-			triggerMap.get(triggerMap.keyAt(i)).kill();
-		}
-		triggerMap.clear();
 	}
 }

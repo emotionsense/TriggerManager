@@ -1,4 +1,4 @@
-package com.ubhave.triggermanager.triggers;
+package com.ubhave.triggermanager.triggers.sensorbased;
 
 import android.content.Context;
 
@@ -10,7 +10,7 @@ import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
-import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class SensorTrigger extends Trigger implements SensorDataListener
 {
@@ -44,41 +44,39 @@ public abstract class SensorTrigger extends Trigger implements SensorDataListene
 		}
 		catch (ESException e)
 		{
-			ESLogger.error(LOG_TAG, e);
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onCrossingLowBatteryThreshold(boolean isBelowThreshold)
 	{
-		int policy;
-		try
-		{
-			policy = (Integer) globalConfig.getParameter(GlobalConfig.LOW_BATTERY_POLICY);
-		}
-		catch (TriggerException e)
-		{
-			policy = Constants.DEFAULT_BATTERY_POLICY;
-		}
+		listener.onCrossingLowBatteryThreshold(isBelowThreshold);
+	}
 
+	@Override
+	public void pause()
+	{
 		try
 		{
-			if (policy == Constants.PAUSE_ON_LOW_BATTERY)
-			{
-				if (isBelowThreshold)
-				{
-					sensorManager.pauseSubscription(subscriptionId);
-				}
-				else
-				{
-					sensorManager.unPauseSubscription(subscriptionId);
-				}
-			}
+			sensorManager.pauseSubscription(subscriptionId);
 		}
 		catch (ESException e)
 		{
 			e.printStackTrace();
 		}
+	}
 
+	@Override
+	public void resume()
+	{
+		try
+		{
+			sensorManager.unPauseSubscription(subscriptionId);
+		}
+		catch (ESException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

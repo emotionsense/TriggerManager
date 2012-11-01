@@ -8,7 +8,6 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.triggers.SensorTrigger;
 
 public abstract class MicrophoneBasedTrigger extends SensorTrigger
 {

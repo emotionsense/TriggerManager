@@ -4,4 +4,5 @@ public interface TriggerReceiver
 {
 	public void onNotificationTriggered();
 	
+	public void onCrossingLowBatteryThreshold(boolean isBelowThreshold);
 }

@@ -34,15 +34,15 @@ public class IntervalTrigger extends Trigger
 	public IntervalTrigger(Context context, TriggerReceiver listener) throws TriggerException
 	{
 		super(context, listener);
-		this.surveyTimer = new Timer();
-		// minutes = init((String) data.get(MINUTE), 60);
-		// hours = init((String) data.get(HOUR), 24);
-		// days = init((String) data.get(DAY), 7);
-
 		minutes = null;
 		hours = null;
 		days = null;
-
+		
+		initialise();
+	}
+	
+	private void initialise()
+	{
 		surveyTimer.schedule(new SurveyNotification(), getNextTime());
 	}
 
@@ -97,5 +97,18 @@ public class IntervalTrigger extends Trigger
 	public void kill()
 	{
 		surveyTimer.cancel();
+	}
+
+	@Override
+	public void pause()
+	{
+		surveyTimer.cancel();
+		
+	}
+
+	@Override
+	public void resume()
+	{
+		initialise();
 	}
 }

@@ -13,7 +13,7 @@ import com.ubhave.triggermanager.config.GlobalState;
 public abstract class Trigger
 {
 
-	private final TriggerReceiver listener;
+	protected final TriggerReceiver listener;
 	protected final GlobalState globalState;
 	protected final GlobalConfig globalConfig;
 
@@ -58,5 +58,9 @@ public abstract class Trigger
 	}
 
 	public abstract void kill();
+	
+	public abstract void pause();
+	
+	public abstract void resume();
 
 }

@@ -11,6 +11,9 @@ public interface TriggerManagerInterface
 	public int addTrigger(int triggerType, TriggerReceiver listener) throws ESException, TriggerException;
 	public void removeTrigger(int triggerId);
 	
+	public void pauseTrigger(int triggerId);
+	public void unPauseTrigger(int triggerId);
+	
 	/*
 	 * User Preferences
 	 */

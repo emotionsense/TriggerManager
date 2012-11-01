@@ -11,9 +11,7 @@ public class GlobalConfig
 	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
 	public static final String MAXIMUM_DAILY_SURVEYS = "maxSurveys";
 	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
-
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
-	public static final String LOW_BATTERY_POLICY = "lowBattery";
 
 	private static GlobalConfig globalConfig;
 	private static final Object lock = new Object();
@@ -41,7 +39,7 @@ public class GlobalConfig
 
 	public GlobalConfig(Context context)
 	{
-		preferences = context.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+		preferences = context.getSharedPreferences(Constants.GLOBAL_PREFERENCES, Context.MODE_PRIVATE);
 	}
 
 	public void setParameter(String parameterName, Object parameterValue)
@@ -88,8 +86,6 @@ public class GlobalConfig
 			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL;
 		else if (key.equals(NOTIFICATION_PROBABILITY))
 			return Constants.DEFAULT_NOTIFICATION_PROBABILITY;
-		else if (key.equals(LOW_BATTERY_POLICY))
-			return Constants.DEFAULT_BATTERY_POLICY;
 		else
 			throw new TriggerException(TriggerException.INVALID_CONFIG_KEY, "Key: " + key + " does not exist");
 	}

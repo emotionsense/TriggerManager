@@ -14,31 +14,10 @@ import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
-import com.ubhave.triggermanager.triggers.Trigger;
 
-public abstract class RandomFrequencyTrigger extends Trigger
+public class RandomFrequencyTrigger extends ClockTrigger
 {
-
-	/*
-	 * An active trigger is one that samples from a sensor in order to check
-	 * whether to start a survey.
-	 * 
-	 * The RandomFrequencyTrigger starts this sampling at random times during
-	 * the day.
-	 */
-
 	private final static String LOG_TAG = "RandomFrequencyTrigger";
-	protected int senseCycle;
-	protected Timer surveyTimer;
-
-	private class SurveyNotification extends TimerTask
-	{
-		@Override
-		public void run()
-		{
-			callForSurvey();
-		}
-	}
 
 	private class Scheduler extends TimerTask
 	{
@@ -50,13 +29,17 @@ public abstract class RandomFrequencyTrigger extends Trigger
 	}
 
 	private Timer schedulerTimer;
-	private Random random;
+	private final Random random;
 
 	public RandomFrequencyTrigger(Context context, TriggerReceiver listener) throws TriggerException
 	{
 		super(context, listener);
 		random = new Random();
-		this.surveyTimer = new Timer();
+		initialise();
+	}
+	
+	protected void initialise()
+	{
 		scheduleNotifications();
 
 		// Random surveys will be re-scheduled at midnight each night
@@ -73,6 +56,7 @@ public abstract class RandomFrequencyTrigger extends Trigger
 
 	public void kill()
 	{
+		super.kill();
 		if (schedulerTimer != null)
 		{
 			schedulerTimer.cancel();
@@ -157,7 +141,7 @@ public abstract class RandomFrequencyTrigger extends Trigger
 			conflict = false;
 			for (Integer time : times)
 			{
-				if (Math.abs(time - selection) < interval) // 2 hours
+				if (Math.abs(time - selection) < interval)
 				{
 					conflict = true;
 					selection = random.nextInt(after - before) + before;
