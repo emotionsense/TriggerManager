@@ -2,13 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="lib/sensormanager.jar"/>
-=======
->>>>>>> updated classpath file.
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="lib/sensormanager.jar"/>
-	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
