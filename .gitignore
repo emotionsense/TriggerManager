@@ -6,3 +6,4 @@ lib/*
 libs/*
 gen/*
 *.classpath
+.DS_Store
