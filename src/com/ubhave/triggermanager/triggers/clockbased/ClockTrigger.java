@@ -49,9 +49,9 @@ public abstract class ClockTrigger extends Trigger
 		super(context, listener);
 		surveyTimer = new Timer();
 	}
-	
+
 	protected abstract void initialise() throws TriggerException;
-	
+
 	@Override
 	public void kill()
 	{
@@ -67,13 +67,13 @@ public abstract class ClockTrigger extends Trigger
 	@Override
 	public void resume()
 	{
-		try {
+		try
+		{
 			initialise();
 		}
 		catch (TriggerException e)
 		{
 			e.printStackTrace();
 		}
-		
 	}
 }

@@ -25,7 +25,6 @@ package com.ubhave.triggermanager;
 import android.content.Context;
 
 import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
@@ -56,8 +55,6 @@ public class TriggerManager implements TriggerManagerInterface
 		context = appContext;
 		config = GlobalConfig.getGlobalConfig(appContext);
 		triggers = new TriggerList();
-
-		ESSensorManager.getSensorManager(appContext);
 	}
 
 	@Override

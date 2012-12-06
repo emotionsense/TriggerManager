@@ -24,7 +24,9 @@ package com.ubhave.triggermanager.config;
 
 public class Constants
 {
-	public static final boolean TEST_MODE = true;
+	public final static boolean LOG_MESSAGES = true;
+	
+	
 	protected final static boolean IGNORE_CAP = true;
 	protected final static boolean ADHERE_TO_CAP = false;
 

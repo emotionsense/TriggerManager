@@ -30,6 +30,7 @@ public class TriggerException extends Exception
 	public static final int INVALID_STATE = 8001;
 	public static final int INVALID_CONFIG_KEY = 8002;
 	public static final int DATE_IN_PAST = 8003;
+	public static final int UNABLE_TO_ALLOCATE = 8004;
 
 	private int errorCode;
 	private String message;

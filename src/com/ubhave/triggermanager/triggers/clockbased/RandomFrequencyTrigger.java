@@ -30,8 +30,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
@@ -46,7 +46,14 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		@Override
 		public void run()
 		{
-			scheduleNotifications();
+			try
+			{
+				scheduleNotifications();
+			}
+			catch (TriggerException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -59,8 +66,8 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		random = new Random();
 		initialise();
 	}
-	
-	protected void initialise()
+
+	protected void initialise() throws TriggerException
 	{
 		scheduleNotifications();
 
@@ -86,7 +93,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		}
 	}
 
-	private void scheduleNotifications()
+	private void scheduleNotifications() throws TriggerException
 	{
 		int maxSurveys;
 		try
@@ -113,16 +120,16 @@ public class RandomFrequencyTrigger extends ClockTrigger
 			long diff = triggerTime - now;
 			if (diff > 0)
 			{
-				if (Constants.TEST_MODE)
+				if (Constants.LOG_MESSAGES)
 				{
-					ESLogger.log(LOG_TAG, "Notifications scheduled for: " + (new Date(triggerTime)).toString());
+					Log.d(LOG_TAG, "Notifications scheduled for: " + (new Date(triggerTime)).toString());
 				}
 				surveyTimer.schedule(new SurveyNotification(), diff);
 			}
 		}
 	}
 
-	private ArrayList<Integer> pickTimes(int frequency)
+	private ArrayList<Integer> pickTimes(int frequency) throws TriggerException
 	{
 		ArrayList<Integer> times = new ArrayList<Integer>();
 		try
@@ -140,8 +147,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 				}
 				catch (NullPointerException e)
 				{
-					ESLogger.error(LOG_TAG, "Insufficient user preference time allowance for random time trigger.");
-					break;
+					throw new TriggerException(TriggerException.UNABLE_TO_ALLOCATE, "Insufficient user preference time allowance for random time trigger.");
 				}
 			}
 		}

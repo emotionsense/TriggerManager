@@ -31,14 +31,14 @@ import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 
-public class TwoStageSensorTrigger extends ImmediateSensorTrigger
+public class DelayedSensorTrigger extends AbstractSensorTrigger
 {
 	private final GlobalConfig config;
 
 	private boolean isDataInteresting;
 	private Thread waitThread;
 
-	public TwoStageSensorTrigger(Context context, TriggerReceiver listener, int sensorType) throws TriggerException, ESException
+	public DelayedSensorTrigger(Context context, TriggerReceiver listener, int sensorType) throws TriggerException, ESException
 	{
 		super(context, listener, sensorType);
 		config = GlobalConfig.getGlobalConfig(context);
@@ -101,7 +101,6 @@ public class TwoStageSensorTrigger extends ImmediateSensorTrigger
 							sleep(1000);
 							waited += 1000;
 						}
-
 						doneWaiting();
 					}
 					catch (InterruptedException e)
@@ -112,5 +111,4 @@ public class TwoStageSensorTrigger extends ImmediateSensorTrigger
 			waitThread.start();
 		}
 	}
-
 }

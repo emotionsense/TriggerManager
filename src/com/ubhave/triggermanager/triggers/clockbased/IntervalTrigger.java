@@ -27,8 +27,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.ubhave.sensormanager.logs.ESLogger;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
@@ -108,9 +108,9 @@ public class IntervalTrigger extends Trigger
 			day = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 		} while (!(minutes[minute] && hours[hour] && days[day]));
 
-		if (Constants.TEST_MODE)
+		if (Constants.LOG_MESSAGES)
 		{
-			ESLogger.log(LOG_TAG, "Next survey is: " + calendar.getTime().toString());
+			Log.d(LOG_TAG, "Next survey is: " + calendar.getTime().toString());
 		}
 		return calendar.getTimeInMillis() - now;
 	}

@@ -28,7 +28,6 @@ import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.Constants;
 
 public class OneTimeTrigger extends ClockTrigger
 {
@@ -48,7 +47,7 @@ public class OneTimeTrigger extends ClockTrigger
 		{
 			surveyTimer.schedule(new SurveyNotification(), waitTime);
 		}
-		else if (Constants.TEST_MODE)
+		else
 		{
 			throw new TriggerException(TriggerException.DATE_IN_PAST, "Scheduled time is in the past: "+surveyDate.getTime().toString());
 		}
