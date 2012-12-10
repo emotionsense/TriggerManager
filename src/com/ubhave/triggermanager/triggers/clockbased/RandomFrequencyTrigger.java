@@ -36,6 +36,7 @@ import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.config.TriggerConfig;
 
 public class RandomFrequencyTrigger extends ClockTrigger
 {
@@ -59,19 +60,24 @@ public class RandomFrequencyTrigger extends ClockTrigger
 
 	private Timer schedulerTimer;
 	private final Random random;
+	private final int maxDailyNotifications;
 
-	public RandomFrequencyTrigger(Context context, TriggerReceiver listener) throws TriggerException
+	public RandomFrequencyTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		super(context, listener);
-		random = new Random();
-		initialise();
+		if (params.containsKey(TriggerConfig.RANDOM_TRIGGER_MAX_NOTIFICATIONS))
+		{
+			random = new Random();
+			maxDailyNotifications = (Integer) params.getParameter(TriggerConfig.RANDOM_TRIGGER_MAX_NOTIFICATIONS);
+			initialise();
+		}
+		else throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must contain TriggerConfig.RANDOM_TRIGGER_MAX_NOTIFICATIONS");
 	}
 
 	protected void initialise() throws TriggerException
 	{
 		scheduleNotifications();
 
-		// Random surveys will be re-scheduled at midnight each night
 		schedulerTimer = new Timer();
 		Calendar calendar = Calendar.getInstance();
 		long now = calendar.getTimeInMillis();
@@ -80,6 +86,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 
+		// Random surveys will be re-scheduled at midnight each night
 		schedulerTimer.scheduleAtFixedRate(new Scheduler(), calendar.getTimeInMillis() - now, 1000 * 60 * 60 * 24);
 	}
 
@@ -95,17 +102,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 
 	private void scheduleNotifications() throws TriggerException
 	{
-		int maxSurveys;
-		try
-		{
-			maxSurveys = (Integer) globalConfig.getParameter(GlobalConfig.MAXIMUM_DAILY_SURVEYS);
-		}
-		catch (TriggerException e)
-		{
-			maxSurveys = Constants.DEFAULT_MAXIMUM_DAILY_SURVEYS;
-		}
-
-		ArrayList<Integer> randomTimes = pickTimes(maxSurveys);
+		ArrayList<Integer> randomTimes = pickTimes();
 		Calendar calendar = Calendar.getInstance();
 		long now = calendar.getTimeInMillis();
 
@@ -129,7 +126,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		}
 	}
 
-	private ArrayList<Integer> pickTimes(int frequency) throws TriggerException
+	private ArrayList<Integer> pickTimes() throws TriggerException
 	{
 		ArrayList<Integer> times = new ArrayList<Integer>();
 		try
@@ -138,7 +135,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER) - 60;
 			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES) / (60 * 1000);
 
-			for (int i = 0; i < frequency; i++)
+			for (int i = 0; i < maxDailyNotifications; i++)
 			{
 				try
 				{

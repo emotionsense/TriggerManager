@@ -26,6 +26,7 @@ import android.content.Context;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
@@ -58,9 +59,9 @@ public class TriggerManager implements TriggerManagerInterface
 	}
 
 	@Override
-	public int addTrigger(int triggerType, TriggerReceiver listener) throws ESException, TriggerException
+	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException
 	{
-		Trigger trigger = TriggerList.createTrigger(context, triggerType, listener);
+		Trigger trigger = TriggerList.createTrigger(context, triggerType, listener, parameters);
 		return triggers.addTrigger(trigger, listener);
 	}
 

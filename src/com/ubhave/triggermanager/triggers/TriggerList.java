@@ -31,7 +31,9 @@ import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
+import com.ubhave.triggermanager.triggers.clockbased.OneTimeTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
 import com.ubhave.triggermanager.triggers.hybrid.HybridTrigger;
 import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
@@ -51,16 +53,16 @@ public class TriggerList
 	public static final int HYBRID_RANDOM_MICROPHONE = 30000;
 	public static final int HYBRID_RANDOM_ACCELEROMETER = 30001;
 
-	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener) throws ESException, TriggerException
+	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener, TriggerConfig params) throws ESException, TriggerException
 	{
 		switch (type)
 		{
-		// case CLOCK_TRIGGER_ONCE: return new OneTimeTrigger(context, listener,
-		// date); // TODO
+		case CLOCK_TRIGGER_ONCE:
+			return new OneTimeTrigger(context, listener, params);
 		case CLOCK_TRIGGER_ON_INTERVAL:
-			return new IntervalTrigger(context, listener);
+			return new IntervalTrigger(context, listener, params);
 		case CLOCK_TRIGGER_DAILY_RANDOM:
-			return new RandomFrequencyTrigger(context, listener);
+			return new RandomFrequencyTrigger(context, listener, params);
 
 		case SENSOR_TRIGGER_ACCELEROMETER:
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_ACCELEROMETER);
@@ -74,9 +76,9 @@ public class TriggerList
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
 
 		case HYBRID_RANDOM_MICROPHONE:
-			return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_MICROPHONE, listener);
+			return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_MICROPHONE, listener, params);
 		case HYBRID_RANDOM_ACCELEROMETER:
-			return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_ACCELEROMETER, listener);
+			return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_ACCELEROMETER, listener, params);
 
 		default:
 			throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
@@ -121,7 +123,9 @@ public class TriggerList
 		while (triggerMap.get(triggerId) != null)
 		{
 			if (loopCount > 1000)
+			{
 				throw new TriggerException(TriggerException.INVALID_STATE, "Listener map >1000 key conflicts.");
+			}
 			triggerId = keyGenerator.nextInt();
 			loopCount++;
 		}

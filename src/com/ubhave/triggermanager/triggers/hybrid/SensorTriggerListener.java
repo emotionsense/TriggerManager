@@ -27,6 +27,7 @@ import android.content.Context;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
@@ -36,10 +37,10 @@ public class SensorTriggerListener implements TriggerReceiver
 	private TriggerReceiver hybridListener;
 	private final Trigger sensorTrigger;
 	
-	public SensorTriggerListener(Context context, int sensorType, TriggerReceiver hybridListener) throws TriggerException, ESException
+	public SensorTriggerListener(Context context, int sensorType, TriggerReceiver hybridListener, TriggerConfig params) throws TriggerException, ESException
 	{
 		this.hybridListener = hybridListener;
-		this.sensorTrigger = TriggerList.createTrigger(context, sensorType, this);
+		this.sensorTrigger = TriggerList.createTrigger(context, sensorType, this, params);
 		
 		sensorTrigger.pause();
 	}

@@ -29,6 +29,7 @@ import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
@@ -41,11 +42,11 @@ public class HybridTrigger extends Trigger implements TriggerReceiver
 
 	private Thread waitThread;
 
-	public HybridTrigger(Context context, int clockType, int sensorType, TriggerReceiver listener) throws TriggerException, ESException
+	public HybridTrigger(Context context, int clockType, int sensorType, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
 	{
 		super(context, listener);
-		this.clockTrigger = TriggerList.createTrigger(context, clockType, this);
-		sensorListener = new SensorTriggerListener(context, sensorType, this);
+		this.clockTrigger = TriggerList.createTrigger(context, clockType, this, params);
+		sensorListener = new SensorTriggerListener(context, sensorType, this, params);
 
 		this.config = GlobalConfig.getGlobalConfig(context);
 	}

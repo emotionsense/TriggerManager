@@ -28,28 +28,35 @@ import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.TriggerConfig;
 
 public class OneTimeTrigger extends ClockTrigger
 {
-	private final Calendar surveyDate;
+	private final long surveyDate;
 
-	public OneTimeTrigger(Context context, TriggerReceiver listener, Calendar surveyDate) throws TriggerException
+	public OneTimeTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
 		super(context, listener);
-		this.surveyDate = surveyDate;
-		initialise();
+		if (parameters.containsKey(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS))
+		{
+			surveyDate = (Long) parameters.getParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS);
+			initialise();
+		}
+		else throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.CLOCK_TRIGGER_DATE");
 	}
 	
 	protected void initialise() throws TriggerException
 	{
-		long waitTime = surveyDate.getTimeInMillis() - System.currentTimeMillis();
+		long waitTime = surveyDate - System.currentTimeMillis();
 		if (waitTime > 0)
 		{
 			surveyTimer.schedule(new SurveyNotification(), waitTime);
 		}
 		else
 		{
-			throw new TriggerException(TriggerException.DATE_IN_PAST, "Scheduled time is in the past: "+surveyDate.getTime().toString());
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(surveyDate);
+			throw new TriggerException(TriggerException.DATE_IN_PAST, "Scheduled time is in the past: "+calendar.getTime().toString());
 		}
 	}
 }

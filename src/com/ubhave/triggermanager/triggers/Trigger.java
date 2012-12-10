@@ -64,20 +64,6 @@ public abstract class Trigger
 			listener.onNotificationTriggered();
 			globalState.incrementNotificationsSent();
 		}
-
-		// else if (Constants.TEST_MODE)
-		// {
-		// ESLogger.log(LOG_TAG,
-		// "Not calling for survey: P(sample) = "+sampleProbability);
-		// }
-		// if (SurveyLimiter.surveyAllowed())
-		{
-
-		}
-		// else
-		// {
-		// Log.d("Trigger", "Notification not allowed");
-		// }
 	}
 
 	public abstract void kill();

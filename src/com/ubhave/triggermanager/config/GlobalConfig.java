@@ -31,7 +31,6 @@ public class GlobalConfig
 {
 	public static final String DO_NOT_DISTURB_BEFORE = "beforeHour";
 	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
-	public static final String MAXIMUM_DAILY_SURVEYS = "maxSurveys";
 	public static final String MIN_TRIGGER_INTERVAL_MILLIES = "minInterval";
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
 	public static final String SENSE_CYCLE_TOTAL_TIME_MILLIES = "senseTime";
@@ -104,8 +103,6 @@ public class GlobalConfig
 			return Constants.DEFAULT_DO_NOT_DISTURB_BEFORE;
 		else if (key.equals(DO_NOT_DISTURB_AFTER))
 			return Constants.DEFAULT_DO_NOT_DISTURB_AFTER;
-		else if (key.equals(MAXIMUM_DAILY_SURVEYS))
-			return Constants.DEFAULT_MAXIMUM_DAILY_SURVEYS;
 		else if (key.equals(MIN_TRIGGER_INTERVAL_MILLIES))
 			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES;
 		else if (key.equals(NOTIFICATION_PROBABILITY))

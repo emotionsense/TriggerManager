@@ -23,6 +23,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 package com.ubhave.triggermanager;
 
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.triggermanager.config.TriggerConfig;
 
 public interface TriggerManagerInterface
 {
@@ -30,7 +31,7 @@ public interface TriggerManagerInterface
 	/*
 	 * Trigger
 	 */
-	public int addTrigger(int triggerType, TriggerReceiver listener) throws ESException, TriggerException;
+	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException;
 
 	public void removeTrigger(int triggerId);
 

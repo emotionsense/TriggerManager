@@ -22,43 +22,35 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.config;
 
+import java.util.HashMap;
+
 
 public class TriggerConfig
 {
-	/*
-	 * TODO
-	 * 1. Waiting time after an event
-	 * 
-		
-	 */
-
-//	private static TriggerConfig triggerConfig;
-//	private static final Object lock = new Object();
-//
-//	public static TriggerConfig getTriggerConfig(Context c) throws TriggerException
-//	{
-//		if (c == null)
-//		{
-//			throw new TriggerException(TriggerException.NO_CONTEXT, "Context is null");
-//		}
-//		if (triggerConfig == null)
-//		{
-//			synchronized (lock)
-//			{
-//				if (triggerConfig == null)
-//				{
-//					triggerConfig = new TriggerConfig(c);
-//				}
-//			}
-//		}
-//		return triggerConfig;
-//	}
-//
-//	private final SharedPreferences preferences;
-//
-//	public TriggerConfig(Context context)
-//	{
-//		preferences = context.getSharedPreferences(Constants.TRIGGER_PREFERENCES, Context.MODE_PRIVATE);
-//	}
-
+	public final static String CLOCK_TRIGGER_DATE_MILLIS = "clockTriggerDate";
+	public final static String INTERVAL_TRIGGER_TIME_MILLIS = "intervalTriggerTime";
+	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
+	public final static String RANDOM_TRIGGER_MAX_NOTIFICATIONS = "maxNotifications";
+	
+	private final HashMap<String, Object> parameters;
+	
+	public TriggerConfig()
+	{
+		parameters = new HashMap<String, Object>();
+	}
+	
+	public void addParameter(String key, Object value)
+	{
+		parameters.put(key, value);
+	}
+	
+	public Object getParameter(String key)
+	{
+		return parameters.get(key);
+	}
+	
+	public boolean containsKey(String key)
+	{
+		return parameters.containsKey(key);
+	}
 }
