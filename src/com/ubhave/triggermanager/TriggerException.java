@@ -32,6 +32,7 @@ public class TriggerException extends Exception
 	public static final int DATE_IN_PAST = 8003;
 	public static final int UNABLE_TO_ALLOCATE = 8004;
 	public static final int MISSING_PARAMETERS = 8005;
+	public static final int UNKNOWN_TRIGGER = 8006;
 
 	private int errorCode;
 	private String message;

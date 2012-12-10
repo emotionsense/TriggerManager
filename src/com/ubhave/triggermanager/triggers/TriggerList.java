@@ -40,45 +40,33 @@ import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
 
 public class TriggerList
 {
-	public static final int CLOCK_TRIGGER_ONCE = 10000;
-	public static final int CLOCK_TRIGGER_ON_INTERVAL = 10001;
-	public static final int CLOCK_TRIGGER_DAILY_RANDOM = 10002;
-
-	public static final int SENSOR_TRIGGER_ACCELEROMETER = 20000;
-	public static final int SENSOR_TRIGGER_MICROPHONE = 20001;
-	public static final int SENSOR_TRIGGER_CALLS = 20002;
-	public static final int SENSOR_TRIGGER_SMS = 20003;
-	public static final int SENSOR_TRIGGER_SCREEN = 20004;
-
-	public static final int HYBRID_RANDOM_MICROPHONE = 30000;
-	public static final int HYBRID_RANDOM_ACCELEROMETER = 30001;
 
 	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener, TriggerConfig params) throws ESException, TriggerException
 	{
 		switch (type)
 		{
-		case CLOCK_TRIGGER_ONCE:
+		case TriggerUtils.CLOCK_TRIGGER_ONCE:
 			return new OneTimeTrigger(context, listener, params);
-		case CLOCK_TRIGGER_ON_INTERVAL:
+		case TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL:
 			return new IntervalTrigger(context, listener, params);
-		case CLOCK_TRIGGER_DAILY_RANDOM:
+		case TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM:
 			return new RandomFrequencyTrigger(context, listener, params);
 
-		case SENSOR_TRIGGER_ACCELEROMETER:
+		case TriggerUtils.SENSOR_TRIGGER_ACCELEROMETER:
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_ACCELEROMETER);
-		case SENSOR_TRIGGER_CALLS:
+		case TriggerUtils.SENSOR_TRIGGER_CALLS:
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_PHONE_STATE);
-		case SENSOR_TRIGGER_MICROPHONE:
+		case TriggerUtils.SENSOR_TRIGGER_MICROPHONE:
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_MICROPHONE);
-		case SENSOR_TRIGGER_SMS:
+		case TriggerUtils.SENSOR_TRIGGER_SMS:
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SMS);
-		case SENSOR_TRIGGER_SCREEN:
+		case TriggerUtils.SENSOR_TRIGGER_SCREEN:
 			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
 
-		case HYBRID_RANDOM_MICROPHONE:
-			return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_MICROPHONE, listener, params);
-		case HYBRID_RANDOM_ACCELEROMETER:
-			return new HybridTrigger(context, CLOCK_TRIGGER_DAILY_RANDOM, SENSOR_TRIGGER_ACCELEROMETER, listener, params);
+		case TriggerUtils.HYBRID_RANDOM_MICROPHONE:
+			return new HybridTrigger(context, TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM, TriggerUtils.SENSOR_TRIGGER_MICROPHONE, listener, params);
+		case TriggerUtils.HYBRID_RANDOM_ACCELEROMETER:
+			return new HybridTrigger(context, TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM, TriggerUtils.SENSOR_TRIGGER_ACCELEROMETER, listener, params);
 
 		default:
 			throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
