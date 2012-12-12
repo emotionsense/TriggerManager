@@ -32,6 +32,8 @@ public class TriggerConfig
 	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
 	public final static String RANDOM_TRIGGER_MAX_NOTIFICATIONS = "maxNotifications";
 	
+	public final static String POST_SENSE_WAIT_INTERVAL_MILLIS = "postSenseWait";
+	
 	private final HashMap<String, Object> parameters;
 	
 	public TriggerConfig()

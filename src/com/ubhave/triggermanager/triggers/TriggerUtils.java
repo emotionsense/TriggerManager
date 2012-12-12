@@ -1,5 +1,6 @@
 package com.ubhave.triggermanager.triggers;
 
+import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 
 public class TriggerUtils
@@ -9,11 +10,11 @@ public class TriggerUtils
 	public static final int CLOCK_TRIGGER_ON_INTERVAL = 10001;
 	public static final int CLOCK_TRIGGER_DAILY_RANDOM = 10002;
 
-	public static final int SENSOR_TRIGGER_ACCELEROMETER = 20000;
-	public static final int SENSOR_TRIGGER_MICROPHONE = 20001;
-	public static final int SENSOR_TRIGGER_CALLS = 20002;
-	public static final int SENSOR_TRIGGER_SMS = 20003;
-	public static final int SENSOR_TRIGGER_SCREEN = 20004;
+	public static final int SENSOR_TRIGGER_ACCELEROMETER = SensorUtils.SENSOR_TYPE_ACCELEROMETER;
+	public static final int SENSOR_TRIGGER_MICROPHONE = SensorUtils.SENSOR_TYPE_MICROPHONE;
+	public static final int SENSOR_TRIGGER_CALLS = SensorUtils.SENSOR_TYPE_PHONE_STATE;
+	public static final int SENSOR_TRIGGER_SMS = SensorUtils.SENSOR_TYPE_SMS;
+	public static final int SENSOR_TRIGGER_SCREEN = SensorUtils.SENSOR_TYPE_SCREEN;
 
 	public static final int HYBRID_RANDOM_MICROPHONE = 30000;
 	public static final int HYBRID_RANDOM_ACCELEROMETER = 30001;

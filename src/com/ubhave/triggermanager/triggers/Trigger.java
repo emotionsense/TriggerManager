@@ -55,7 +55,7 @@ public abstract class Trigger
 		}
 		catch (TriggerException e)
 		{
-			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
+			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY; // 1.0
 		}
 
 		double currentProbability = (new Random()).nextDouble();

@@ -33,26 +33,97 @@ import com.ubhave.sensormanager.classifier.SensorDataClassifier;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 
-public abstract class AbstractSensorTrigger extends Trigger implements SensorDataListener
+public class SensorTrigger extends Trigger implements SensorDataListener
 {	
 	private final ESSensorManagerInterface sensorManager;
 	private final int subscriptionId;
+	private boolean isDataInteresting;
+	
+	private Thread waitThread;
+	private long waitTimeInMillis;
 	
 	protected final SensorDataClassifier classifier;
 	
-	public AbstractSensorTrigger(Context context, TriggerReceiver listener, int sensorType) throws TriggerException, ESException
+	
+	public SensorTrigger(Context context, TriggerReceiver listener, int sensorType, TriggerConfig params) throws TriggerException, ESException
 	{
 		super(context, listener);
 		sensorManager = ESSensorManager.getSensorManager(context);
 		
 		classifier = SensorClassifiers.getSensorClassifier(sensorType);
 		subscriptionId = sensorManager.subscribeToSensorData(sensorType, this);
+		
+		if (params.containsKey(TriggerConfig.POST_SENSE_WAIT_INTERVAL_MILLIS))
+		{
+			waitTimeInMillis = (Long) params.getParameter(TriggerConfig.POST_SENSE_WAIT_INTERVAL_MILLIS);
+		}
+		else waitTimeInMillis = 0;
 	}
 	
 	@Override
-	public abstract void onDataSensed(SensorData sensorData);
+	public void onDataSensed(SensorData sensorData)
+	{
+		isDataInteresting = classifier.isInteresting(sensorData);
+		if (!isDataInteresting)
+		{
+			if (waitThread != null)
+			{
+				waitThread.interrupt();
+			}
+		}
+		else
+		{
+			if (waitThread == null)
+			{
+				startWaiting();
+			}
+
+		}
+	}
+	
+	private void startWaiting()
+	{
+		if (this.waitTimeInMillis > 0)
+		{
+			if (waitThread == null)
+			{
+				waitThread = new Thread()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							int waited = 0;
+
+							while (waited < waitTimeInMillis)
+							{
+								sleep(1000);
+								waited += 1000;
+							}
+							doneWaiting();
+						}
+						catch (InterruptedException e)
+						{
+						}
+					}
+				};
+				waitThread.start();
+			}
+		}
+		else doneWaiting();
+	}
+	
+	private void doneWaiting()
+	{
+		if (isDataInteresting)
+		{
+			callForSurvey();
+		}
+	}
 
 	@Override
 	public void kill()

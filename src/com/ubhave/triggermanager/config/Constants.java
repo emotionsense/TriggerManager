@@ -39,7 +39,6 @@ public class Constants
 	public static final int DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES = 120 * 60 * 1000;
 	public static final int DEFAULT_NOTIFICATION_PROBABILITY = 1;
 
-	public static final int DEFAULT_WAIT_TIME_MILLIES = 5 * 60 * 1000;
 	public static final int DEFAULT_SENSE_TIME_MILLIES = 60 * 60 * 1000;
 
 	public final static String GLOBAL_PREFERENCES = "global_preferences";

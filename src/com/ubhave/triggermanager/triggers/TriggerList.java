@@ -36,7 +36,7 @@ import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.OneTimeTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
 import com.ubhave.triggermanager.triggers.hybrid.HybridTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.SensorTrigger;
 
 public class TriggerList
 {
@@ -52,24 +52,30 @@ public class TriggerList
 		case TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM:
 			return new RandomFrequencyTrigger(context, listener, params);
 
-		case TriggerUtils.SENSOR_TRIGGER_ACCELEROMETER:
-			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_ACCELEROMETER);
-		case TriggerUtils.SENSOR_TRIGGER_CALLS:
-			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_PHONE_STATE);
-		case TriggerUtils.SENSOR_TRIGGER_MICROPHONE:
-			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_MICROPHONE);
-		case TriggerUtils.SENSOR_TRIGGER_SMS:
-			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SMS);
-		case TriggerUtils.SENSOR_TRIGGER_SCREEN:
-			return new ImmediateSensorTrigger(context, listener, SensorUtils.SENSOR_TYPE_SCREEN);
-
 		case TriggerUtils.HYBRID_RANDOM_MICROPHONE:
 			return new HybridTrigger(context, TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM, TriggerUtils.SENSOR_TRIGGER_MICROPHONE, listener, params);
 		case TriggerUtils.HYBRID_RANDOM_ACCELEROMETER:
 			return new HybridTrigger(context, TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM, TriggerUtils.SENSOR_TRIGGER_ACCELEROMETER, listener, params);
 
 		default:
-			throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
+			try
+			{
+				SensorUtils.getSensorName(type);
+				try
+				{
+					SensorTrigger trigger = new SensorTrigger(context, listener, type, params);
+					return trigger;
+				}
+				catch (ESException e)
+				{
+					throw new TriggerException(TriggerException.UNABLE_TO_ALLOCATE, "Cannot subscribe to sensor. Do you have battery permissions?");
+				}
+			}
+			catch (ESException e)
+			{
+				e.printStackTrace();
+				throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
+			}
 		}
 	}
 
