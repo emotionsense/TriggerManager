@@ -76,4 +76,11 @@ public abstract class ClockTrigger extends Trigger
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void callForSurvey()
+	{
+		super.callForSurvey();
+		// remove self
+	}
 }
