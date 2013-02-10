@@ -32,8 +32,10 @@ public class Constants
 
 	public final static int NOTIFICATION_ID = 901;
 
+	public static final boolean DEFAULT_TRIGGERS_ENABLED = true;
 	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE = 8 * 60;
 	public static final int DEFAULT_DO_NOT_DISTURB_AFTER = 22 * 60;
+	public static final int DEFAULT_DAILY_NOTIFICATION_CAP = 2;
 
 	public static final int DEFAULT_MAXIMUM_DAILY_SURVEYS = 2;
 	public static final int DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES = 120 * 60 * 1000;

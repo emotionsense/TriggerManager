@@ -48,21 +48,27 @@ public abstract class Trigger
 
 	protected void callForSurvey()
 	{
+		boolean triggersAllowed;
 		double sampleProbability;
 		try
 		{
+			triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
 			sampleProbability = (Float) globalConfig.getParameter(GlobalConfig.NOTIFICATION_PROBABILITY);
 		}
 		catch (TriggerException e)
 		{
-			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY; // 1.0
+			triggersAllowed = Constants.DEFAULT_TRIGGERS_ENABLED;
+			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
 		}
 
-		double currentProbability = (new Random()).nextDouble();
-		if (currentProbability <= sampleProbability)
+		if (triggersAllowed)
 		{
-			listener.onNotificationTriggered();
-			globalState.incrementNotificationsSent();
+			double currentProbability = (new Random()).nextDouble();
+			if (currentProbability <= sampleProbability)
+			{
+				listener.onNotificationTriggered();
+				globalState.incrementNotificationsSent();
+			}
 		}
 	}
 

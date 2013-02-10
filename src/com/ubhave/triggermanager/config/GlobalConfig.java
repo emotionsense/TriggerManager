@@ -31,6 +31,9 @@ public class GlobalConfig
 {
 	public static final String DO_NOT_DISTURB_BEFORE = "beforeHour";
 	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
+	public static final String MAX_DAILY_NOTIFICATION_CAP = "dailyCap";
+	public static final String TRIGGERS_ENABLED = "triggersEnabled";
+	
 	public static final String MIN_TRIGGER_INTERVAL_MILLIES = "minInterval";
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
 	public static final String SENSE_CYCLE_TOTAL_TIME_MILLIES = "senseTime";
@@ -73,6 +76,10 @@ public class GlobalConfig
 			{
 				editor.putFloat(parameterName, (Float) parameterValue);
 			}
+			else if (parameterName.equals(TRIGGERS_ENABLED))
+			{
+				editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
+			}
 			else
 			{
 				editor.putInt(parameterName, (Integer) parameterValue);
@@ -88,6 +95,10 @@ public class GlobalConfig
 			if (parameterName.equals(NOTIFICATION_PROBABILITY))
 			{
 				return preferences.getFloat(parameterName, getDefault(parameterName));
+			}
+			else if (parameterName.equals(TRIGGERS_ENABLED))
+			{
+				return preferences.getBoolean(TRIGGERS_ENABLED, Constants.DEFAULT_TRIGGERS_ENABLED);
 			}
 			else
 			{
@@ -108,6 +119,8 @@ public class GlobalConfig
 			return Constants.DEFAULT_NOTIFICATION_PROBABILITY;
 		else if (key.equals(SENSE_CYCLE_TOTAL_TIME_MILLIES))
 			return Constants.DEFAULT_SENSE_TIME_MILLIES;
+		else if (key.equals(MAX_DAILY_NOTIFICATION_CAP))
+			return Constants.DEFAULT_DAILY_NOTIFICATION_CAP;
 		else
 			throw new TriggerException(TriggerException.INVALID_CONFIG_KEY, "Key: " + key + " does not exist");
 	}
