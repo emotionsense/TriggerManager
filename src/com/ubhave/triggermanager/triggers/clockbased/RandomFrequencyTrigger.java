@@ -59,19 +59,11 @@ public class RandomFrequencyTrigger extends ClockTrigger
 	}
 
 	private Timer schedulerTimer;
-	private final Random random;
-	private final int maxDailyNotifications;
 
 	public RandomFrequencyTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		super(context, listener);
-		if (params.containsKey(TriggerConfig.RANDOM_TRIGGER_MAX_NOTIFICATIONS))
-		{
-			random = new Random();
-			maxDailyNotifications = (Integer) params.getParameter(TriggerConfig.RANDOM_TRIGGER_MAX_NOTIFICATIONS);
-			initialise();
-		}
-		else throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must contain TriggerConfig.RANDOM_TRIGGER_MAX_NOTIFICATIONS");
+		initialise();
 	}
 
 	protected void initialise() throws TriggerException
@@ -134,17 +126,19 @@ public class RandomFrequencyTrigger extends ClockTrigger
 			int before = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE);
 			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER) - 60;
 			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES) / (60 * 1000);
+			int maxDailyNotifications = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
+			Random random = new Random();
 
 			for (int i = 0; i < maxDailyNotifications; i++)
 			{
 				try
 				{
-					int time = next(times, before, after, interval);
+					int time = next(times, before, after, interval, random);
 					times.add(time);
 				}
 				catch (NullPointerException e)
 				{
-					throw new TriggerException(TriggerException.UNABLE_TO_ALLOCATE, "Insufficient user preference time allowance for random time trigger.");
+					e.printStackTrace();
 				}
 			}
 		}
@@ -155,7 +149,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		return times;
 	}
 
-	private int next(ArrayList<Integer> times, int before, int after, int interval) throws NullPointerException
+	private int next(ArrayList<Integer> times, int before, int after, int interval, Random random) throws NullPointerException
 	{
 		int selection = random.nextInt(after - before) + before;
 		boolean conflict = false;

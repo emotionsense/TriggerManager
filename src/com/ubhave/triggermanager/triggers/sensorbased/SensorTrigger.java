@@ -121,7 +121,7 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	{
 		if (isDataInteresting)
 		{
-			callForSurvey();
+			sendNotification();
 		}
 	}
 

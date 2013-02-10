@@ -65,7 +65,7 @@ public class HybridTrigger extends Trigger implements TriggerReceiver
 		else
 		{
 			waitThread.interrupt();
-			callForSurvey();
+			sendNotification();
 		}
 	}
 

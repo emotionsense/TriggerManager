@@ -40,7 +40,7 @@ public abstract class ClockTrigger extends Trigger
 		@Override
 		public void run()
 		{
-			callForSurvey();
+			sendNotification();
 		}
 	}
 
