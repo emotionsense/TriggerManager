@@ -30,7 +30,8 @@ public class TriggerConfig
 	public final static String CLOCK_TRIGGER_DATE_MILLIS = "clockTriggerDate";
 	public final static String INTERVAL_TRIGGER_TIME_MILLIS = "intervalTriggerTime";
 	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
-	public final static String RANDOM_TRIGGER_MAX_NOTIFICATIONS = "maxNotifications";
+	
+	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
 	
 	public final static String POST_SENSE_WAIT_INTERVAL_MILLIS = "postSenseWait";
 	

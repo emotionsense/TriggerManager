@@ -22,6 +22,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers.sensorbased;
 
+import java.util.Random;
+
 import android.content.Context;
 
 import com.ubhave.sensormanager.ESException;
@@ -33,6 +35,7 @@ import com.ubhave.sensormanager.classifier.SensorDataClassifier;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 
@@ -43,10 +46,10 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	private boolean isDataInteresting;
 	
 	private Thread waitThread;
-	private long waitTimeInMillis;
+	private final double notificationProbability;
+	private final long waitTimeInMillis;
 	
 	protected final SensorDataClassifier classifier;
-	
 	
 	public SensorTrigger(Context context, TriggerReceiver listener, int sensorType, TriggerConfig params) throws TriggerException, ESException
 	{
@@ -61,6 +64,12 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 			waitTimeInMillis = (Long) params.getParameter(TriggerConfig.POST_SENSE_WAIT_INTERVAL_MILLIS);
 		}
 		else waitTimeInMillis = 0;
+		
+		if (params.containsKey(TriggerConfig.NOTIFICATION_PROBABILITY))
+		{
+			notificationProbability = (Double) params.getParameter(TriggerConfig.NOTIFICATION_PROBABILITY);
+		}
+		else notificationProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
 	}
 	
 	@Override
@@ -80,7 +89,6 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 			{
 				startWaiting();
 			}
-
 		}
 	}
 	
@@ -122,6 +130,16 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 		if (isDataInteresting)
 		{
 			sendNotification();
+		}
+	}
+	
+	@Override
+	public void sendNotification()
+	{
+		double currentProbability = (new Random()).nextDouble();
+		if (currentProbability <= notificationProbability)
+		{
+			super.sendNotification();
 		}
 	}
 

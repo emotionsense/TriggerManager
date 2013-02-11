@@ -22,8 +22,6 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers;
 
-import java.util.Random;
-
 import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
@@ -49,13 +47,11 @@ public abstract class Trigger
 	protected void sendNotification()
 	{
 		boolean triggersAllowed;
-		double sampleProbability;
 		int notificationsSent, notificationsAllowed;
 		try
 		{
 			notificationsAllowed = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
 			triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
-			sampleProbability = (Float) globalConfig.getParameter(GlobalConfig.NOTIFICATION_PROBABILITY);
 			notificationsSent = globalState.getNotificationsSent();
 		}
 		catch (TriggerException e)
@@ -63,17 +59,12 @@ public abstract class Trigger
 			notificationsSent = 0;
 			notificationsAllowed = Constants.DEFAULT_DAILY_NOTIFICATION_CAP;
 			triggersAllowed = Constants.DEFAULT_TRIGGERS_ENABLED;
-			sampleProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
 		}
 
 		if (triggersAllowed && notificationsSent < notificationsAllowed)
 		{
-			double currentProbability = (new Random()).nextDouble();
-			if (currentProbability <= sampleProbability)
-			{
-				listener.onNotificationTriggered();
-				globalState.incrementNotificationsSent();
-			}
+			listener.onNotificationTriggered();
+			globalState.incrementNotificationsSent();
 		}
 	}
 

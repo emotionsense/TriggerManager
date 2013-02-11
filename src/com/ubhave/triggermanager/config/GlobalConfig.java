@@ -35,7 +35,6 @@ public class GlobalConfig
 	public static final String TRIGGERS_ENABLED = "triggersEnabled";
 	
 	public static final String MIN_TRIGGER_INTERVAL_MILLIES = "minInterval";
-	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
 	public static final String SENSE_CYCLE_TOTAL_TIME_MILLIES = "senseTime";
 
 	private static GlobalConfig globalConfig;
@@ -72,11 +71,7 @@ public class GlobalConfig
 		synchronized (lock)
 		{
 			SharedPreferences.Editor editor = preferences.edit();
-			if (parameterName.equals(NOTIFICATION_PROBABILITY))
-			{
-				editor.putFloat(parameterName, (Float) parameterValue);
-			}
-			else if (parameterName.equals(TRIGGERS_ENABLED))
+			if (parameterName.equals(TRIGGERS_ENABLED))
 			{
 				editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
 			}
@@ -92,11 +87,7 @@ public class GlobalConfig
 	{
 		synchronized (lock)
 		{
-			if (parameterName.equals(NOTIFICATION_PROBABILITY))
-			{
-				return preferences.getFloat(parameterName, getDefault(parameterName));
-			}
-			else if (parameterName.equals(TRIGGERS_ENABLED))
+			if (parameterName.equals(TRIGGERS_ENABLED))
 			{
 				return preferences.getBoolean(TRIGGERS_ENABLED, Constants.DEFAULT_TRIGGERS_ENABLED);
 			}
@@ -115,8 +106,6 @@ public class GlobalConfig
 			return Constants.DEFAULT_DO_NOT_DISTURB_AFTER;
 		else if (key.equals(MIN_TRIGGER_INTERVAL_MILLIES))
 			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES;
-		else if (key.equals(NOTIFICATION_PROBABILITY))
-			return Constants.DEFAULT_NOTIFICATION_PROBABILITY;
 		else if (key.equals(SENSE_CYCLE_TOTAL_TIME_MILLIES))
 			return Constants.DEFAULT_SENSE_TIME_MILLIES;
 		else if (key.equals(MAX_DAILY_NOTIFICATION_CAP))
