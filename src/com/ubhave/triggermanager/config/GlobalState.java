@@ -25,6 +25,7 @@ package com.ubhave.triggermanager.config;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -77,6 +78,18 @@ public class GlobalState
 		}
 	}
 	
+	public void reset()
+	{
+		synchronized (lock)
+		{
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putInt(NOTIFICATIONS, 0);
+			editor.remove(LAST_NOTIFICATION);
+			editor.commit();
+		}
+	}
+	
+	@SuppressLint("SimpleDateFormat")
 	public int getNotificationsSent()
 	{
 		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
