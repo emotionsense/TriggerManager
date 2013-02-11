@@ -33,7 +33,7 @@ import com.ubhave.triggermanager.triggers.TriggerList;
 
 public class SensorTriggerListener implements TriggerReceiver
 {
-	
+	private boolean isActive;
 	private TriggerReceiver hybridListener;
 	private final Trigger sensorTrigger;
 	
@@ -42,21 +42,25 @@ public class SensorTriggerListener implements TriggerReceiver
 		this.hybridListener = hybridListener;
 		this.sensorTrigger = TriggerList.createTrigger(context, sensorType, this, params);
 		
+		isActive = false;
 		sensorTrigger.pause();
 	}
 	
 	public void resume()
 	{
+		isActive = true;
 		sensorTrigger.resume();
 	}
 	
 	public void pause()
 	{
+		isActive = false;
 		sensorTrigger.pause();
 	}
 	
 	public void kill()
 	{
+		isActive = false;
 		sensorTrigger.kill();
 	}
 	
@@ -65,6 +69,12 @@ public class SensorTriggerListener implements TriggerReceiver
 	{
 		hybridListener.onNotificationTriggered();
 		sensorTrigger.pause();
+		isActive = false;
+	}
+	
+	public boolean isActive()
+	{
+		return isActive;
 	}
 
 	@Override

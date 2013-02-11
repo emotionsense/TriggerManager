@@ -27,13 +27,17 @@ import java.util.HashMap;
 
 public class TriggerConfig
 {
+	// Clock based Triggers
 	public final static String CLOCK_TRIGGER_DATE_MILLIS = "clockTriggerDate";
 	public final static String INTERVAL_TRIGGER_TIME_MILLIS = "intervalTriggerTime";
 	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
 	
+	// Sensor Based Triggers
 	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
-	
 	public final static String POST_SENSE_WAIT_INTERVAL_MILLIS = "postSenseWait";
+	
+	// Hybrid Triggers
+	public static final String SENSOR_TRIGGER_WINDOW_MILLIS = "sensorTriggerWindow";
 	
 	private final HashMap<String, Object> parameters;
 	
