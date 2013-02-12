@@ -53,7 +53,7 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	
 	public SensorTrigger(Context context, TriggerReceiver listener, int sensorType, TriggerConfig params) throws TriggerException, ESException
 	{
-		super(context, listener);
+		super(context, listener, params);
 		sensorManager = ESSensorManager.getSensorManager(context);
 		
 		classifier = SensorClassifiers.getSensorClassifier(sensorType);

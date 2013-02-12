@@ -42,7 +42,7 @@ public class HybridTrigger extends Trigger implements TriggerReceiver
 
 	public HybridTrigger(Context context, int clockType, int sensorType, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
 	{
-		super(context, listener);
+		super(context, listener, params);
 		this.clockTrigger = TriggerList.createTrigger(context, clockType, this, params);
 		sensorListener = new SensorTriggerListener(context, sensorType, this, params);
 		

@@ -29,6 +29,7 @@ import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class ClockTrigger extends Trigger
@@ -44,9 +45,9 @@ public abstract class ClockTrigger extends Trigger
 		}
 	}
 
-	public ClockTrigger(Context context, TriggerReceiver listener) throws TriggerException
+	public ClockTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
-		super(context, listener);
+		super(context, listener, params);
 		surveyTimer = new Timer();
 	}
 

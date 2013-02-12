@@ -29,6 +29,7 @@ import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
+import com.ubhave.triggermanager.config.TriggerConfig;
 
 public abstract class Trigger
 {
@@ -36,35 +37,50 @@ public abstract class Trigger
 	protected final TriggerReceiver listener;
 	protected final GlobalState globalState;
 	protected final GlobalConfig globalConfig;
+	private final boolean systemTrigger;
 
-	public Trigger(Context context, TriggerReceiver listener) throws TriggerException
+	public Trigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		this.listener = listener;
 		this.globalState = GlobalState.getGlobalState(context);
 		this.globalConfig = GlobalConfig.getGlobalConfig(context);
+
+		if (params.containsKey(TriggerConfig.IGNORE_USER_PREFERENCES))
+		{
+			systemTrigger = (Boolean) params.getParameter(TriggerConfig.IGNORE_USER_PREFERENCES);
+		}
+		else
+			systemTrigger = false;
 	}
 
 	protected void sendNotification()
 	{
-		boolean triggersAllowed;
-		int notificationsSent, notificationsAllowed;
-		try
-		{
-			notificationsAllowed = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
-			triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
-			notificationsSent = globalState.getNotificationsSent();
-		}
-		catch (TriggerException e)
-		{
-			notificationsSent = 0;
-			notificationsAllowed = Constants.DEFAULT_DAILY_NOTIFICATION_CAP;
-			triggersAllowed = Constants.DEFAULT_TRIGGERS_ENABLED;
-		}
-
-		if (triggersAllowed && notificationsSent < notificationsAllowed)
+		if (systemTrigger)
 		{
 			listener.onNotificationTriggered();
-			globalState.incrementNotificationsSent();
+		}
+		else
+		{
+			boolean triggersAllowed;
+			int notificationsSent, notificationsAllowed;
+			try
+			{
+				notificationsAllowed = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
+				triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
+				notificationsSent = globalState.getNotificationsSent();
+			}
+			catch (TriggerException e)
+			{
+				notificationsSent = 0;
+				notificationsAllowed = Constants.DEFAULT_DAILY_NOTIFICATION_CAP;
+				triggersAllowed = Constants.DEFAULT_TRIGGERS_ENABLED;
+			}
+
+			if (triggersAllowed && notificationsSent < notificationsAllowed)
+			{
+				listener.onNotificationTriggered();
+				globalState.incrementNotificationsSent();
+			}
 		}
 	}
 

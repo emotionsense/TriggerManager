@@ -35,7 +35,7 @@ public class IntervalTrigger extends ClockTrigger
 
 	public IntervalTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
-		super(context, listener);
+		super(context, listener, parameters);
 		if (parameters.containsKey(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS) && parameters.containsKey(TriggerConfig.INTERVAL_TRIGGER_START_DELAY))
 		{
 			this.intervalLengthInMillis = (Long) parameters.getParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS);

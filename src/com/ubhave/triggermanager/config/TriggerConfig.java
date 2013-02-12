@@ -27,6 +27,8 @@ import java.util.HashMap;
 
 public class TriggerConfig
 {
+	public final static String IGNORE_USER_PREFERENCES = "ignoreCap";
+	
 	// Clock based Triggers
 	public final static String CLOCK_TRIGGER_DATE_MILLIS = "clockTriggerDate";
 	public final static String INTERVAL_TRIGGER_TIME_MILLIS = "intervalTriggerTime";

@@ -36,7 +36,7 @@ public class OneTimeTrigger extends ClockTrigger
 
 	public OneTimeTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
-		super(context, listener);
+		super(context, listener, parameters);
 		if (parameters.containsKey(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS))
 		{
 			surveyDate = (Long) parameters.getParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS);

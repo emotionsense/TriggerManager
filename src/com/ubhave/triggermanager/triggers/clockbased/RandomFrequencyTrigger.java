@@ -62,7 +62,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 
 	public RandomFrequencyTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
-		super(context, listener);
+		super(context, listener, params);
 		initialise();
 	}
 
