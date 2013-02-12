@@ -129,6 +129,7 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	{
 		if (isDataInteresting)
 		{
+			waitThread = null;
 			sendNotification();
 		}
 	}

@@ -26,11 +26,8 @@ public class Constants
 {
 	public final static boolean LOG_MESSAGES = true;
 	
-	
 	protected final static boolean IGNORE_CAP = true;
 	protected final static boolean ADHERE_TO_CAP = false;
-
-	public final static int NOTIFICATION_ID = 901;
 
 	public static final boolean DEFAULT_TRIGGERS_ENABLED = true;
 	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE = 8 * 60;
