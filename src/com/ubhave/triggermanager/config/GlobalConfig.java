@@ -24,6 +24,7 @@ package com.ubhave.triggermanager.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.SparseArray;
 
 import com.ubhave.triggermanager.TriggerException;
 
@@ -33,7 +34,7 @@ public class GlobalConfig
 	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
 	public static final String MAX_DAILY_NOTIFICATION_CAP = "dailyCap";
 	public static final String TRIGGERS_ENABLED = "triggersEnabled";
-	
+
 	public static final String MIN_TRIGGER_INTERVAL_MILLIES = "minInterval";
 	public static final String SENSE_CYCLE_TOTAL_TIME_MILLIES = "senseTime";
 
@@ -60,10 +61,12 @@ public class GlobalConfig
 	}
 
 	private final SharedPreferences preferences;
+	private final ConfigListenerList listeners;
 
 	public GlobalConfig(Context context)
 	{
 		preferences = context.getSharedPreferences(Constants.GLOBAL_PREFERENCES, Context.MODE_PRIVATE);
+		listeners = new ConfigListenerList();
 	}
 
 	public void setParameter(String parameterName, Object parameterValue)
@@ -80,6 +83,35 @@ public class GlobalConfig
 				editor.putInt(parameterName, (Integer) parameterValue);
 			}
 			editor.commit();
+			notifyListeners();
+		}
+	}
+
+	public int addConfigListener(ConfigChangeListener listener)
+	{
+		int value = -1;
+		try
+		{
+			value = listeners.add(listener);
+		}
+		catch (TriggerException e)
+		{
+			e.printStackTrace();
+		}
+		return value;
+	}
+	
+	public void removeConfigListener(int id)
+	{
+		listeners.remove(id);
+	}
+
+	private void notifyListeners()
+	{
+		SparseArray<ConfigChangeListener> listenerList = listeners.getAll();
+		for (int i = 0; i < listenerList.size(); i++)
+		{
+			listenerList.valueAt(i).onGlobalConfigChanged();
 		}
 	}
 

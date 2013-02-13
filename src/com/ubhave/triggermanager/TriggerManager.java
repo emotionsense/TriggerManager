@@ -23,8 +23,10 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 package com.ubhave.triggermanager;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
@@ -63,27 +65,37 @@ public class TriggerManager implements TriggerManagerInterface
 	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException
 	{
 		Trigger trigger = TriggerList.createTrigger(context, triggerType, listener, parameters);
-		return triggers.addTrigger(trigger, listener);
+		if (Constants.LOG_MESSAGES)
+		{
+			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list.");
+		}
+		return triggers.add(trigger);
 	}
 
 	@Override
 	public void removeTrigger(int triggerId)
 	{
-		triggers.removeTrigger(triggerId);
+		triggers.remove(triggerId);
 	}
 
 	@Override
 	public void pauseTrigger(int triggerId)
 	{
-		Trigger trigger = triggers.getTrigger(triggerId);
-		trigger.pause();
+		Trigger trigger = triggers.get(triggerId);
+		if (trigger != null)
+		{
+			trigger.pause();
+		}
 	}
 
 	@Override
 	public void unPauseTrigger(int triggerId)
 	{
-		Trigger trigger = triggers.getTrigger(triggerId);
-		trigger.resume();
+		Trigger trigger = triggers.get(triggerId);
+		if (trigger != null)
+		{
+			trigger.resume();
+		}
 	}
 
 	@Override
@@ -110,6 +122,5 @@ public class TriggerManager implements TriggerManagerInterface
 		{
 			e.printStackTrace();
 		}
-
 	}
 }

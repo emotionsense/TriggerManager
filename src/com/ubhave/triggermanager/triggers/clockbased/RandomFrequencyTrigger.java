@@ -34,11 +34,12 @@ import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.ConfigChangeListener;
 import com.ubhave.triggermanager.config.Constants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.TriggerConfig;
 
-public class RandomFrequencyTrigger extends ClockTrigger
+public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChangeListener
 {
 	private final static String LOG_TAG = "RandomFrequencyTrigger";
 
@@ -59,11 +60,15 @@ public class RandomFrequencyTrigger extends ClockTrigger
 	}
 
 	private Timer schedulerTimer;
+	private Context context;
+	private int id;
 
 	public RandomFrequencyTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		super(context, listener, params);
+		this.context = context;
 		initialise();
+		id = GlobalConfig.getGlobalConfig(context).addConfigListener(this);
 	}
 
 	protected void initialise() throws TriggerException
@@ -90,6 +95,14 @@ public class RandomFrequencyTrigger extends ClockTrigger
 			schedulerTimer.cancel();
 			schedulerTimer = null;
 		}
+		try
+		{
+			GlobalConfig.getGlobalConfig(context).removeConfigListener(id);
+		}
+		catch (TriggerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void scheduleNotifications() throws TriggerException
@@ -103,6 +116,9 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		calendar.set(Calendar.SECOND, 0);
 		long midnight = calendar.getTimeInMillis();
 
+		surveyTimer.cancel();
+		surveyTimer = new Timer();
+		
 		for (Integer time : randomTimes)
 		{
 			long triggerTime = midnight + (time * 60 * 1000);
@@ -124,7 +140,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		try
 		{
 			int before = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE);
-			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER) - 60;
+			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER);
 			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES) / (60 * 1000);
 			int maxDailyNotifications = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
 			Random random = new Random();
@@ -151,29 +167,48 @@ public class RandomFrequencyTrigger extends ClockTrigger
 
 	private int next(ArrayList<Integer> times, int before, int after, int interval, Random random) throws NullPointerException
 	{
-		int selection = random.nextInt(after - before) + before;
-		boolean conflict = false;
-		int attempt = 0;
-
-		do
+		if (after - before > 0)
 		{
-			conflict = false;
-			for (Integer time : times)
-			{
-				if (Math.abs(time - selection) < interval)
-				{
-					conflict = true;
-					selection = random.nextInt(after - before) + before;
-					attempt++;
-					if (attempt == 500)
-					{
-						throw new NullPointerException();
-					}
-					break;
-				}
-			}
-		} while (conflict);
+			int selection = random.nextInt(after - before) + before;
+			boolean conflict = false;
+			int attempt = 0;
 
-		return selection;
+			do
+			{
+				conflict = false;
+				for (Integer time : times)
+				{
+					if (Math.abs(time - selection) < interval)
+					{
+						conflict = true;
+						selection = random.nextInt(after - before) + before;
+						attempt++;
+						if (attempt == 500)
+						{
+							throw new NullPointerException();
+						}
+						break;
+					}
+				}
+			} while (conflict);
+			return selection;
+		}
+		else
+		{
+			throw new NullPointerException();
+		}
+	}
+
+	@Override
+	public void onGlobalConfigChanged()
+	{
+		try
+		{
+			scheduleNotifications();
+		}
+		catch (TriggerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

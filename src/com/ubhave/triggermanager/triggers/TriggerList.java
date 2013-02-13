@@ -22,13 +22,11 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers;
 
-import java.util.Random;
-
 import android.content.Context;
-import android.util.SparseArray;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.SensorUtils;
+import com.ubhave.triggermanager.AbstractSubscriptionList;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
@@ -38,7 +36,7 @@ import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
 import com.ubhave.triggermanager.triggers.hybrid.HybridTrigger;
 import com.ubhave.triggermanager.triggers.sensorbased.SensorTrigger;
 
-public class TriggerList
+public class TriggerList extends AbstractSubscriptionList<Trigger>
 {
 
 	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener, TriggerConfig params) throws ESException, TriggerException
@@ -79,50 +77,14 @@ public class TriggerList
 		}
 	}
 
-	private final SparseArray<Trigger> triggerMap;
-	private final Random keyGenerator;
-
-	public TriggerList()
+	@Override
+	public void remove(int triggerId)
 	{
-		triggerMap = new SparseArray<Trigger>();
-		keyGenerator = new Random();
-	}
-
-	public int addTrigger(Trigger s, TriggerReceiver l) throws TriggerException
-	{
-		int triggerId = randomKey();
-		triggerMap.append(triggerId, s);
-		return triggerId;
-	}
-
-	public void removeTrigger(int triggerId)
-	{
-		Trigger s = triggerMap.get(triggerId);
+		Trigger s = map.get(triggerId);
 		if (s != null)
 		{
 			s.kill();
-			triggerMap.delete(triggerId);
+			map.delete(triggerId);
 		}
-	}
-
-	public Trigger getTrigger(int triggerId)
-	{
-		return triggerMap.get(triggerId);
-	}
-
-	private int randomKey() throws TriggerException
-	{
-		int triggerId = keyGenerator.nextInt();
-		int loopCount = 0;
-		while (triggerMap.get(triggerId) != null)
-		{
-			if (loopCount > 1000)
-			{
-				throw new TriggerException(TriggerException.INVALID_STATE, "Listener map >1000 key conflicts.");
-			}
-			triggerId = keyGenerator.nextInt();
-			loopCount++;
-		}
-		return triggerId;
 	}
 }
