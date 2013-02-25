@@ -133,13 +133,31 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 			}
 		}
 	}
+	
+	private int currentMinute()
+	{
+		Calendar calendar = Calendar.getInstance();
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute = calendar.get(Calendar.MINUTE);
+		
+		return (60 * hour) + minute;
+	}
+	
+	private int max(int a, int b)
+	{
+		if (a > b)
+		{
+			return a;
+		}
+		else return b;
+	}
 
 	private ArrayList<Integer> pickTimes() throws TriggerException
 	{
 		ArrayList<Integer> times = new ArrayList<Integer>();
 		try
 		{
-			int before = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE);
+			int before = max((Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE), currentMinute());
 			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER);
 			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES) / (60 * 1000);
 			int maxDailyNotifications = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);

@@ -78,6 +78,10 @@ public class GlobalConfig
 			{
 				editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
 			}
+			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MILLIES))
+			{
+				editor.putLong(MIN_TRIGGER_INTERVAL_MILLIES, (Long) parameterValue);
+			}
 			else
 			{
 				editor.putInt(parameterName, (Integer) parameterValue);
@@ -122,6 +126,10 @@ public class GlobalConfig
 			if (parameterName.equals(TRIGGERS_ENABLED))
 			{
 				return preferences.getBoolean(TRIGGERS_ENABLED, Constants.DEFAULT_TRIGGERS_ENABLED);
+			}
+			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MILLIES))
+			{
+				return preferences.getLong(MIN_TRIGGER_INTERVAL_MILLIES, Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES);
 			}
 			else
 			{
