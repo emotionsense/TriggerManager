@@ -119,6 +119,10 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 		surveyTimer.cancel();
 		surveyTimer = new Timer();
 		
+		if (Constants.LOG_MESSAGES)
+		{
+			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications.");
+		}
 		for (Integer time : randomTimes)
 		{
 			long triggerTime = midnight + (time * 60 * 1000);
@@ -159,16 +163,35 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 		{
 			int before = max((Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE), currentMinute());
 			int after = (Integer) globalConfig.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER);
-			int interval = (Integer) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES) / (60 * 1000);
+			long interval = (Long) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES);
+			int interval_minutes = (int) interval / (60 * 1000);
 			int maxDailyNotifications = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
+			if (Constants.LOG_MESSAGES)
+			{
+				Log.d(LOG_TAG, "Max daily allowed is: "+maxDailyNotifications);
+			}
 			Random random = new Random();
 
 			for (int i = 0; i < maxDailyNotifications; i++)
 			{
 				try
 				{
-					int time = next(times, before, after, interval, random);
-					times.add(time);
+					int time = next(times, before, after, interval_minutes, random);
+					boolean added = false; // add in order
+					for (int j=0; j<times.size(); j++)
+					{
+						if (times.get(j) > time)
+						{
+							added = true;
+							times.add(j, time);
+							break;
+						}
+					}
+					if (!added)
+					{
+						times.add(time);
+					}
+					
 				}
 				catch (NullPointerException e)
 				{
