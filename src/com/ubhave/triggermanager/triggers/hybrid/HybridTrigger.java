@@ -27,7 +27,7 @@ import android.content.Context;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
@@ -50,7 +50,7 @@ public class HybridTrigger extends Trigger implements TriggerReceiver
 		{
 			waitTime = (Long) params.getParameter(TriggerConfig.SENSOR_TRIGGER_WINDOW_MILLIS);
 		}
-		else waitTime = Constants.DEFAULT_SENSE_TIME_MILLIES;
+		else waitTime = TriggerManagerConstants.DEFAULT_SENSE_TIME_MILLIES;
 	}
 
 	@Override

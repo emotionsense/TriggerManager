@@ -35,7 +35,7 @@ import android.util.Log;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.ConfigChangeListener;
-import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.TriggerConfig;
 
@@ -119,7 +119,7 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 		surveyTimer.cancel();
 		surveyTimer = new Timer();
 		
-		if (Constants.LOG_MESSAGES)
+		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
 			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications.");
 		}
@@ -129,7 +129,7 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 			long diff = triggerTime - now;
 			if (diff > 0)
 			{
-				if (Constants.LOG_MESSAGES)
+				if (TriggerManagerConstants.LOG_MESSAGES)
 				{
 					Log.d(LOG_TAG, "Notifications scheduled for: " + (new Date(triggerTime)).toString());
 				}
@@ -166,7 +166,7 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 			long interval = (Long) globalConfig.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MILLIES);
 			int interval_minutes = (int) interval / (60 * 1000);
 			int maxDailyNotifications = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
-			if (Constants.LOG_MESSAGES)
+			if (TriggerManagerConstants.LOG_MESSAGES)
 			{
 				Log.d(LOG_TAG, "Max daily allowed is: "+maxDailyNotifications);
 			}

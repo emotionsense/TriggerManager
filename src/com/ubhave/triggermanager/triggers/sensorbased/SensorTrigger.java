@@ -38,7 +38,7 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.Trigger;
 
@@ -73,7 +73,7 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 		{
 			notificationProbability = (Double) params.getParameter(TriggerConfig.NOTIFICATION_PROBABILITY);
 		}
-		else notificationProbability = Constants.DEFAULT_NOTIFICATION_PROBABILITY;
+		else notificationProbability = TriggerManagerConstants.DEFAULT_NOTIFICATION_PROBABILITY;
 	}
 	
 	@Override

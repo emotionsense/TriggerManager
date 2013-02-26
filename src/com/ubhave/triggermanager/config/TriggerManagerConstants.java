@@ -22,7 +22,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.config;
 
-public class Constants
+public class TriggerManagerConstants
 {
 	public final static boolean LOG_MESSAGES = true;
 	

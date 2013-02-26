@@ -27,7 +27,7 @@ import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.Constants;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
@@ -73,8 +73,8 @@ public abstract class Trigger
 			catch (TriggerException e)
 			{
 				notificationsSent = 0;
-				notificationsAllowed = Constants.DEFAULT_DAILY_NOTIFICATION_CAP;
-				triggersAllowed = Constants.DEFAULT_TRIGGERS_ENABLED;
+				notificationsAllowed = TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
+				triggersAllowed = TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED;
 			}
 
 			if (triggersAllowed && notificationsSent < notificationsAllowed)
@@ -85,7 +85,7 @@ public abstract class Trigger
 					globalState.incrementNotificationsSent();
 				}
 			}
-			else if (Constants.LOG_MESSAGES)
+			else if (TriggerManagerConstants.LOG_MESSAGES)
 			{
 				Log.d("Trigger", "Not sending notification: "+notificationsSent+" (sent) >= "+notificationsAllowed+" (allowed), triggers allowed: "+triggersAllowed);
 			}

@@ -64,7 +64,7 @@ public class GlobalState
 	
 	public GlobalState(Context context)
 	{
-		preferences = context.getSharedPreferences(Constants.GLOBAL_STATE, Context.MODE_PRIVATE);
+		preferences = context.getSharedPreferences(TriggerManagerConstants.GLOBAL_STATE, Context.MODE_PRIVATE);
 	}
 	
 	public void incrementNotificationsSent()
@@ -97,7 +97,7 @@ public class GlobalState
 		String dateKey = formatter.format(System.currentTimeMillis());
 		String currentDate = preferences.getString(CURRENT_DAY, null);
 		
-		if (Constants.LOG_MESSAGES)
+		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
 			Log.d("GlobalState", "Notifications for: "+dateKey+", compared to "+currentDate);
 		}

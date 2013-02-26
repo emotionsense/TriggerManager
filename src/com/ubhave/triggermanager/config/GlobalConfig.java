@@ -65,7 +65,7 @@ public class GlobalConfig
 
 	public GlobalConfig(Context context)
 	{
-		preferences = context.getSharedPreferences(Constants.GLOBAL_PREFERENCES, Context.MODE_PRIVATE);
+		preferences = context.getSharedPreferences(TriggerManagerConstants.GLOBAL_PREFERENCES, Context.MODE_PRIVATE);
 		listeners = new ConfigListenerList();
 	}
 
@@ -125,11 +125,11 @@ public class GlobalConfig
 		{
 			if (parameterName.equals(TRIGGERS_ENABLED))
 			{
-				return preferences.getBoolean(TRIGGERS_ENABLED, Constants.DEFAULT_TRIGGERS_ENABLED);
+				return preferences.getBoolean(TRIGGERS_ENABLED, TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED);
 			}
 			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MILLIES))
 			{
-				return preferences.getLong(MIN_TRIGGER_INTERVAL_MILLIES, Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES);
+				return preferences.getLong(MIN_TRIGGER_INTERVAL_MILLIES, TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES);
 			}
 			else
 			{
@@ -141,15 +141,15 @@ public class GlobalConfig
 	private int getDefault(String key) throws TriggerException
 	{
 		if (key.equals(DO_NOT_DISTURB_BEFORE))
-			return Constants.DEFAULT_DO_NOT_DISTURB_BEFORE;
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE;
 		else if (key.equals(DO_NOT_DISTURB_AFTER))
-			return Constants.DEFAULT_DO_NOT_DISTURB_AFTER;
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER;
 		else if (key.equals(MIN_TRIGGER_INTERVAL_MILLIES))
-			return Constants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES;
+			return TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES;
 		else if (key.equals(SENSE_CYCLE_TOTAL_TIME_MILLIES))
-			return Constants.DEFAULT_SENSE_TIME_MILLIES;
+			return TriggerManagerConstants.DEFAULT_SENSE_TIME_MILLIES;
 		else if (key.equals(MAX_DAILY_NOTIFICATION_CAP))
-			return Constants.DEFAULT_DAILY_NOTIFICATION_CAP;
+			return TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
 		else
 			throw new TriggerException(TriggerException.INVALID_CONFIG_KEY, "Key: " + key + " does not exist");
 	}
