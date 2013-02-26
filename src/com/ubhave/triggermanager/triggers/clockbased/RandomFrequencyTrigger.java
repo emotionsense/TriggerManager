@@ -195,7 +195,7 @@ public class RandomFrequencyTrigger extends ClockTrigger implements ConfigChange
 				}
 				catch (NullPointerException e)
 				{
-					e.printStackTrace();
+					// Nothing to do
 				}
 			}
 		}

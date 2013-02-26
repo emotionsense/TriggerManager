@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 
@@ -96,6 +97,11 @@ public class GlobalState
 		String dateKey = formatter.format(System.currentTimeMillis());
 		String currentDate = preferences.getString(CURRENT_DAY, null);
 		
+		if (Constants.LOG_MESSAGES)
+		{
+			Log.d("GlobalState", "Notifications for: "+dateKey+", compared to "+currentDate);
+		}
+		
 		if (currentDate == null || !dateKey.equals(currentDate))
 		{
 			synchronized (lock)
@@ -105,9 +111,8 @@ public class GlobalState
 				editor.putInt(NOTIFICATIONS, 0);
 				editor.commit();
 			}
-			return 0;
 		}
-		else return preferences.getInt(NOTIFICATIONS, 0);
+		return preferences.getInt(NOTIFICATIONS, 0);
 	}
 	
 	public long getLastNotificationTime()

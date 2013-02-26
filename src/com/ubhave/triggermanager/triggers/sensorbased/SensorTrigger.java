@@ -25,6 +25,7 @@ package com.ubhave.triggermanager.triggers.sensorbased;
 import java.util.Random;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
@@ -32,7 +33,9 @@ import com.ubhave.sensormanager.ESSensorManagerInterface;
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.classifier.SensorClassifiers;
 import com.ubhave.sensormanager.classifier.SensorDataClassifier;
+import com.ubhave.sensormanager.config.SensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.Constants;
@@ -42,7 +45,7 @@ import com.ubhave.triggermanager.triggers.Trigger;
 public class SensorTrigger extends Trigger implements SensorDataListener
 {	
 	private final ESSensorManagerInterface sensorManager;
-	private final int subscriptionId;
+	private final int subscriptionId, sensorType;
 	private boolean isDataInteresting;
 	
 	private Thread waitThread;
@@ -54,10 +57,11 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	public SensorTrigger(Context context, TriggerReceiver listener, int sensorType, TriggerConfig params) throws TriggerException, ESException
 	{
 		super(context, listener, params);
-		sensorManager = ESSensorManager.getSensorManager(context);
-		
-		classifier = SensorClassifiers.getSensorClassifier(sensorType);
-		subscriptionId = sensorManager.subscribeToSensorData(sensorType, this);
+		this.sensorType = sensorType;
+		this.sensorManager = ESSensorManager.getSensorManager(context);
+		setupParams(sensorType, true);
+		this.classifier = SensorClassifiers.getSensorClassifier(sensorType);
+		this.subscriptionId = sensorManager.subscribeToSensorData(sensorType, this);
 		
 		if (params.containsKey(TriggerConfig.POST_SENSE_WAIT_INTERVAL_MILLIS))
 		{
@@ -76,6 +80,7 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	public void onDataSensed(SensorData sensorData)
 	{
 		isDataInteresting = classifier.isInteresting(sensorData);
+		Log.d("SensorTrigger", "onDataSensed: "+isDataInteresting);
 		if (!isDataInteresting)
 		{
 			if (waitThread != null)
@@ -149,6 +154,7 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	{
 		try
 		{
+			setupParams(sensorType, false);
 			sensorManager.unsubscribeFromSensorData(subscriptionId);
 		}
 		catch (ESException e)
@@ -186,6 +192,44 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 		catch (ESException e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	private void setupParams(int sensorType, boolean settingUp)
+	{
+		if (sensorManager != null)
+		{
+			try 
+			{
+				switch(sensorType)
+				{
+				case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
+					if (settingUp)
+					{
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 30));
+					}
+					else
+					{
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, com.ubhave.sensormanager.config.Constants.ACCELEROMETER_SLEEP_INTERVAL);
+					}
+					break;
+				case SensorUtils.SENSOR_TYPE_MICROPHONE:
+					if (settingUp)
+					{
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 30));
+					}
+					else
+					{
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, com.ubhave.sensormanager.config.Constants.MICROPHONE_SLEEP_INTERVAL);
+					}
+					break;
+				}	
+			}
+			catch (ESException e)
+			{
+				e.printStackTrace();
+			}
+			
 		}
 	}
 }

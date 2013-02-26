@@ -23,6 +23,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 package com.ubhave.triggermanager.triggers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
@@ -79,7 +80,14 @@ public abstract class Trigger
 			if (triggersAllowed && notificationsSent < notificationsAllowed)
 			{
 				listener.onNotificationTriggered();
-				globalState.incrementNotificationsSent();
+				if (!systemTrigger)
+				{
+					globalState.incrementNotificationsSent();
+				}
+			}
+			else if (Constants.LOG_MESSAGES)
+			{
+				Log.d("Trigger", "Not sending notification: "+notificationsSent+" (sent) >= "+notificationsAllowed+" (allowed), triggers allowed: "+triggersAllowed);
 			}
 		}
 	}
