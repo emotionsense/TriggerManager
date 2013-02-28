@@ -50,7 +50,7 @@ public interface TriggerManagerInterface
 	 * Methods used in testing
 	 */
 	
-	public void resetDailyCap();
+//	public void resetDailyCap();
 
 }
 

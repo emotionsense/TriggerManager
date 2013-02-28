@@ -26,10 +26,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
-import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.GlobalConfig;
-import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
@@ -110,17 +109,17 @@ public class TriggerManager implements TriggerManagerInterface
 		return config.getParameter(configKey);
 	}
 
-	@Override
-	public void resetDailyCap()
-	{
-		try
-		{
-			GlobalState state = GlobalState.getGlobalState(context);
-			state.reset();
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	@Override
+//	public void resetDailyCap()
+//	{
+//		try
+//		{
+//			GlobalState state = GlobalState.getGlobalState(context);
+//			state.reset();
+//		}
+//		catch (TriggerException e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 }

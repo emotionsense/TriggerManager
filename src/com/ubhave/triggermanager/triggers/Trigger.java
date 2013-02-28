@@ -80,10 +80,7 @@ public abstract class Trigger
 			if (triggersAllowed && notificationsSent < notificationsAllowed)
 			{
 				listener.onNotificationTriggered();
-				if (!systemTrigger)
-				{
-					globalState.incrementNotificationsSent();
-				}
+				globalState.incrementNotificationsSent();
 			}
 			else if (TriggerManagerConstants.LOG_MESSAGES)
 			{
