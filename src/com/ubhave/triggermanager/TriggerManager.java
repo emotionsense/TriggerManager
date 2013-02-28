@@ -77,6 +77,12 @@ public class TriggerManager implements TriggerManagerInterface
 	{
 		triggers.remove(triggerId);
 	}
+	
+	@Override
+	public void removeAllTriggers() throws TriggerException
+	{
+		triggers.removeAll();
+	}
 
 	@Override
 	public void pauseTrigger(int triggerId) throws TriggerException

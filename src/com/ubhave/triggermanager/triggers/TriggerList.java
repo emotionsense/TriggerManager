@@ -92,4 +92,15 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 		}
 		super.remove(triggerId);
 	}
+	
+	public void removeAll() throws TriggerException
+	{
+		for (int i=0; i<map.size(); i++)
+		{
+			int key = map.keyAt(i);
+			Trigger trigger = map.get(key);
+			trigger.kill();
+		}
+		map.clear();
+	}
 }

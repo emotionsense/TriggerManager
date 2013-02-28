@@ -40,6 +40,8 @@ public interface TriggerManagerInterface
 	public void unPauseTrigger(int triggerId) throws TriggerException;
 	
 	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException;
+	
+	public void removeAllTriggers() throws TriggerException;
 
 	/*
 	 * User Preferences
