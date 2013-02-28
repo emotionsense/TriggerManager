@@ -72,13 +72,13 @@ public class TriggerManager implements TriggerManagerInterface
 	}
 
 	@Override
-	public void removeTrigger(int triggerId)
+	public void removeTrigger(int triggerId) throws TriggerException
 	{
 		triggers.remove(triggerId);
 	}
 
 	@Override
-	public void pauseTrigger(int triggerId)
+	public void pauseTrigger(int triggerId) throws TriggerException
 	{
 		Trigger trigger = triggers.get(triggerId);
 		if (trigger != null)
@@ -88,12 +88,22 @@ public class TriggerManager implements TriggerManagerInterface
 	}
 
 	@Override
-	public void unPauseTrigger(int triggerId)
+	public void unPauseTrigger(int triggerId) throws TriggerException
 	{
 		Trigger trigger = triggers.get(triggerId);
 		if (trigger != null)
 		{
 			trigger.resume();
+		}
+	}
+	
+	@Override
+	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
+	{
+		Trigger trigger = triggers.get(triggerId);
+		if (trigger != null)
+		{
+			trigger.reset(params);
 		}
 	}
 
@@ -109,6 +119,9 @@ public class TriggerManager implements TriggerManagerInterface
 		return config.getParameter(configKey);
 	}
 
+	/*
+	 * For testing purposes only
+	 */
 //	@Override
 //	public void resetDailyCap()
 //	{

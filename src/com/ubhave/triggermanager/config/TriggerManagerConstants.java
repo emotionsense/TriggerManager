@@ -26,19 +26,16 @@ public class TriggerManagerConstants
 {
 	public final static boolean LOG_MESSAGES = true;
 	
-	protected final static boolean IGNORE_CAP = true;
-	protected final static boolean ADHERE_TO_CAP = false;
-
 	public static final boolean DEFAULT_TRIGGERS_ENABLED = true;
-	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE = 8 * 60;
-	public static final int DEFAULT_DO_NOT_DISTURB_AFTER = 22 * 60;
+	public static final boolean DEFAULT_IS_TRIGGER_UNCAPPED = false;
+	
+	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES = 8 * 60;
+	public static final int DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES = 22 * 60;
+	public static final int DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES = 120;
 	public static final int DEFAULT_DAILY_NOTIFICATION_CAP = 2;
 
 	public static final int DEFAULT_MAXIMUM_DAILY_SURVEYS = 2;
-	public static final int DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES = 120 * 60 * 1000;
 	public static final int DEFAULT_NOTIFICATION_PROBABILITY = 1;
-
-	public static final int DEFAULT_SENSE_TIME_MILLIES = 60 * 60 * 1000;
 
 	public final static String GLOBAL_PREFERENCES = "global_preferences";
 	public final static String TRIGGER_PREFERENCES = "trigger_preferences";

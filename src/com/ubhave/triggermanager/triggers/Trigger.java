@@ -27,72 +27,133 @@ import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 
 public abstract class Trigger
 {
-
+	protected final int RUNNING = 0;
+	protected final int PAUSED = 1;
+	protected final int DEAD = 2;
+	
+	protected final Context context;
 	protected final TriggerReceiver listener;
 	protected final GlobalState globalState;
 	protected final GlobalConfig globalConfig;
-	private final boolean systemTrigger;
+	protected TriggerConfig params;
+	protected int state;
 
 	public Trigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
+		this.context = context;
 		this.listener = listener;
 		this.globalState = GlobalState.getGlobalState(context);
 		this.globalConfig = GlobalConfig.getGlobalConfig(context);
-
-		if (params.containsKey(TriggerConfig.IGNORE_USER_PREFERENCES))
-		{
-			systemTrigger = (Boolean) params.getParameter(TriggerConfig.IGNORE_USER_PREFERENCES);
-		}
-		else
-			systemTrigger = false;
+		
+		reset(params);	
 	}
 
 	protected void sendNotification()
 	{
-		if (systemTrigger)
+		if (isSystemTrigger())
 		{
+			if (TriggerManagerConstants.LOG_MESSAGES)
+			{
+				Log.d(getTriggerTag(), "Sending system-level onNotificationTriggered()");
+			}
 			listener.onNotificationTriggered();
 		}
 		else
 		{
-			boolean triggersAllowed;
-			int notificationsSent, notificationsAllowed;
-			try
+			if (notificationsAllowed())
 			{
-				notificationsAllowed = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
-				triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
-				notificationsSent = globalState.getNotificationsSent();
-			}
-			catch (TriggerException e)
-			{
-				notificationsSent = 0;
-				notificationsAllowed = TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
-				triggersAllowed = TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED;
-			}
-
-			if (triggersAllowed && notificationsSent < notificationsAllowed)
-			{
-				listener.onNotificationTriggered();
-				globalState.incrementNotificationsSent();
+				if (belowDailyCap())
+				{
+					listener.onNotificationTriggered();
+					globalState.incrementNotificationsSent();
+				}
+				else if (TriggerManagerConstants.LOG_MESSAGES)
+				{
+					Log.d(getTriggerTag(), "Notifications not allowed: daily cap has been reached.");
+				}
 			}
 			else if (TriggerManagerConstants.LOG_MESSAGES)
 			{
-				Log.d("Trigger", "Not sending notification: "+notificationsSent+" (sent) >= "+notificationsAllowed+" (allowed), triggers allowed: "+triggersAllowed);
+				Log.d(getTriggerTag(), "Notifications not allowed: not calling onNotificationTriggered()");
 			}
 		}
 	}
+	
+	private boolean notificationsAllowed()
+	{
+		boolean triggersAllowed;
+		try
+		{
+			triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
+		}
+		catch (TriggerException e)
+		{
+			triggersAllowed = TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED;
+		}
+		return triggersAllowed;
+	}
+	
+	private boolean belowDailyCap()
+	{
+		int notificationsSent, notificationsAllowed;
+		try
+		{
+			notificationsSent = globalState.getNotificationsSent();
+			notificationsAllowed = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
+		}
+		catch (TriggerException e)
+		{
+			notificationsSent = 0;
+			notificationsAllowed = TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
+		}
+		return (notificationsSent < notificationsAllowed);
+	}
+	
+	private boolean isSystemTrigger()
+	{
+		if (params.containsKey(TriggerConfig.IGNORE_USER_PREFERENCES))
+		{
+			return (Boolean) params.getParameter(TriggerConfig.IGNORE_USER_PREFERENCES);
+		}
+		else
+		{
+			return TriggerManagerConstants.DEFAULT_IS_TRIGGER_UNCAPPED;
+		}
+	}
 
-	public abstract void kill();
+	public void kill() throws TriggerException
+	{
+		state = DEAD;
+	}
 
-	public abstract void pause();
+	public void pause() throws TriggerException
+	{
+		state = PAUSED;
+	}
 
-	public abstract void resume();
-
+	public void resume() throws TriggerException
+	{
+		state = RUNNING;
+	}
+	
+	protected void initialise() throws TriggerException
+	{
+		state = RUNNING;
+	}
+	
+	protected abstract String getTriggerTag();
+	
+	public void reset(TriggerConfig params) throws TriggerException
+	{
+		this.params = params;
+		kill();
+		initialise();
+	}
 }

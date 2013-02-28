@@ -32,21 +32,15 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 
 public class OneTimeTrigger extends ClockTrigger
 {
-	private final long surveyDate;
-
 	public OneTimeTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
 		super(context, listener, parameters);
-		if (parameters.containsKey(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS))
-		{
-			surveyDate = (Long) parameters.getParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS);
-			initialise();
-		}
-		else throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.CLOCK_TRIGGER_DATE");
 	}
 	
 	protected void initialise() throws TriggerException
 	{
+		super.initialise();
+		long surveyDate = getSurveyDate();
 		long waitTime = surveyDate - System.currentTimeMillis();
 		if (waitTime > 0)
 		{
@@ -58,5 +52,20 @@ public class OneTimeTrigger extends ClockTrigger
 			calendar.setTimeInMillis(surveyDate);
 			throw new TriggerException(TriggerException.DATE_IN_PAST, "Scheduled time is in the past: "+calendar.getTime().toString());
 		}
+	}
+	
+	private long getSurveyDate() throws TriggerException
+	{
+		if (params.containsKey(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS))
+		{
+			return (Long) params.getParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS);
+		}
+		else throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.CLOCK_TRIGGER_DATE");
+	}
+	
+	@Override
+	protected String getTriggerTag()
+	{
+		return "OneTimeTrigger";
 	}
 }

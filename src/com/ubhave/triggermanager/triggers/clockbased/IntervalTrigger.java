@@ -30,27 +30,18 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 
 public class IntervalTrigger extends ClockTrigger
 {
-	private final long intervalLengthInMillis;
-	private final long startDelayInMillis;
 
 	public IntervalTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
 		super(context, listener, parameters);
-		if (parameters.containsKey(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS) && parameters.containsKey(TriggerConfig.INTERVAL_TRIGGER_START_DELAY))
-		{
-			this.intervalLengthInMillis = (Long) parameters.getParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS);
-			this.startDelayInMillis = (Long) parameters.getParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY);
-			initialise();
-		}
-		else
-		{
-			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS and TriggerConfig.INTERVAL_TRIGGER_START_DELAY");
-		}
 	}
 
 	@Override
 	protected void initialise() throws TriggerException
 	{
+		super.initialise();
+		long startDelayInMillis = getStartDelay();
+		long intervalLengthInMillis = getIntervalLength();
 		try
 		{
 			surveyTimer.schedule(new SurveyNotification(), startDelayInMillis, intervalLengthInMillis);
@@ -60,5 +51,34 @@ public class IntervalTrigger extends ClockTrigger
 			throw new TriggerException(TriggerException.INVALID_STATE, "Illegal arguments in interval trigger. Start delay: "+startDelayInMillis+", Interval: "+intervalLengthInMillis);
 		}
 	}
-
+	
+	private long getStartDelay() throws TriggerException
+	{
+		if (params.containsKey(TriggerConfig.INTERVAL_TRIGGER_START_DELAY))
+		{
+			return (Long) params.getParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY);
+		}
+		else
+		{
+			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.INTERVAL_TRIGGER_START_DELAY");
+		}
+	}
+	
+	private long getIntervalLength() throws TriggerException
+	{
+		if (params.containsKey(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS))
+		{
+			return (Long) params.getParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS);
+		}
+		else
+		{
+			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS");
+		}
+	}
+	
+	@Override
+	protected String getTriggerTag()
+	{
+		return "IntervalTrigger";
+	}
 }

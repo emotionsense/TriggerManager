@@ -24,19 +24,17 @@ package com.ubhave.triggermanager.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.SparseArray;
 
 import com.ubhave.triggermanager.TriggerException;
 
 public class GlobalConfig
 {
-	public static final String DO_NOT_DISTURB_BEFORE = "beforeHour";
-	public static final String DO_NOT_DISTURB_AFTER = "afterHour";
+	public static final String DO_NOT_DISTURB_BEFORE_MINUTES = "beforeHour";
+	public static final String DO_NOT_DISTURB_AFTER_MINUTES = "afterHour";
 	public static final String MAX_DAILY_NOTIFICATION_CAP = "dailyCap";
 	public static final String TRIGGERS_ENABLED = "triggersEnabled";
 
-	public static final String MIN_TRIGGER_INTERVAL_MILLIES = "minInterval";
-	public static final String SENSE_CYCLE_TOTAL_TIME_MILLIES = "senseTime";
+	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
 
 	private static GlobalConfig globalConfig;
 	private static final Object lock = new Object();
@@ -61,12 +59,10 @@ public class GlobalConfig
 	}
 
 	private final SharedPreferences preferences;
-	private final ConfigListenerList listeners;
 
 	public GlobalConfig(Context context)
 	{
 		preferences = context.getSharedPreferences(TriggerManagerConstants.GLOBAL_PREFERENCES, Context.MODE_PRIVATE);
-		listeners = new ConfigListenerList();
 	}
 
 	public void setParameter(String parameterName, Object parameterValue)
@@ -78,44 +74,15 @@ public class GlobalConfig
 			{
 				editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
 			}
-			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MILLIES))
+			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MINUTES))
 			{
-				editor.putLong(MIN_TRIGGER_INTERVAL_MILLIES, (Long) parameterValue);
+				editor.putLong(MIN_TRIGGER_INTERVAL_MINUTES, (Long) parameterValue);
 			}
 			else
 			{
 				editor.putInt(parameterName, (Integer) parameterValue);
 			}
 			editor.commit();
-			notifyListeners();
-		}
-	}
-
-	public int addConfigListener(ConfigChangeListener listener)
-	{
-		int value = -1;
-		try
-		{
-			value = listeners.add(listener);
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-		}
-		return value;
-	}
-	
-	public void removeConfigListener(int id)
-	{
-		listeners.remove(id);
-	}
-
-	private void notifyListeners()
-	{
-		SparseArray<ConfigChangeListener> listenerList = listeners.getAll();
-		for (int i = 0; i < listenerList.size(); i++)
-		{
-			listenerList.valueAt(i).onGlobalConfigChanged();
 		}
 	}
 
@@ -127,9 +94,9 @@ public class GlobalConfig
 			{
 				return preferences.getBoolean(TRIGGERS_ENABLED, TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED);
 			}
-			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MILLIES))
+			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MINUTES))
 			{
-				return preferences.getLong(MIN_TRIGGER_INTERVAL_MILLIES, TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES);
+				return preferences.getLong(MIN_TRIGGER_INTERVAL_MINUTES, TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES);
 			}
 			else
 			{
@@ -140,14 +107,12 @@ public class GlobalConfig
 
 	private int getDefault(String key) throws TriggerException
 	{
-		if (key.equals(DO_NOT_DISTURB_BEFORE))
-			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE;
-		else if (key.equals(DO_NOT_DISTURB_AFTER))
-			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER;
-		else if (key.equals(MIN_TRIGGER_INTERVAL_MILLIES))
-			return TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MILLIES;
-		else if (key.equals(SENSE_CYCLE_TOTAL_TIME_MILLIES))
-			return TriggerManagerConstants.DEFAULT_SENSE_TIME_MILLIES;
+		if (key.equals(DO_NOT_DISTURB_BEFORE_MINUTES))
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES;
+		else if (key.equals(DO_NOT_DISTURB_AFTER_MINUTES))
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES;
+		else if (key.equals(MIN_TRIGGER_INTERVAL_MINUTES))
+			return TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES;
 		else if (key.equals(MAX_DAILY_NOTIFICATION_CAP))
 			return TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
 		else

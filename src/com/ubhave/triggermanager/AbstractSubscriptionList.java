@@ -44,7 +44,7 @@ public abstract class AbstractSubscriptionList<H>
 		return id;
 	}
 
-	public void remove(int id)
+	public void remove(int id) throws TriggerException
 	{
 		H s = map.get(id);
 		if (s != null)

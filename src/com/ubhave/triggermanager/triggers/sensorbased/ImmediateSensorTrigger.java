@@ -25,7 +25,6 @@ package com.ubhave.triggermanager.triggers.sensorbased;
 import java.util.Random;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
@@ -38,128 +37,95 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 
-public class SensorTrigger extends Trigger implements SensorDataListener
-{	
-	private final ESSensorManagerInterface sensorManager;
-	private final int subscriptionId, sensorType;
-	private boolean isDataInteresting;
-	
-	private Thread waitThread;
-	private final double notificationProbability;
-	private final long waitTimeInMillis;
-	
-	protected final SensorDataClassifier classifier;
-	
-	public SensorTrigger(Context context, TriggerReceiver listener, int sensorType, TriggerConfig params) throws TriggerException, ESException
+public class ImmediateSensorTrigger extends Trigger implements SensorDataListener
+{
+	protected final ESSensorManagerInterface sensorManager;
+	protected SensorDataClassifier classifier;
+	private int subscriptionId;
+
+	public ImmediateSensorTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
 	{
 		super(context, listener, params);
-		this.sensorType = sensorType;
 		this.sensorManager = ESSensorManager.getSensorManager(context);
-		setupParams(sensorType, true);
-		this.classifier = SensorClassifiers.getSensorClassifier(sensorType);
-		this.subscriptionId = sensorManager.subscribeToSensorData(sensorType, this);
-		
-		if (params.containsKey(TriggerConfig.POST_SENSE_WAIT_INTERVAL_MILLIS))
+	}
+
+	@Override
+	protected void initialise() throws TriggerException
+	{
+		super.initialise();
+		int sensorType = getSensorType();
+		try
 		{
-			waitTimeInMillis = (Long) params.getParameter(TriggerConfig.POST_SENSE_WAIT_INTERVAL_MILLIS);
+			setupParams(getSensorType(), true);
+			this.classifier = SensorClassifiers.getSensorClassifier(sensorType);
+			this.subscriptionId = sensorManager.subscribeToSensorData(sensorType, this);
 		}
-		else waitTimeInMillis = 0;
-		
-		if (params.containsKey(TriggerConfig.NOTIFICATION_PROBABILITY))
+		catch (ESException e)
 		{
-			notificationProbability = (Double) params.getParameter(TriggerConfig.NOTIFICATION_PROBABILITY);
+			throw new TriggerException(TriggerException.UNKNOWN_TRIGGER, "No classifier available for sensor type: "+sensorType);
 		}
-		else notificationProbability = TriggerManagerConstants.DEFAULT_NOTIFICATION_PROBABILITY;
 	}
 	
-	@Override
-	public void onDataSensed(SensorData sensorData)
+	protected int getSensorType() throws TriggerException
 	{
-		isDataInteresting = classifier.isInteresting(sensorData);
-		Log.d("SensorTrigger", "onDataSensed: "+isDataInteresting);
-		if (!isDataInteresting)
+		if (params.containsKey(TriggerConfig.SENSOR_TYPE))
 		{
-			if (waitThread != null)
-			{
-				waitThread.interrupt();
-			}
+			return (Integer) params.getParameter(TriggerConfig.SENSOR_TYPE);
 		}
 		else
 		{
-			if (waitThread == null)
-			{
-				startWaiting();
-			}
+			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Sensor Type not specified in parameters.");
 		}
 	}
-	
-	private void startWaiting()
-	{
-		if (this.waitTimeInMillis > 0)
-		{
-			if (waitThread == null)
-			{
-				waitThread = new Thread()
-				{
-					@Override
-					public void run()
-					{
-						try
-						{
-							int waited = 0;
 
-							while (waited < waitTimeInMillis)
-							{
-								sleep(1000);
-								waited += 1000;
-							}
-							doneWaiting();
-						}
-						catch (InterruptedException e)
-						{
-						}
-					}
-				};
-				waitThread.start();
-			}
-		}
-		else doneWaiting();
-	}
-	
-	private void doneWaiting()
+	private double notificationProbability()
 	{
-		if (isDataInteresting)
+		if (params.containsKey(TriggerConfig.NOTIFICATION_PROBABILITY))
 		{
-			waitThread = null;
+			return (Double) params.getParameter(TriggerConfig.NOTIFICATION_PROBABILITY);
+		}
+		else
+		{
+			return TriggerManagerConstants.DEFAULT_NOTIFICATION_PROBABILITY;
+		}
+	}
+
+	@Override
+	public void onDataSensed(SensorData sensorData)
+	{
+		if (classifier.isInteresting(sensorData))
+		{
 			sendNotification();
 		}
 	}
 	
 	@Override
-	public void sendNotification()
+	protected void sendNotification()
 	{
-		double currentProbability = (new Random()).nextDouble();
-		if (currentProbability <= notificationProbability)
+		double notificationProbability = notificationProbability();
+		double p = (new Random()).nextDouble();
+		if (p <= notificationProbability)
 		{
 			super.sendNotification();
 		}
 	}
 
 	@Override
-	public void kill()
+	public void kill() throws TriggerException
 	{
+		super.kill();
 		try
 		{
-			setupParams(sensorType, false);
+			setupParams(getSensorType(), false);
 			sensorManager.unsubscribeFromSensorData(subscriptionId);
 		}
 		catch (ESException e)
 		{
-			e.printStackTrace();
+			throw new TriggerException(TriggerException.INVALID_STATE, "Cannot unsubscribe from sensor subscription.");
 		}
 	}
 
@@ -170,38 +136,42 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 	}
 
 	@Override
-	public void pause()
+	public void pause() throws TriggerException
 	{
+		super.pause();
 		try
 		{
+			setupParams(getSensorType(), false);
 			sensorManager.pauseSubscription(subscriptionId);
 		}
 		catch (ESException e)
 		{
-			e.printStackTrace();
+			throw new TriggerException(TriggerException.INVALID_STATE, "Cannot pause sensor subscription.");
 		}
 	}
 
 	@Override
-	public void resume()
+	public void resume() throws TriggerException
 	{
+		super.resume();
 		try
 		{
+			setupParams(getSensorType(), true);
 			sensorManager.unPauseSubscription(subscriptionId);
 		}
 		catch (ESException e)
 		{
-			e.printStackTrace();
+			throw new TriggerException(TriggerException.INVALID_STATE, "Cannot resume sensor subscription.");
 		}
 	}
-	
-	private void setupParams(int sensorType, boolean settingUp)
+
+	private void setupParams(int sensorType, boolean settingUp) // hack
 	{
 		if (sensorManager != null)
 		{
-			try 
+			try
 			{
-				switch(sensorType)
+				switch (sensorType)
 				{
 				case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
 					if (settingUp)
@@ -210,7 +180,8 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 					}
 					else
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, com.ubhave.sensormanager.config.Constants.ACCELEROMETER_SLEEP_INTERVAL);
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
+								com.ubhave.sensormanager.config.Constants.ACCELEROMETER_SLEEP_INTERVAL);
 					}
 					break;
 				case SensorUtils.SENSOR_TYPE_MICROPHONE:
@@ -220,16 +191,30 @@ public class SensorTrigger extends Trigger implements SensorDataListener
 					}
 					else
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, com.ubhave.sensormanager.config.Constants.MICROPHONE_SLEEP_INTERVAL);
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
+								com.ubhave.sensormanager.config.Constants.MICROPHONE_SLEEP_INTERVAL);
 					}
 					break;
-				}	
+				}
 			}
 			catch (ESException e)
 			{
 				e.printStackTrace();
 			}
-			
+		}
+	}
+
+	@Override
+	protected String getTriggerTag()
+	{
+		try
+		{
+			return "ImmediateSensorTrigger"+SensorUtils.getSensorName(getSensorType());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "ImmediateSensorTrigger";
 		}
 	}
 }

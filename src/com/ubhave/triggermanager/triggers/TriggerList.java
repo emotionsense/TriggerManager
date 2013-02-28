@@ -25,7 +25,6 @@ package com.ubhave.triggermanager.triggers;
 import android.content.Context;
 
 import com.ubhave.sensormanager.ESException;
-import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.AbstractSubscriptionList;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
@@ -33,8 +32,8 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.OneTimeTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
-import com.ubhave.triggermanager.triggers.hybrid.HybridTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.SensorTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.DelayedSensorTrigger;
+import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
 
 public class TriggerList extends AbstractSubscriptionList<Trigger>
 {
@@ -50,41 +49,47 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 		case TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM:
 			return new RandomFrequencyTrigger(context, listener, params);
 
-		case TriggerUtils.HYBRID_RANDOM_MICROPHONE:
-			return new HybridTrigger(context, TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM, TriggerUtils.SENSOR_TRIGGER_MICROPHONE, listener, params);
-		case TriggerUtils.HYBRID_RANDOM_ACCELEROMETER:
-			return new HybridTrigger(context, TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM, TriggerUtils.SENSOR_TRIGGER_ACCELEROMETER, listener, params);
-
 		default:
-			try
+			Trigger trigger = getSensorTrigger(context, type, listener, params);
+			if (trigger == null)
 			{
-				SensorUtils.getSensorName(type);
-				try
-				{
-					SensorTrigger trigger = new SensorTrigger(context, listener, type, params);
-					return trigger;
-				}
-				catch (ESException e)
-				{
-					throw new TriggerException(TriggerException.UNABLE_TO_ALLOCATE, "Cannot subscribe to sensor. Do you have battery permissions?");
-				}
-			}
-			catch (ESException e)
-			{
-				e.printStackTrace();
 				throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
 			}
+			else
+			{
+				return trigger;
+			}
+		}
+	}
+	
+	private static Trigger getSensorTrigger(Context context, int type, TriggerReceiver listener, TriggerConfig params) throws TriggerException
+	{
+		try
+		{
+			switch (type)
+			{
+			case TriggerUtils.SENSOR_TRIGGER_IMMEDIATE:
+				return new ImmediateSensorTrigger(context, listener, params);
+			case TriggerUtils.SENSOR_TRIGGER_DELAYED:
+				return new DelayedSensorTrigger(context, listener, params);
+			default:
+				return null;
+			}
+		}
+		catch (ESException e)
+		{
+			throw new TriggerException(TriggerException.UNABLE_TO_ALLOCATE, "Cannot subscribe to sensor. Do you have battery permissions?");
 		}
 	}
 
 	@Override
-	public void remove(int triggerId)
+	public void remove(int triggerId) throws TriggerException
 	{
 		Trigger s = map.get(triggerId);
 		if (s != null)
 		{
 			s.kill();
-			map.delete(triggerId);
 		}
+		super.remove(triggerId);
 	}
 }

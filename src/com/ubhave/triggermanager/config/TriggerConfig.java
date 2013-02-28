@@ -35,7 +35,8 @@ public class TriggerConfig
 	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
 	
 	// Sensor Based Triggers
-	public static final String NOTIFICATION_PROBABILITY = "notificationProb";
+	public final static String SENSOR_TYPE = "sensorType";
+	public final static String NOTIFICATION_PROBABILITY = "notificationProb";
 	public final static String POST_SENSE_WAIT_INTERVAL_MILLIS = "postSenseWait";
 	
 	// Hybrid Triggers

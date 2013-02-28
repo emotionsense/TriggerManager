@@ -34,6 +34,12 @@ import com.ubhave.triggermanager.triggers.Trigger;
 
 public abstract class ClockTrigger extends Trigger
 {
+	/*
+	 * Abstract Clock Trigger
+	 * For any kind of triggers that are based on time.
+	 * Note that clock triggers cannot be paused; a call to pause them will kill them.
+	 */
+	
 	protected Timer surveyTimer;
 
 	protected class SurveyNotification extends TimerTask
@@ -48,33 +54,40 @@ public abstract class ClockTrigger extends Trigger
 	public ClockTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		super(context, listener, params);
-		surveyTimer = new Timer();
-	}
-
-	protected abstract void initialise() throws TriggerException;
-
-	@Override
-	public void kill()
-	{
-		surveyTimer.cancel();
 	}
 
 	@Override
-	public void pause()
+	public void kill() throws TriggerException
 	{
+		super.kill();
+		if (surveyTimer != null)
+		{
+			surveyTimer.cancel();
+			surveyTimer = null;
+		}
+	}
+
+	@Override
+	public void pause() throws TriggerException
+	{
+		super.pause();
 		kill();
 	}
 
 	@Override
-	public void resume()
+	public void resume() throws TriggerException
 	{
-		try
+		super.resume();
+		if (state != RUNNING)
 		{
 			initialise();
 		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-		}
+	}
+	
+	@Override
+	protected void initialise() throws TriggerException
+	{
+		super.initialise();
+		surveyTimer = new Timer();
 	}
 }
