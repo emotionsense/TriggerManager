@@ -74,10 +74,6 @@ public class GlobalConfig
 			{
 				editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
 			}
-			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MINUTES))
-			{
-				editor.putLong(MIN_TRIGGER_INTERVAL_MINUTES, (Long) parameterValue);
-			}
 			else
 			{
 				editor.putInt(parameterName, (Integer) parameterValue);
@@ -93,10 +89,6 @@ public class GlobalConfig
 			if (parameterName.equals(TRIGGERS_ENABLED))
 			{
 				return preferences.getBoolean(TRIGGERS_ENABLED, TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED);
-			}
-			else if (parameterName.equals(MIN_TRIGGER_INTERVAL_MINUTES))
-			{
-				return preferences.getLong(MIN_TRIGGER_INTERVAL_MINUTES, TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES);
 			}
 			else
 			{

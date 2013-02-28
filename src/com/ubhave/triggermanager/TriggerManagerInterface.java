@@ -48,11 +48,7 @@ public interface TriggerManagerInterface
 
 	public Object getGlobalConfigValue(String configKey) throws TriggerException;
 	
-	/*
-	 * Methods used in testing
-	 */
-	
-//	public void resetDailyCap();
+	public void resetDailyCap();
 
 }
 
