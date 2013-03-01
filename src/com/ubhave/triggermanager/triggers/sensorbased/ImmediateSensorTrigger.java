@@ -25,6 +25,7 @@ package com.ubhave.triggermanager.triggers.sensorbased;
 import java.util.Random;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
@@ -33,6 +34,7 @@ import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.classifier.SensorClassifiers;
 import com.ubhave.sensormanager.classifier.SensorDataClassifier;
 import com.ubhave.sensormanager.config.SensorConfig;
+import com.ubhave.sensormanager.config.SensorManagerConstants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
@@ -97,6 +99,11 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 	@Override
 	public void onDataSensed(SensorData sensorData)
 	{
+		if (TriggerManagerConstants.LOG_MESSAGES)
+		{
+			Log.d("ImmediateSensorTrigger", "onDataSensed() "+sensorData.toString());
+		}
+		
 		if (classifier.isInteresting(sensorData))
 		{
 			sendNotification();
@@ -179,12 +186,12 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 				case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
 					if (settingUp)
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 30));
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 10));
 					}
 					else
 					{
 						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
-								com.ubhave.sensormanager.config.Constants.ACCELEROMETER_SLEEP_INTERVAL);
+								SensorManagerConstants.ACCELEROMETER_SLEEP_INTERVAL);
 					}
 					break;
 				case SensorUtils.SENSOR_TYPE_MICROPHONE:
@@ -195,7 +202,7 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 					else
 					{
 						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
-								com.ubhave.sensormanager.config.Constants.MICROPHONE_SLEEP_INTERVAL);
+								SensorManagerConstants.MICROPHONE_SLEEP_INTERVAL);
 					}
 					break;
 				}
