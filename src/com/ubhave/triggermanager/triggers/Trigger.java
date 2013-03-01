@@ -95,6 +95,7 @@ public abstract class Trigger
 		}
 		catch (TriggerException e)
 		{
+			e.printStackTrace();
 			triggersAllowed = TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED;
 		}
 		return triggersAllowed;
@@ -110,9 +111,16 @@ public abstract class Trigger
 		}
 		catch (TriggerException e)
 		{
+			e.printStackTrace();
 			notificationsSent = 0;
 			notificationsAllowed = TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
 		}
+		if (TriggerManagerConstants.LOG_MESSAGES)
+		{
+			Log.d("Trigger", "Notifications Sent = "+notificationsSent);
+			Log.d("Trigger", "Notifications Allowed = "+notificationsAllowed);
+		}
+		
 		return (notificationsSent < notificationsAllowed);
 	}
 	

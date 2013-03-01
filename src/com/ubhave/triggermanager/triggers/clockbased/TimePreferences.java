@@ -15,7 +15,6 @@ public class TimePreferences
 	
 	private final int earlyLimit;
 	private final int lateLimit;
-	private final int maxDaily;
 	private final int minInterval;
 	private final Random random;
 	
@@ -27,12 +26,6 @@ public class TimePreferences
 		earlyLimit = (Integer) config.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE_MINUTES);
 		lateLimit = (Integer) config.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER_MINUTES);
 		minInterval = (Integer) config.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MINUTES);
-		maxDaily = (Integer) config.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
-	}
-	
-	public int getDailyCap()
-	{
-		return maxDaily;
 	}
 	
 	public int pickRandomTimeWithinPreferences()

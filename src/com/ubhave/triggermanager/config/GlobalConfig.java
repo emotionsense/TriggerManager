@@ -24,6 +24,7 @@ package com.ubhave.triggermanager.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 
@@ -67,33 +68,31 @@ public class GlobalConfig
 
 	public void setParameter(String parameterName, Object parameterValue)
 	{
-		synchronized (lock)
+		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			SharedPreferences.Editor editor = preferences.edit();
-			if (parameterName.equals(TRIGGERS_ENABLED))
-			{
-				editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
-			}
-			else
-			{
-				editor.putInt(parameterName, (Integer) parameterValue);
-			}
-			editor.commit();
+			Log.d("GlobalConfig", "Setting: "+parameterName);
 		}
+		SharedPreferences.Editor editor = preferences.edit();
+		if (parameterName.equals(TRIGGERS_ENABLED))
+		{
+			editor.putBoolean(TRIGGERS_ENABLED, (Boolean) parameterValue);
+		}
+		else
+		{
+			editor.putInt(parameterName, (Integer) parameterValue);
+		}
+		editor.commit();
 	}
 
 	public Object getParameter(String parameterName) throws TriggerException
 	{
-		synchronized (lock)
+		if (parameterName.equals(TRIGGERS_ENABLED))
 		{
-			if (parameterName.equals(TRIGGERS_ENABLED))
-			{
-				return preferences.getBoolean(TRIGGERS_ENABLED, TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED);
-			}
-			else
-			{
-				return preferences.getInt(parameterName, getDefault(parameterName));
-			}
+			return preferences.getBoolean(TRIGGERS_ENABLED, TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED);
+		}
+		else
+		{
+			return preferences.getInt(parameterName, getDefault(parameterName));
 		}
 	}
 

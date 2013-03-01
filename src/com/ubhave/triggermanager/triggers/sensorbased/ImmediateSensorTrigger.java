@@ -43,14 +43,13 @@ import com.ubhave.triggermanager.triggers.Trigger;
 
 public class ImmediateSensorTrigger extends Trigger implements SensorDataListener
 {
-	protected final ESSensorManagerInterface sensorManager;
+	protected ESSensorManagerInterface sensorManager;
 	protected SensorDataClassifier classifier;
 	private int subscriptionId;
 
 	public ImmediateSensorTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
 	{
 		super(context, listener, params);
-		this.sensorManager = ESSensorManager.getSensorManager(context);
 	}
 
 	@Override
@@ -60,6 +59,7 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 		int sensorType = getSensorType();
 		try
 		{
+			this.sensorManager = ESSensorManager.getSensorManager(context);
 			setupParams(getSensorType(), true);
 			this.classifier = SensorClassifiers.getSensorClassifier(sensorType);
 			this.subscriptionId = sensorManager.subscribeToSensorData(sensorType, this);
@@ -121,7 +121,10 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 		try
 		{
 			setupParams(getSensorType(), false);
-			sensorManager.unsubscribeFromSensorData(subscriptionId);
+			if (sensorManager != null)
+			{
+				sensorManager.unsubscribeFromSensorData(subscriptionId);
+			}
 		}
 		catch (ESException e)
 		{

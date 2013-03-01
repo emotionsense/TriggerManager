@@ -36,7 +36,6 @@ public class GlobalState
 {
 	private final static String CURRENT_DAY = "currentDay";
 	private final static String NOTIFICATIONS = "notifications";
-	private final static String LAST_NOTIFICATION = "lastNotification";
 	
 	private static GlobalState globalState;
 	private static final Object lock = new Object();
@@ -69,25 +68,21 @@ public class GlobalState
 	
 	public void incrementNotificationsSent()
 	{
-		synchronized (lock)
+		int notifications = getNotificationsSent() + 1;
+		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			int notifications = getNotificationsSent() + 1;
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putInt(NOTIFICATIONS, notifications);
-			editor.putLong(LAST_NOTIFICATION, System.currentTimeMillis());
-			editor.commit();
+			// TODO
 		}
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(NOTIFICATIONS, notifications);
+		editor.commit();
 	}
 	
 	public void reset()
 	{
-		synchronized (lock)
-		{
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putInt(NOTIFICATIONS, 0);
-			editor.remove(LAST_NOTIFICATION);
-			editor.commit();
-		}
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(NOTIFICATIONS, 0);
+		editor.commit();
 	}
 	
 	@SuppressLint("SimpleDateFormat")
@@ -99,25 +94,20 @@ public class GlobalState
 		
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			Log.d("GlobalState", "Notifications for: "+dateKey+", compared to "+currentDate);
+			Log.d("GlobalState", "Notifications for: "+dateKey+": "+currentDate+", same day? "+dateKey.equals(currentDate));
 		}
 		
 		if (currentDate == null || !dateKey.equals(currentDate))
 		{
-			synchronized (lock)
+			if (TriggerManagerConstants.LOG_MESSAGES)
 			{
-				SharedPreferences.Editor editor = preferences.edit();
-				editor.putString(CURRENT_DAY, dateKey);
-				editor.putInt(NOTIFICATIONS, 0);
-				editor.commit();
+				Log.d("GlobalState", "Dates are different, setting to zero");
 			}
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putString(CURRENT_DAY, dateKey);
+			editor.putInt(NOTIFICATIONS, 0);
+			editor.commit();
 		}
 		return preferences.getInt(NOTIFICATIONS, 0);
 	}
-	
-	public long getLastNotificationTime()
-	{
-		return preferences.getLong(LAST_NOTIFICATION, 0);
-	}
-
 }

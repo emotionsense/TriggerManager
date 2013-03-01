@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
+import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 
@@ -83,6 +84,18 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		scheduleNotifications();
 	}
 	
+	private int numberOfNotifications()
+	{
+		if (params.containsKey(TriggerConfig.NUMBER_OF_NOTIFICATIONS))
+		{
+			return (Integer) params.getParameter(TriggerConfig.NUMBER_OF_NOTIFICATIONS);
+		}
+		else
+		{
+			return TriggerManagerConstants.DEFAULT_NUMBER_OF_NOTIFICATIONS;
+		}
+	}
+	
 	private void scheduleDailyUpdate()
 	{
 		if (schedulerTimer != null)
@@ -109,7 +122,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		ArrayList<Integer> randomTimes = pickTimes();
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications.");
+			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications, (Requested = "+numberOfNotifications()+", Max = "+((Integer)globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP)).intValue()+")");
 		}
 		
 		for (Integer time : randomTimes)
@@ -142,12 +155,7 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		try
 		{
 			TimePreferences preferences = new TimePreferences(context);
-			if (TriggerManagerConstants.LOG_MESSAGES)
-			{
-				Log.d(LOG_TAG, "Max daily allowed is: "+preferences.getDailyCap());
-			}
-			
-			for (int i=0; i<preferences.getDailyCap(); i++)
+			for (int i=0; i<numberOfNotifications(); i++)
 			{
 				boolean entryAdded = false;
 				int attempts = 0;
