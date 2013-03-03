@@ -33,9 +33,8 @@ public class GlobalConfig
 	public static final String DO_NOT_DISTURB_BEFORE_MINUTES = "beforeHour";
 	public static final String DO_NOT_DISTURB_AFTER_MINUTES = "afterHour";
 	public static final String MAX_DAILY_NOTIFICATION_CAP = "dailyCap";
-	public static final String TRIGGERS_ENABLED = "triggersEnabled";
-
 	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
+	public static final String TRIGGERS_ENABLED = "triggersEnabled";
 
 	private static GlobalConfig globalConfig;
 	private static final Object lock = new Object();
@@ -72,6 +71,7 @@ public class GlobalConfig
 		{
 			Log.d("GlobalConfig", "Setting: "+parameterName);
 		}
+		
 		SharedPreferences.Editor editor = preferences.edit();
 		if (parameterName.equals(TRIGGERS_ENABLED))
 		{

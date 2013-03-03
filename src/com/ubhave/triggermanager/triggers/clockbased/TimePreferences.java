@@ -8,6 +8,7 @@ import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 
 public class TimePreferences
 {
@@ -23,9 +24,23 @@ public class TimePreferences
 		random = new Random();
 		
 		GlobalConfig config = GlobalConfig.getGlobalConfig(context);
-		earlyLimit = (Integer) config.getParameter(GlobalConfig.DO_NOT_DISTURB_BEFORE_MINUTES);
-		lateLimit = (Integer) config.getParameter(GlobalConfig.DO_NOT_DISTURB_AFTER_MINUTES);
-		minInterval = (Integer) config.getParameter(GlobalConfig.MIN_TRIGGER_INTERVAL_MINUTES);
+		earlyLimit = getParameter(config, GlobalConfig.DO_NOT_DISTURB_BEFORE_MINUTES, TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES);
+		lateLimit = getParameter(config, GlobalConfig.DO_NOT_DISTURB_AFTER_MINUTES, TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES);
+		minInterval = getParameter(config, GlobalConfig.MIN_TRIGGER_INTERVAL_MINUTES, TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES);
+	}
+	
+	private int getParameter(GlobalConfig config, String key, int defaultValue)
+	{
+		int value;
+		try
+		{
+			value = (Integer) config.getParameter(key);
+		}
+		catch (Exception e)
+		{
+			value = defaultValue;
+		}
+		return value;
 	}
 	
 	public int pickRandomTimeWithinPreferences()

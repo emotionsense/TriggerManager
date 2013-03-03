@@ -71,7 +71,7 @@ public class GlobalState
 		int notifications = getNotificationsSent() + 1;
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			// TODO
+			Log.d("GlobalState", "Incrementing to: "+notifications);
 		}
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(NOTIFICATIONS, notifications);
