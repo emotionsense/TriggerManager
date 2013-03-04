@@ -30,11 +30,11 @@ import com.ubhave.triggermanager.TriggerException;
 
 public class GlobalConfig
 {
-	public static final String DO_NOT_DISTURB_BEFORE_MINUTES = "beforeHour";
-	public static final String DO_NOT_DISTURB_AFTER_MINUTES = "afterHour";
-	public static final String MAX_DAILY_NOTIFICATION_CAP = "dailyCap";
-	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "minInterval";
-	public static final String TRIGGERS_ENABLED = "triggersEnabled";
+	public static final String DO_NOT_DISTURB_BEFORE_MINUTES = "limitBeforeHour";
+	public static final String DO_NOT_DISTURB_AFTER_MINUTES = "limitAfterHour";
+	public static final String MAX_DAILY_NOTIFICATION_CAP = "limitDailyCap";
+	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "notificationMinInterval";
+	public static final String TRIGGERS_ENABLED = "aretriggersEnabled";
 
 	private static GlobalConfig globalConfig;
 	private static final Object lock = new Object();
