@@ -19,11 +19,17 @@ public class TimePreferences
 	private final int minInterval;
 	private final Random random;
 	
-	public TimePreferences(Context context) throws TriggerException
+	public TimePreferences(Context context)
 	{
 		random = new Random();
+		GlobalConfig config = null;
+		try
+		{
+			config = GlobalConfig.getGlobalConfig(context);
+		}
+		catch (TriggerException e)
+		{}
 		
-		GlobalConfig config = GlobalConfig.getGlobalConfig(context);
 		earlyLimit = getParameter(config, GlobalConfig.DO_NOT_DISTURB_BEFORE_MINUTES, TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES);
 		lateLimit = getParameter(config, GlobalConfig.DO_NOT_DISTURB_AFTER_MINUTES, TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES);
 		minInterval = getParameter(config, GlobalConfig.MIN_TRIGGER_INTERVAL_MINUTES, TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES);
@@ -31,10 +37,13 @@ public class TimePreferences
 	
 	private int getParameter(GlobalConfig config, String key, int defaultValue)
 	{
-		int value;
+		int value = defaultValue;
 		try
 		{
-			value = (Integer) config.getParameter(key);
+			if (config != null)
+			{
+				value = (Integer) config.getParameter(key);
+			}
 		}
 		catch (Exception e)
 		{
@@ -55,6 +64,11 @@ public class TimePreferences
 		{
 			return TimePreferences.ERROR;
 		}
+	}
+	
+	public boolean timeAllowed(int minuteOfDay)
+	{
+		return (minuteOfDay >= earlyLimit && minuteOfDay <= lateLimit);
 	}
 	
 	public boolean selectedTimeFitsGroup(int selectedTime, ArrayList<Integer> times)
@@ -85,14 +99,11 @@ public class TimePreferences
 		else return b;
 	}
 	
-	private int currentMinute()
+	public int currentMinute()
 	{
 		Calendar calendar = Calendar.getInstance();
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		int minute = calendar.get(Calendar.MINUTE);
-		
+		int minute = calendar.get(Calendar.MINUTE);	
 		return (60 * hour) + minute;
 	}
-	
-	
 }

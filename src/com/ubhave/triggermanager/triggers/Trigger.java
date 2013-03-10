@@ -31,6 +31,7 @@ import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
+import com.ubhave.triggermanager.triggers.clockbased.TimePreferences;
 
 public abstract class Trigger
 {
@@ -71,8 +72,15 @@ public abstract class Trigger
 			{
 				if (belowDailyCap())
 				{
-					listener.onNotificationTriggered();
-					globalState.incrementNotificationsSent();
+					if (isWithinAllowedTimes())
+					{
+						listener.onNotificationTriggered();
+						globalState.incrementNotificationsSent();
+					}
+					else if (TriggerManagerConstants.LOG_MESSAGES)
+					{
+						Log.d(getTriggerTag(), "Notification scheduled outside of allowed times");
+					}
 				}
 				else if (TriggerManagerConstants.LOG_MESSAGES)
 				{
@@ -122,6 +130,12 @@ public abstract class Trigger
 		}
 		
 		return (notificationsSent < notificationsAllowed);
+	}
+	
+	private boolean isWithinAllowedTimes()
+	{
+		TimePreferences timePreferences = new TimePreferences(context);
+		return timePreferences.timeAllowed(timePreferences.currentMinute());
 	}
 	
 	private boolean isSystemTrigger()

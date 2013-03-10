@@ -152,28 +152,21 @@ public class RandomFrequencyTrigger extends ClockTrigger
 	private ArrayList<Integer> pickTimes() throws TriggerException
 	{
 		ArrayList<Integer> times = new ArrayList<Integer>();
-		try
+		TimePreferences preferences = new TimePreferences(context);
+		for (int i=0; i<numberOfNotifications(); i++)
 		{
-			TimePreferences preferences = new TimePreferences(context);
-			for (int i=0; i<numberOfNotifications(); i++)
+			boolean entryAdded = false;
+			int attempts = 0;
+			while (attempts < MAX_SCHEDULING_ATTEMPTS && !entryAdded)
 			{
-				boolean entryAdded = false;
-				int attempts = 0;
-				while (attempts < MAX_SCHEDULING_ATTEMPTS && !entryAdded)
+				attempts++;
+				int time = preferences.pickRandomTimeWithinPreferences();
+				if (preferences.selectedTimeFitsGroup(time, times))
 				{
-					attempts++;
-					int time = preferences.pickRandomTimeWithinPreferences();
-					if (preferences.selectedTimeFitsGroup(time, times))
-					{
-						times.add(time);
-						entryAdded = true;
-					}
+					times.add(time);
+					entryAdded = true;
 				}
 			}
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
 		}
 		return times;
 	}
