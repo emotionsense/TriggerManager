@@ -22,6 +22,7 @@ public class TimePreferences
 	public TimePreferences(Context context)
 	{
 		random = new Random();
+		random.setSeed(System.currentTimeMillis());
 		GlobalConfig config = null;
 		try
 		{
