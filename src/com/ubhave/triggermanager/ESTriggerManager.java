@@ -66,7 +66,7 @@ public class ESTriggerManager implements TriggerManagerInterface
 		Trigger trigger = TriggerList.createTrigger(context, triggerType, key, listener, parameters);
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list.");
+			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list, id = "+key);
 		}
 		trigger.start();
 		triggers.add(key, trigger);

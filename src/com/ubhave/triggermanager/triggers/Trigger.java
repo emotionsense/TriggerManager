@@ -41,6 +41,7 @@ import com.ubhave.triggermanager.config.TriggerManagerConstants;
 public abstract class Trigger extends BroadcastReceiver
 {
 	protected final static String TRIGGER_ID = "com.ubhave.triggermanager.triggers.TRIGGER_ID";
+	
 	protected final AlarmManager alarmManager;
 	protected final PendingIntent pendingIntent;
 
@@ -162,6 +163,7 @@ public abstract class Trigger extends BroadcastReceiver
 		if (listener != null)
 		{
 			int id = intent.getIntExtra(TRIGGER_ID, -1);
+			Log.d("Trigger", "id = " + id);
 			if (triggerId == id)
 			{
 				sendNotification();
