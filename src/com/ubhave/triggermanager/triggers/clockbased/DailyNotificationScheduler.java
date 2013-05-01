@@ -107,7 +107,7 @@ public class DailyNotificationScheduler implements TriggerReceiver
 				{
 					for (int j=0; j<times.size(); j++)
 					{
-						if (times.get(j) < time)
+						if (times.get(j) > time)
 						{
 							times.add(j, time);
 							entryAdded = true;
