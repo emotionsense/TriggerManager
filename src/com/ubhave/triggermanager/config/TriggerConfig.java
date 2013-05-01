@@ -107,8 +107,13 @@ public class TriggerConfig
 		{
 			return TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES;
 		}
+		else if (key.equals(IGNORE_USER_PREFERENCES))
+		{
+			return TriggerManagerConstants.DEFAULT_IS_SYSTEM_TRIGGER;
+		}
 		else
 		{
+			System.err.println("Key not found: "+key);
 			return null;
 		}
 	}
