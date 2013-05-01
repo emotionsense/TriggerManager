@@ -22,7 +22,12 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
@@ -33,28 +38,41 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.clockbased.TimePreferences;
 
-public abstract class Trigger
+public abstract class Trigger extends BroadcastReceiver
 {
-	protected final int RUNNING = 0;
-	protected final int PAUSED = 1;
-	protected final int DEAD = 2;
-	
+	private final static String TRIGGER_ID = "com.ubhave.triggermanager.triggers.TRIGGER_ID";
+	protected final AlarmManager alarmManager;
+	protected final PendingIntent pendingIntent;
+
 	protected final Context context;
+	private final int triggerId;
 	protected final TriggerReceiver listener;
 	protected final GlobalState globalState;
 	protected final GlobalConfig globalConfig;
-	protected TriggerConfig params;
-	protected int state;
 
-	public Trigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
+	protected TriggerConfig params;
+	private boolean isRunning;
+
+	public Trigger(Context context, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		this.context = context;
+		this.triggerId = id;
 		this.listener = listener;
+		this.params = params;
+		this.isRunning = false;
+		
 		this.globalState = GlobalState.getGlobalState(context);
 		this.globalConfig = GlobalConfig.getGlobalConfig(context);
 		
-		reset(params);	
+		alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		pendingIntent = getPendingIntent();
 	}
+
+	protected abstract PendingIntent getPendingIntent();
+
+	protected abstract String getTriggerTag();
+
+	protected abstract void startAlarm() throws TriggerException;
 
 	protected void sendNotification()
 	{
@@ -68,7 +86,7 @@ public abstract class Trigger
 		}
 		else
 		{
-			if (notificationsAllowed())
+			if (globalConfig.notificationsAllowed())
 			{
 				if (belowDailyCap())
 				{
@@ -93,22 +111,7 @@ public abstract class Trigger
 			}
 		}
 	}
-	
-	private boolean notificationsAllowed()
-	{
-		boolean triggersAllowed;
-		try
-		{
-			triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-			triggersAllowed = TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED;
-		}
-		return triggersAllowed;
-	}
-	
+
 	private boolean belowDailyCap()
 	{
 		int notificationsSent, notificationsAllowed;
@@ -125,19 +128,19 @@ public abstract class Trigger
 		}
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			Log.d("Trigger", "Notifications Sent = "+notificationsSent);
-			Log.d("Trigger", "Notifications Allowed = "+notificationsAllowed);
+			Log.d("Trigger", "Notifications Sent = " + notificationsSent);
+			Log.d("Trigger", "Notifications Allowed = " + notificationsAllowed);
 		}
-		
+
 		return (notificationsSent < notificationsAllowed);
 	}
-	
+
 	private boolean isWithinAllowedTimes()
 	{
 		TimePreferences timePreferences = new TimePreferences(context);
 		return timePreferences.timeAllowed(timePreferences.currentMinute());
 	}
-	
+
 	private boolean isSystemTrigger()
 	{
 		if (params.containsKey(TriggerConfig.IGNORE_USER_PREFERENCES))
@@ -150,32 +153,61 @@ public abstract class Trigger
 		}
 	}
 
-	public void kill() throws TriggerException
+	public void stop() throws TriggerException
 	{
-		state = DEAD;
+		if (isRunning)
+		{
+			Log.d(getTriggerTag(), "Stopping...");
+			alarmManager.cancel(pendingIntent);
+			context.unregisterReceiver(this);
+			isRunning = false;
+		}
+		else
+		{
+			Log.d(getTriggerTag(), "Already stopped!");
+		}
+	}
+	
+	protected abstract String getActionName();
+
+	public void start() throws TriggerException
+	{
+		if (!isRunning)
+		{
+			Log.d(getTriggerTag(), "Starting...");
+			IntentFilter intentFilter = new IntentFilter(getActionName());
+			context.registerReceiver(this, intentFilter);
+			
+			startAlarm();
+			isRunning = true;
+		}
+		else
+		{
+			Log.d(getTriggerTag(), "Already started!");
+		}
 	}
 
-	public void pause() throws TriggerException
-	{
-		state = PAUSED;
-	}
-
-	public void resume() throws TriggerException
-	{
-		state = RUNNING;
-	}
-	
-	protected void initialise() throws TriggerException
-	{
-		state = RUNNING;
-	}
-	
-	protected abstract String getTriggerTag();
-	
 	public void reset(TriggerConfig params) throws TriggerException
 	{
 		this.params = params;
-		kill();
-		initialise();
+		if (isRunning)
+		{
+			stop();
+			start();
+		}
+	}
+
+	@Override
+	public void onReceive(final Context context, final Intent intent)
+	{
+		Log.d("Trigger", "onReceive = " + (listener == null));
+		if (listener != null)
+		{
+			int id = intent.getIntExtra(TRIGGER_ID, -1);
+			if (triggerId == id)
+			{
+				sendNotification();
+			}
+		}
 	}
 }

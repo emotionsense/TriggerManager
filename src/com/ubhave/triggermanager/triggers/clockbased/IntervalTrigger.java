@@ -22,34 +22,52 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers.clockbased;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
+import com.ubhave.triggermanager.triggers.Trigger;
+import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class IntervalTrigger extends ClockTrigger
+public class IntervalTrigger extends Trigger
 {
+	private final static String TRIGGER_NAME = "IntervalTrigger";
 
-	public IntervalTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
+	public IntervalTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
-		super(context, listener, parameters);
+		super(context, id, listener, parameters);
 	}
-
-	@Override
-	protected void initialise() throws TriggerException
+	
+	protected String getActionName()
 	{
-		super.initialise();
-		long startDelayInMillis = getStartDelay();
+		return TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER;
+	}
+	
+	@Override
+	protected PendingIntent getPendingIntent()
+	{
+		int requestCode = TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL;
+		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER);
+		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+	
+	@Override
+	protected void startAlarm() throws TriggerException
+	{
+		long firstAlarmTime = System.currentTimeMillis() + getStartDelay();
 		long intervalLengthInMillis = getIntervalLength();
-		try
-		{
-			surveyTimer.schedule(new SurveyNotification(), startDelayInMillis, intervalLengthInMillis);
-		}
-		catch (IllegalArgumentException e)
-		{
-			throw new TriggerException(TriggerException.INVALID_STATE, "Illegal arguments in interval trigger. Start delay: "+startDelayInMillis+", Interval: "+intervalLengthInMillis);
-		}
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstAlarmTime, intervalLengthInMillis, pendingIntent);
+	}
+	
+	@Override
+	protected String getTriggerTag()
+	{
+		return TRIGGER_NAME;
 	}
 	
 	private long getStartDelay() throws TriggerException
@@ -74,11 +92,5 @@ public class IntervalTrigger extends ClockTrigger
 		{
 			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS");
 		}
-	}
-	
-	@Override
-	protected String getTriggerTag()
-	{
-		return "IntervalTrigger";
 	}
 }

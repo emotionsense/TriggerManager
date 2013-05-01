@@ -33,28 +33,28 @@ import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
-public class TriggerManager implements TriggerManagerInterface
+public class ESTriggerManager implements TriggerManagerInterface
 {
-	private static TriggerManager triggerManager;
+	private static ESTriggerManager triggerManager;
 	private static final Object lock = new Object();
 
 	private final GlobalConfig config;
 	private final Context context;
 	private final TriggerList triggers;
 
-	public static TriggerManager getTriggerManager(Context context) throws TriggerException, ESException
+	public static ESTriggerManager getTriggerManager(Context context) throws TriggerException, ESException
 	{
 		if (triggerManager == null)
 		{
 			synchronized (lock)
 			{
-				triggerManager = new TriggerManager(context);
+				triggerManager = new ESTriggerManager(context);
 			}
 		}
 		return triggerManager;
 	}
 
-	private TriggerManager(final Context appContext) throws TriggerException, ESException
+	private ESTriggerManager(final Context appContext) throws TriggerException, ESException
 	{
 		context = appContext;
 		config = GlobalConfig.getGlobalConfig(appContext);
@@ -64,12 +64,15 @@ public class TriggerManager implements TriggerManagerInterface
 	@Override
 	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException
 	{
-		Trigger trigger = TriggerList.createTrigger(context, triggerType, listener, parameters);
+		int key = triggers.randomKey();
+		Trigger trigger = TriggerList.createTrigger(context, triggerType, key, listener, parameters);
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
 			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list.");
 		}
-		return triggers.add(trigger);
+		trigger.start();
+		triggers.add(key, trigger);
+		return key;
 	}
 
 	@Override
@@ -83,36 +86,16 @@ public class TriggerManager implements TriggerManagerInterface
 	{
 		triggers.removeAll();
 	}
-
-	@Override
-	public void pauseTrigger(int triggerId) throws TriggerException
-	{
-		Trigger trigger = triggers.get(triggerId);
-		if (trigger != null)
-		{
-			trigger.pause();
-		}
-	}
-
-	@Override
-	public void unPauseTrigger(int triggerId) throws TriggerException
-	{
-		Trigger trigger = triggers.get(triggerId);
-		if (trigger != null)
-		{
-			trigger.resume();
-		}
-	}
 	
-	@Override
-	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
-	{
-		Trigger trigger = triggers.get(triggerId);
-		if (trigger != null)
-		{
-			trigger.reset(params);
-		}
-	}
+//	@Override
+//	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
+//	{
+//		Trigger trigger = triggers.get(triggerId);
+//		if (trigger != null)
+//		{
+//			trigger.reset(params);
+//		}
+//	}
 
 	@Override
 	public void setGlobalConfig(String configKey, Object configValue)

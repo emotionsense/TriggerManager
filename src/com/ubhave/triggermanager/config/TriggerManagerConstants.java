@@ -41,5 +41,8 @@ public class TriggerManagerConstants
 	public final static String GLOBAL_PREFERENCES = "global_preferences";
 	public final static String TRIGGER_PREFERENCES = "trigger_preferences";
 	public final static String GLOBAL_STATE = "triggerManager_state";
+	
+	public final static String ACTION_NAME_ONE_TIME_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.ONE_TIME_TRIGGER";
+	public final static String ACTION_NAME_INTERVAL_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.INTERVAL_TRIGGER";
 
 }

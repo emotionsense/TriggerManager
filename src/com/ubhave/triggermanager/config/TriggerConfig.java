@@ -40,9 +40,6 @@ public class TriggerConfig
 	public final static String NOTIFICATION_PROBABILITY = "notificationProb";
 	public final static String POST_SENSE_WAIT_INTERVAL_MILLIS = "postSenseWait";
 	
-	// Hybrid Triggers
-	public static final String SENSOR_TRIGGER_WINDOW_MILLIS = "sensorTriggerWindow";
-	
 	private final HashMap<String, Object> parameters;
 	
 	public TriggerConfig()

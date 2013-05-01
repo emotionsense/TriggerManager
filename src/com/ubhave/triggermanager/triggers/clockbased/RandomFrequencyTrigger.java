@@ -24,65 +24,47 @@ package com.ubhave.triggermanager.triggers.clockbased;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import android.app.PendingIntent;
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
+import com.ubhave.triggermanager.triggers.Trigger;
+import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class RandomFrequencyTrigger extends ClockTrigger
+public class RandomFrequencyTrigger extends Trigger
 {
 	private final static String LOG_TAG = "RandomFrequencyTrigger";
 	private final static int MAX_SCHEDULING_ATTEMPTS = 500;
-	
-	private class Scheduler extends TimerTask
+
+	public RandomFrequencyTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
-		@Override
-		public void run()
-		{
-			try
-			{
-				scheduleNotifications();
-			}
-			catch (TriggerException e)
-			{
-				e.printStackTrace();
-			}
-		}
+		super(context, id, listener, params);
 	}
 
-	private Timer schedulerTimer;
-
-	public RandomFrequencyTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
+	protected String getActionName()
 	{
-		super(context, listener, params);
-	}
-
-	@Override
-	public void kill() throws TriggerException
-	{
-		super.kill();
-		if (schedulerTimer != null)
-		{
-			schedulerTimer.cancel();
-			schedulerTimer = null;
-		}
+		return null; // TODO;
 	}
 	
 	@Override
-	protected void initialise() throws TriggerException
+	public void stop() throws TriggerException
 	{
-		super.initialise();
-		scheduleDailyUpdate();
-		scheduleNotifications();
+		super.stop();
+		// stop scheduler
 	}
+	
+//	@Override
+//	public void start() throws TriggerException
+//	{
+//		super.start();
+//		scheduleDailyUpdate();
+//		scheduleNotifications();
+//	}
 	
 	private int numberOfNotifications()
 	{
@@ -96,49 +78,49 @@ public class RandomFrequencyTrigger extends ClockTrigger
 		}
 	}
 	
-	private void scheduleDailyUpdate()
-	{
-		if (schedulerTimer != null)
-		{
-			schedulerTimer.cancel();
-			schedulerTimer = null;
-		}
-		
-		schedulerTimer = new Timer();
-		Calendar calendar = Calendar.getInstance();
-		long now = calendar.getTimeInMillis();
+//	private void scheduleDailyUpdate()
+//	{
+//		if (schedulerTimer != null)
+//		{
+//			schedulerTimer.cancel();
+//			schedulerTimer = null;
+//		}
+//		
+//		schedulerTimer = new Timer();
+//		Calendar calendar = Calendar.getInstance();
+//		long now = calendar.getTimeInMillis();
+//
+//		calendar.add(Calendar.HOUR_OF_DAY, 24 - calendar.get(Calendar.HOUR_OF_DAY));
+//		calendar.set(Calendar.MINUTE, 0);
+//		calendar.set(Calendar.SECOND, 0);
+//
+//		// Random surveys will be re-scheduled at midnight each night
+//		schedulerTimer.scheduleAtFixedRate(new Scheduler(), calendar.getTimeInMillis() - now, 1000 * 60 * 60 * 24);
+//	}
 
-		calendar.add(Calendar.HOUR_OF_DAY, 24 - calendar.get(Calendar.HOUR_OF_DAY));
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-
-		// Random surveys will be re-scheduled at midnight each night
-		schedulerTimer.scheduleAtFixedRate(new Scheduler(), calendar.getTimeInMillis() - now, 1000 * 60 * 60 * 24);
-	}
-
-	private void scheduleNotifications() throws TriggerException
-	{
-		long midnight = getMidnight();
-		ArrayList<Integer> randomTimes = pickTimes();
-		if (TriggerManagerConstants.LOG_MESSAGES)
-		{
-			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications, (Requested = "+numberOfNotifications()+", Max = "+((Integer)globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP)).intValue()+")");
-		}
-		
-		for (Integer time : randomTimes)
-		{
-			long triggerTime = midnight + (time * 60 * 1000);
-			long diff = triggerTime - System.currentTimeMillis();
-			if (diff > 0)
-			{
-				if (TriggerManagerConstants.LOG_MESSAGES)
-				{
-					Log.d(LOG_TAG, "Notifications scheduled for: " + (new Date(triggerTime)).toString());
-				}
-				surveyTimer.schedule(new SurveyNotification(), diff);
-			}
-		}
-	}
+//	private void scheduleNotifications() throws TriggerException
+//	{
+//		long midnight = getMidnight();
+//		ArrayList<Integer> randomTimes = pickTimes();
+//		if (TriggerManagerConstants.LOG_MESSAGES)
+//		{
+//			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications, (Requested = "+numberOfNotifications()+", Max = "+((Integer)globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP)).intValue()+")");
+//		}
+//		
+//		for (Integer time : randomTimes)
+//		{
+//			long triggerTime = midnight + (time * 60 * 1000);
+//			long diff = triggerTime - System.currentTimeMillis();
+//			if (diff > 0)
+//			{
+//				if (TriggerManagerConstants.LOG_MESSAGES)
+//				{
+//					Log.d(LOG_TAG, "Notifications scheduled for: " + (new Date(triggerTime)).toString());
+//				}
+//				surveyTimer.schedule(new SurveyNotification(), diff);
+//			}
+//		}
+//	}
 	
 	private long getMidnight()
 	{
@@ -175,5 +157,20 @@ public class RandomFrequencyTrigger extends ClockTrigger
 	protected String getTriggerTag()
 	{
 		return LOG_TAG;
+	}
+
+	@Override
+	protected PendingIntent getPendingIntent()
+	{
+		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
+		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER);
+		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+
+	@Override
+	protected void startAlarm() throws TriggerException
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

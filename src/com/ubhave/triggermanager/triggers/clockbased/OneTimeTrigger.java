@@ -24,32 +24,58 @@ package com.ubhave.triggermanager.triggers.clockbased;
 
 import java.util.Calendar;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
+import com.ubhave.triggermanager.triggers.Trigger;
+import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class OneTimeTrigger extends ClockTrigger
+public class OneTimeTrigger extends Trigger
 {
-	public OneTimeTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
+	private final static String TRIGGER_NAME = "OneTimeTrigger";
+	
+	public OneTimeTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
-		super(context, listener, parameters);
+		super(context, id, listener, parameters);
 	}
 	
-	protected void initialise() throws TriggerException
+	@Override
+	protected PendingIntent getPendingIntent()
 	{
-		super.initialise();
+		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
+		Intent intent = new Intent(getActionName());
+		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+	
+	protected String getActionName()
+	{
+		return TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER;
+	}
+	
+	@Override
+	protected void startAlarm() throws TriggerException
+	{
 		long surveyDate = getSurveyDate();
-		long waitTime = surveyDate - System.currentTimeMillis();
-		if (waitTime > 0)
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(surveyDate);
+		
+		if (surveyDate > System.currentTimeMillis())
 		{
-			surveyTimer.schedule(new SurveyNotification(), waitTime);
+			if (TriggerManagerConstants.LOG_MESSAGES)
+			{
+				Log.d("OneTimeTrigger", "Scheduled time is: "+calendar.getTime().toString());
+			}
+			alarmManager.set(AlarmManager.RTC_WAKEUP, surveyDate, pendingIntent);
 		}
 		else
-		{
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(surveyDate);
+		{	
 			throw new TriggerException(TriggerException.DATE_IN_PAST, "Scheduled time is in the past: "+calendar.getTime().toString());
 		}
 	}
@@ -66,6 +92,6 @@ public class OneTimeTrigger extends ClockTrigger
 	@Override
 	protected String getTriggerTag()
 	{
-		return "OneTimeTrigger";
+		return TRIGGER_NAME;
 	}
 }
