@@ -22,6 +22,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers;
 
+import java.util.Calendar;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -32,11 +34,9 @@ import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
-import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
-import com.ubhave.triggermanager.triggers.clockbased.TimePreferences;
 
 public abstract class Trigger extends BroadcastReceiver
 {
@@ -44,14 +44,13 @@ public abstract class Trigger extends BroadcastReceiver
 	protected final AlarmManager alarmManager;
 	protected final PendingIntent pendingIntent;
 
+	protected final int triggerId;
 	protected final Context context;
-	private final int triggerId;
 	protected final TriggerReceiver listener;
 	protected final GlobalState globalState;
-	protected final GlobalConfig globalConfig;
 
 	protected TriggerConfig params;
-	private boolean isRunning;
+	protected boolean isRunning;
 
 	public Trigger(Context context, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
@@ -62,7 +61,6 @@ public abstract class Trigger extends BroadcastReceiver
 		this.isRunning = false;
 		
 		this.globalState = GlobalState.getGlobalState(context);
-		this.globalConfig = GlobalConfig.getGlobalConfig(context);
 		
 		alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		pendingIntent = getPendingIntent();
@@ -76,23 +74,25 @@ public abstract class Trigger extends BroadcastReceiver
 
 	protected void sendNotification()
 	{
-		if (isSystemTrigger())
+		if (params.isSystemTrigger())
 		{
 			if (TriggerManagerConstants.LOG_MESSAGES)
 			{
 				Log.d(getTriggerTag(), "Sending system-level onNotificationTriggered()");
 			}
-			listener.onNotificationTriggered();
+			listener.onNotificationTriggered(triggerId);
 		}
 		else
 		{
-			if (globalConfig.notificationsAllowed())
+			if (globalState.areNotificationsAllowed())
 			{
-				if (belowDailyCap())
+				int notificationsSent = globalState.getNotificationsSent();
+				int notificationCap = globalState.getNotificationCap();
+				if (notificationsSent < notificationCap)
 				{
 					if (isWithinAllowedTimes())
 					{
-						listener.onNotificationTriggered();
+						listener.onNotificationTriggered(triggerId);
 						globalState.incrementNotificationsSent();
 					}
 					else if (TriggerManagerConstants.LOG_MESSAGES)
@@ -112,45 +112,13 @@ public abstract class Trigger extends BroadcastReceiver
 		}
 	}
 
-	private boolean belowDailyCap()
-	{
-		int notificationsSent, notificationsAllowed;
-		try
-		{
-			notificationsSent = globalState.getNotificationsSent();
-			notificationsAllowed = (Integer) globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP);
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-			notificationsSent = 0;
-			notificationsAllowed = TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
-		}
-		if (TriggerManagerConstants.LOG_MESSAGES)
-		{
-			Log.d("Trigger", "Notifications Sent = " + notificationsSent);
-			Log.d("Trigger", "Notifications Allowed = " + notificationsAllowed);
-		}
-
-		return (notificationsSent < notificationsAllowed);
-	}
-
 	private boolean isWithinAllowedTimes()
 	{
-		TimePreferences timePreferences = new TimePreferences(context);
-		return timePreferences.timeAllowed(timePreferences.currentMinute());
-	}
-
-	private boolean isSystemTrigger()
-	{
-		if (params.containsKey(TriggerConfig.IGNORE_USER_PREFERENCES))
-		{
-			return (Boolean) params.getParameter(TriggerConfig.IGNORE_USER_PREFERENCES);
-		}
-		else
-		{
-			return TriggerManagerConstants.DEFAULT_IS_TRIGGER_UNCAPPED;
-		}
+		Calendar calendar = Calendar.getInstance();	
+		int currentMinute = (60 * calendar.get(Calendar.HOUR_OF_DAY)) + calendar.get(Calendar.MINUTE);
+		
+		return (currentMinute < params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_AFTER_MINUTES)
+				&& currentMinute > params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_BEFORE_MINUTES));
 	}
 
 	public void stop() throws TriggerException
@@ -184,16 +152,6 @@ public abstract class Trigger extends BroadcastReceiver
 		else
 		{
 			Log.d(getTriggerTag(), "Already started!");
-		}
-	}
-
-	public void reset(TriggerConfig params) throws TriggerException
-	{
-		this.params = params;
-		if (isRunning)
-		{
-			stop();
-			start();
 		}
 	}
 

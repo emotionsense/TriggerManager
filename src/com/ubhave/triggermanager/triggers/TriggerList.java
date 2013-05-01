@@ -38,7 +38,7 @@ import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
 public class TriggerList extends AbstractSubscriptionList<Trigger>
 {
 
-	public static Trigger createTrigger(Context context, int type, int id, TriggerReceiver listener, TriggerConfig params) throws ESException, TriggerException
+	public static Trigger createTrigger(Context context, int type, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		switch (type)
 		{
