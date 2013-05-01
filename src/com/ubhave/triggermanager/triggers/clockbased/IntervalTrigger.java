@@ -38,7 +38,7 @@ public class IntervalTrigger extends Trigger
 {
 	private final static String TRIGGER_NAME = "IntervalTrigger";
 
-	public IntervalTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
+	public IntervalTrigger(Context context, int id, final TriggerReceiver listener, final TriggerConfig parameters) throws TriggerException
 	{
 		super(context, id, listener, parameters);
 	}
@@ -53,6 +53,7 @@ public class IntervalTrigger extends Trigger
 	{
 		int requestCode = TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL;
 		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER);
+		intent.putExtra(TRIGGER_ID, triggerId);
 		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	

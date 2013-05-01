@@ -49,6 +49,10 @@ import com.ubhave.triggermanager.triggers.TriggerUtils;
 
 public class ImmediateSensorTrigger extends Trigger implements SensorDataListener
 {
+	/*
+	 * WARNING -- Obsolete
+	 */
+	
 	protected ESSensorManagerInterface sensorManager;
 	protected SensorDataClassifier classifier;
 	private int subscriptionId;
