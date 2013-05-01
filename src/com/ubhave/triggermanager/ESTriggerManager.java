@@ -25,10 +25,12 @@ package com.ubhave.triggermanager;
 import android.content.Context;
 import android.util.Log;
 
+import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
+import com.ubhave.triggermanager.triggers.TriggerUtils;
 
 public class ESTriggerManager implements TriggerManagerInterface
 {
@@ -36,6 +38,7 @@ public class ESTriggerManager implements TriggerManagerInterface
 	private static final Object lock = new Object();
 
 	private final Context context;
+	private final GlobalState state;
 	private final TriggerList triggers;
 
 	public static ESTriggerManager getTriggerManager(Context context) throws TriggerException
@@ -57,6 +60,7 @@ public class ESTriggerManager implements TriggerManagerInterface
 	{
 		context = appContext;
 		triggers = new TriggerList();
+		state = GlobalState.getGlobalState(context);
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class ESTriggerManager implements TriggerManagerInterface
 		Trigger trigger = TriggerList.createTrigger(context, triggerType, key, listener, parameters);
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list, id = "+key);
+			Log.d("TriggerManager", "Adding trigger type: "+TriggerUtils.getTriggerName(triggerType)+" to list, id = "+key);
 		}
 		trigger.start();
 		triggers.add(key, trigger);
@@ -83,5 +87,16 @@ public class ESTriggerManager implements TriggerManagerInterface
 	public void removeAllTriggers() throws TriggerException
 	{
 		triggers.removeAll();
+	}
+	
+	@Override
+	public void resetCap()
+	{
+		state.reset();
+	}
+	
+	public void setNotificationCap(int value)
+	{
+		state.setNotificationCap(value);
 	}
 }

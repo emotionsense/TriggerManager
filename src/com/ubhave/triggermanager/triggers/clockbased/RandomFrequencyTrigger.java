@@ -26,6 +26,7 @@ import java.util.HashSet;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.util.Log;
 
 import com.ubhave.triggermanager.ESTriggerManager;
 import com.ubhave.triggermanager.TriggerException;
@@ -60,6 +61,7 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 			
 			int triggerId = triggerManager.addTrigger(TriggerUtils.CLOCK_TRIGGER_ONCE, this, params);
 			randomlySelectedTriggerIds.add(triggerId);
+			Log.d("RandomFrequency", "Trigger subscribed: "+triggerId);
 		}
 		catch (TriggerException e)
 		{
@@ -84,6 +86,7 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	{
 		if (!isRunning)
 		{
+			Log.d("RandomFrequency", "Starting...");
 			dailySchedulerAlarm.start();
 			isRunning = true;
 		}
@@ -94,6 +97,7 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	{
 		if (isRunning)
 		{
+			Log.d("RandomFrequency", "Stopping...");
 			dailySchedulerAlarm.stop();
 			for (Integer triggerId : this.randomlySelectedTriggerIds)
 			{
@@ -120,7 +124,12 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	{
 		if (randomlySelectedTriggerIds.contains(triggerId))
 		{
+			Log.d("RandomFrequency", "onNotificationTriggered known = "+triggerId);
 			listener.onNotificationTriggered(triggerId);
+		}
+		else
+		{
+			Log.d("RandomFrequency", "onNotificationTriggered unknown = "+triggerId);
 		}
 	}
 }

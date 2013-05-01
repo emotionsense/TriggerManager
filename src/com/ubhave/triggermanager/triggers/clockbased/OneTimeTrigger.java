@@ -35,7 +35,6 @@ import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
-import com.ubhave.triggermanager.triggers.TriggerUtils;
 
 public class OneTimeTrigger extends Trigger
 {
@@ -49,10 +48,9 @@ public class OneTimeTrigger extends Trigger
 	@Override
 	protected PendingIntent getPendingIntent()
 	{
-		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
 		Intent intent = new Intent(getActionName());
 		intent.putExtra(TRIGGER_ID, triggerId);
-		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		return PendingIntent.getBroadcast(context, triggerId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
 	protected String getActionName()
