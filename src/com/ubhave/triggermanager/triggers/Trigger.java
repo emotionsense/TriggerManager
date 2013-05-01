@@ -126,14 +126,9 @@ public abstract class Trigger extends BroadcastReceiver
 	{
 		if (isRunning)
 		{
-			Log.d(getTriggerTag(), "Stopping...");
 			alarmManager.cancel(pendingIntent);
 			context.unregisterReceiver(this);
 			isRunning = false;
-		}
-		else
-		{
-			Log.d(getTriggerTag(), "Already stopped!");
 		}
 	}
 	
@@ -143,16 +138,10 @@ public abstract class Trigger extends BroadcastReceiver
 	{
 		if (!isRunning)
 		{
-			Log.d(getTriggerTag(), "Starting...");
 			IntentFilter intentFilter = new IntentFilter(getActionName());
-			context.registerReceiver(this, intentFilter);
-			
+			context.registerReceiver(this, intentFilter);	
 			startAlarm();
 			isRunning = true;
-		}
-		else
-		{
-			Log.d(getTriggerTag(), "Already started!");
 		}
 	}
 
