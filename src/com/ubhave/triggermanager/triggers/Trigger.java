@@ -70,6 +70,8 @@ public abstract class Trigger extends BroadcastReceiver
 	protected abstract PendingIntent getPendingIntent();
 
 	protected abstract String getTriggerTag();
+	
+	protected abstract String getActionName();
 
 	protected abstract void startAlarm() throws TriggerException;
 
@@ -131,8 +133,6 @@ public abstract class Trigger extends BroadcastReceiver
 			isRunning = false;
 		}
 	}
-	
-	protected abstract String getActionName();
 
 	public void start() throws TriggerException
 	{

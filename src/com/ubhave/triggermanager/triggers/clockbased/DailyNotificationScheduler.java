@@ -11,6 +11,7 @@ import com.ubhave.triggermanager.ESTriggerManager;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.TriggerUtils;
 
 public class DailyNotificationScheduler implements TriggerReceiver
@@ -47,7 +48,7 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		scheduleNotifications();
 		
 		TriggerConfig params = new TriggerConfig();
-		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY, millisUntilMidnight());
+		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY, startDelay());
 		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS, schedulerInterval());
 		params.addParameter(TriggerConfig.IGNORE_USER_PREFERENCES, true);
 		
@@ -64,6 +65,26 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		else
 		{
 			return DAILY_INTERVAL;
+		}
+	}
+	
+	private long startDelay()
+	{
+		if (params.containsKey(TriggerConfig.INTERVAL_TRIGGER_START_DELAY))
+		{
+			return (Long) params.getParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY);
+		}
+		else
+		{
+			// Milliseconds until midnight
+			Calendar calendar = Calendar.getInstance();
+			long now = calendar.getTimeInMillis();
+			
+			calendar.add(Calendar.HOUR_OF_DAY, 24 - calendar.get(Calendar.HOUR_OF_DAY));
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			
+			return calendar.getTimeInMillis() - now;
 		}
 	}
 	
@@ -94,7 +115,11 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		int minInterval = params.getValueInMinutes(TriggerConfig.MIN_TRIGGER_INTERVAL_MINUTES);
 		
 		int numberOfNotifications = params.numberOfNotifications();
-		Log.d("Daily Scheduler", "Attempting to schedule: "+numberOfNotifications);
+		if (TriggerManagerConstants.LOG_MESSAGES)
+		{
+			Log.d("Daily Scheduler", "Attempting to schedule: "+numberOfNotifications);
+		}
+		
 		for (int i=0; i<numberOfNotifications; i++)
 		{
 			boolean entryAdded = false;
@@ -178,17 +203,5 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		int minute = calendar.get(Calendar.MINUTE);	
 		return (60 * hour) + minute;
-	}
-	
-	private long millisUntilMidnight()
-	{
-		Calendar calendar = Calendar.getInstance();
-		long now = calendar.getTimeInMillis();
-		
-		calendar.add(Calendar.HOUR_OF_DAY, 24 - calendar.get(Calendar.HOUR_OF_DAY));
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		
-		return calendar.getTimeInMillis() - now;
 	}
 }

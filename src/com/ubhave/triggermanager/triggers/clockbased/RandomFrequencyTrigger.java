@@ -61,24 +61,16 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 			
 			int triggerId = triggerManager.addTrigger(TriggerUtils.CLOCK_TRIGGER_ONCE, this, params);
 			randomlySelectedTriggerIds.add(triggerId);
-			Log.d("RandomFrequency", "Trigger subscribed: "+triggerId);
+			
+			if (TriggerManagerConstants.LOG_MESSAGES)
+			{
+				Log.d(LOG_TAG, "Trigger subscribed: "+triggerId);
+			}
 		}
 		catch (TriggerException e)
 		{
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	protected String getActionName()
-	{
-		return TriggerManagerConstants.ACTION_NAME_RANDOM_FREQUENCY_TRIGGER;
-	}
-	
-	@Override
-	protected PendingIntent getPendingIntent()
-	{
-		return null; // Unused
 	}
 	
 	@Override
@@ -86,7 +78,6 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	{
 		if (!isRunning)
 		{
-			Log.d("RandomFrequency", "Starting...");
 			dailySchedulerAlarm.start();
 			isRunning = true;
 		}
@@ -97,13 +88,36 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	{
 		if (isRunning)
 		{
-			Log.d("RandomFrequency", "Stopping...");
 			dailySchedulerAlarm.stop();
 			for (Integer triggerId : this.randomlySelectedTriggerIds)
 			{
-				triggerManager.removeTrigger(triggerId);
+				try
+				{
+					triggerManager.removeTrigger(triggerId);
+				}
+				catch (TriggerException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			isRunning = false;
+		}
+	}
+
+	@Override
+	public void onNotificationTriggered(int alarmId)
+	{
+		if (randomlySelectedTriggerIds.contains(alarmId))
+		{
+			try
+			{
+				listener.onNotificationTriggered(this.triggerId);
+				triggerManager.removeTrigger(alarmId);
+			}
+			catch (TriggerException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -112,24 +126,22 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	{
 		return LOG_TAG;
 	}
-
+	
+	@Override
+	protected String getActionName()
+	{
+		return null; // Unused
+	}
+	
+	@Override
+	protected PendingIntent getPendingIntent()
+	{
+		return null; // Unused
+	}
+	
 	@Override
 	protected void startAlarm() throws TriggerException
 	{
 		// Nothing to do
-	}
-
-	@Override
-	public void onNotificationTriggered(int triggerId)
-	{
-		if (randomlySelectedTriggerIds.contains(triggerId))
-		{
-			Log.d("RandomFrequency", "onNotificationTriggered known = "+triggerId);
-			listener.onNotificationTriggered(triggerId);
-		}
-		else
-		{
-			Log.d("RandomFrequency", "onNotificationTriggered unknown = "+triggerId);
-		}
 	}
 }
