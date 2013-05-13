@@ -26,7 +26,7 @@ public class TriggerManagerConstants
 {
 	public final static boolean LOG_MESSAGES = true;
 	
-	public static final boolean DEFAULT_TRIGGER_ENABLED = true;
+	public static final boolean DEFAULT_TRIGGERS_ENABLED = true;
 	public static final boolean DEFAULT_IS_TRIGGER_UNCAPPED = false;
 	
 	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES = 8 * 60;
@@ -44,6 +44,5 @@ public class TriggerManagerConstants
 	
 	public final static String ACTION_NAME_ONE_TIME_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.ONE_TIME_TRIGGER";
 	public final static String ACTION_NAME_INTERVAL_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.INTERVAL_TRIGGER";
-	public final static String ACTION_NAME_RANDOM_FREQUENCY_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.RANDOM_FREQUENCY_TRIGGER";
 
 }

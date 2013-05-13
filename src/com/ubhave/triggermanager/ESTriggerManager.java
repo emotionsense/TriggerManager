@@ -25,6 +25,9 @@ package com.ubhave.triggermanager;
 import android.content.Context;
 import android.util.Log;
 
+import com.ubhave.sensormanager.ESException;
+import com.ubhave.triggermanager.config.GlobalConfig;
+import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
@@ -35,32 +38,31 @@ public class ESTriggerManager implements TriggerManagerInterface
 	private static ESTriggerManager triggerManager;
 	private static final Object lock = new Object();
 
+	private final GlobalConfig config;
 	private final Context context;
 	private final TriggerList triggers;
 
-	public static ESTriggerManager getTriggerManager(Context context) throws TriggerException
+	public static ESTriggerManager getTriggerManager(Context context) throws TriggerException, ESException
 	{
 		if (triggerManager == null)
 		{
 			synchronized (lock)
 			{
-				if (triggerManager == null)
-				{
-					triggerManager = new ESTriggerManager(context);
-				}
+				triggerManager = new ESTriggerManager(context);
 			}
 		}
 		return triggerManager;
 	}
 
-	private ESTriggerManager(final Context appContext) throws TriggerException
+	private ESTriggerManager(final Context appContext) throws TriggerException, ESException
 	{
 		context = appContext;
+		config = GlobalConfig.getGlobalConfig(appContext);
 		triggers = new TriggerList();
 	}
 
 	@Override
-	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
+	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException
 	{
 		int key = triggers.randomKey();
 		Trigger trigger = TriggerList.createTrigger(context, triggerType, key, listener, parameters);
@@ -83,5 +85,41 @@ public class ESTriggerManager implements TriggerManagerInterface
 	public void removeAllTriggers() throws TriggerException
 	{
 		triggers.removeAll();
+	}
+	
+//	@Override
+//	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
+//	{
+//		Trigger trigger = triggers.get(triggerId);
+//		if (trigger != null)
+//		{
+//			trigger.reset(params);
+//		}
+//	}
+
+	@Override
+	public void setGlobalConfig(String configKey, Object configValue)
+	{
+		config.setParameter(configKey, configValue);
+	}
+
+	@Override
+	public Object getGlobalConfigValue(String configKey) throws TriggerException
+	{
+		return config.getParameter(configKey);
+	}
+
+	@Override
+	public void resetDailyCap()
+	{
+		try
+		{
+			GlobalState state = GlobalState.getGlobalState(context);
+			state.reset();
+		}
+		catch (TriggerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

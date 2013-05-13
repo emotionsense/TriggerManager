@@ -22,12 +22,13 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers.clockbased;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 
-import com.ubhave.triggermanager.ESTriggerManager;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
@@ -35,72 +36,121 @@ import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
+public class RandomFrequencyTrigger extends Trigger
 {
 	private final static String LOG_TAG = "RandomFrequencyTrigger";
-	
-	private final ESTriggerManager triggerManager;
-	private final DailyNotificationScheduler dailySchedulerAlarm;
-	private HashSet<Integer> randomlySelectedTriggerIds;
+	private final static int MAX_SCHEDULING_ATTEMPTS = 500;
 
 	public RandomFrequencyTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		super(context, id, listener, params);
-		this.triggerManager = ESTriggerManager.getTriggerManager(context);
-		this.dailySchedulerAlarm = new DailyNotificationScheduler(context, params, this);
-		this.randomlySelectedTriggerIds = new HashSet<Integer>();
-	}
-	
-	public void subscribeTriggerFor(long millis)
-	{
-		try
-		{
-			TriggerConfig params = new TriggerConfig();
-			params.addParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS, millis);
-			
-			int triggerId = triggerManager.addTrigger(TriggerUtils.CLOCK_TRIGGER_ONCE, this, params);
-			randomlySelectedTriggerIds.add(triggerId);
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-		}
 	}
 
-	@Override
 	protected String getActionName()
 	{
-		return TriggerManagerConstants.ACTION_NAME_RANDOM_FREQUENCY_TRIGGER;
-	}
-	
-	@Override
-	protected PendingIntent getPendingIntent()
-	{
-		return null; // Unused
-	}
-	
-	@Override
-	public void start() throws TriggerException
-	{
-		if (!isRunning)
-		{
-			dailySchedulerAlarm.start();
-			isRunning = true;
-		}
+		return null; // TODO;
 	}
 	
 	@Override
 	public void stop() throws TriggerException
 	{
-		if (isRunning)
+		super.stop();
+		// stop scheduler
+	}
+	
+//	@Override
+//	public void start() throws TriggerException
+//	{
+//		super.start();
+//		scheduleDailyUpdate();
+//		scheduleNotifications();
+//	}
+	
+	private int numberOfNotifications()
+	{
+		if (params.containsKey(TriggerConfig.NUMBER_OF_NOTIFICATIONS))
 		{
-			dailySchedulerAlarm.stop();
-			for (Integer triggerId : this.randomlySelectedTriggerIds)
-			{
-				triggerManager.removeTrigger(triggerId);
-			}
-			isRunning = false;
+			return (Integer) params.getParameter(TriggerConfig.NUMBER_OF_NOTIFICATIONS);
 		}
+		else
+		{
+			return TriggerManagerConstants.DEFAULT_NUMBER_OF_NOTIFICATIONS;
+		}
+	}
+	
+//	private void scheduleDailyUpdate()
+//	{
+//		if (schedulerTimer != null)
+//		{
+//			schedulerTimer.cancel();
+//			schedulerTimer = null;
+//		}
+//		
+//		schedulerTimer = new Timer();
+//		Calendar calendar = Calendar.getInstance();
+//		long now = calendar.getTimeInMillis();
+//
+//		calendar.add(Calendar.HOUR_OF_DAY, 24 - calendar.get(Calendar.HOUR_OF_DAY));
+//		calendar.set(Calendar.MINUTE, 0);
+//		calendar.set(Calendar.SECOND, 0);
+//
+//		// Random surveys will be re-scheduled at midnight each night
+//		schedulerTimer.scheduleAtFixedRate(new Scheduler(), calendar.getTimeInMillis() - now, 1000 * 60 * 60 * 24);
+//	}
+
+//	private void scheduleNotifications() throws TriggerException
+//	{
+//		long midnight = getMidnight();
+//		ArrayList<Integer> randomTimes = pickTimes();
+//		if (TriggerManagerConstants.LOG_MESSAGES)
+//		{
+//			Log.d(LOG_TAG, "Scheduling: "+randomTimes.size()+" notifications, (Requested = "+numberOfNotifications()+", Max = "+((Integer)globalConfig.getParameter(GlobalConfig.MAX_DAILY_NOTIFICATION_CAP)).intValue()+")");
+//		}
+//		
+//		for (Integer time : randomTimes)
+//		{
+//			long triggerTime = midnight + (time * 60 * 1000);
+//			long diff = triggerTime - System.currentTimeMillis();
+//			if (diff > 0)
+//			{
+//				if (TriggerManagerConstants.LOG_MESSAGES)
+//				{
+//					Log.d(LOG_TAG, "Notifications scheduled for: " + (new Date(triggerTime)).toString());
+//				}
+//				surveyTimer.schedule(new SurveyNotification(), diff);
+//			}
+//		}
+//	}
+	
+	private long getMidnight()
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		return calendar.getTimeInMillis();
+	}
+
+	private ArrayList<Integer> pickTimes() throws TriggerException
+	{
+		ArrayList<Integer> times = new ArrayList<Integer>();
+		TimePreferences preferences = new TimePreferences(context);
+		for (int i=0; i<numberOfNotifications(); i++)
+		{
+			boolean entryAdded = false;
+			int attempts = 0;
+			while (attempts < MAX_SCHEDULING_ATTEMPTS && !entryAdded)
+			{
+				attempts++;
+				int time = preferences.pickRandomTimeWithinPreferences();
+				if (preferences.selectedTimeFitsGroup(time, times))
+				{
+					times.add(time);
+					entryAdded = true;
+				}
+			}
+		}
+		return times;
 	}
 	
 	@Override
@@ -110,17 +160,17 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	}
 
 	@Override
-	protected void startAlarm() throws TriggerException
+	protected PendingIntent getPendingIntent()
 	{
-		// Nothing to do
+		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
+		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER);
+		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 
 	@Override
-	public void onNotificationTriggered(int triggerId)
+	protected void startAlarm() throws TriggerException
 	{
-		if (randomlySelectedTriggerIds.contains(triggerId))
-		{
-			listener.onNotificationTriggered(triggerId);
-		}
+		// TODO Auto-generated method stub
+		
 	}
 }

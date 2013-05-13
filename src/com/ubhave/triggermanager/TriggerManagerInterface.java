@@ -27,11 +27,27 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 
 public interface TriggerManagerInterface
 {
-	public int addTrigger(int triggerType, final TriggerReceiver listener, final TriggerConfig parameters) throws ESException, TriggerException;
+
+	/*
+	 * Trigger
+	 */
+	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException;
 
 	public void removeTrigger(int triggerId) throws TriggerException;
 	
+//	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException;
+	
 	public void removeAllTriggers() throws TriggerException;
+
+	/*
+	 * User Preferences
+	 */
+	public void setGlobalConfig(String configKey, Object configValue);
+
+	public Object getGlobalConfigValue(String configKey) throws TriggerException;
+	
+	public void resetDailyCap();
+
 }
 
 	

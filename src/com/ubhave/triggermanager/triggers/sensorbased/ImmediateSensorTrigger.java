@@ -151,7 +151,7 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 	@Override
 	public void onCrossingLowBatteryThreshold(boolean isBelowThreshold)
 	{
-		
+		listener.onCrossingLowBatteryThreshold(isBelowThreshold);
 	}
 
 	private void setupParams(int sensorType, boolean settingUp) // hack
