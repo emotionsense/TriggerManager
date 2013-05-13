@@ -32,10 +32,6 @@ public interface TriggerManagerInterface
 	public void removeTrigger(int triggerId) throws TriggerException;
 	
 	public void removeAllTriggers() throws TriggerException;
-	
-	public void resetCap();
-	
-	public void setNotificationCap(int value);
 }
 
 	

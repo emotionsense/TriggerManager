@@ -48,23 +48,11 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		
 		TriggerConfig params = new TriggerConfig();
 		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY, millisUntilMidnight());
-		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS, schedulerInterval());
+		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS, DAILY_INTERVAL);
 		params.addParameter(TriggerConfig.IGNORE_USER_PREFERENCES, true);
 		
 		dailySchedulerId = triggerManager.addTrigger(TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL, this, params);
 		isSubscribed = true;
-	}
-	
-	private long schedulerInterval()
-	{
-		if (params.containsKey(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS))
-		{
-			return (Long) params.getParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS);
-		}
-		else
-		{
-			return DAILY_INTERVAL;
-		}
 	}
 	
 	public void stop() throws TriggerException
