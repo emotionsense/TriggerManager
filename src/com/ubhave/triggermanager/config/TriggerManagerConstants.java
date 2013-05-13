@@ -45,5 +45,6 @@ public class TriggerManagerConstants
 	
 	public final static String ACTION_NAME_ONE_TIME_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.ONE_TIME_TRIGGER";
 	public final static String ACTION_NAME_INTERVAL_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.INTERVAL_TRIGGER";
+	public final static String ACTION_NAME_RANDOM_FREQUENCY_TRIGGER = "com.ubhave.triggermanager.triggers.clockbased.RANDOM_FREQUENCY_TRIGGER";
 
 }
