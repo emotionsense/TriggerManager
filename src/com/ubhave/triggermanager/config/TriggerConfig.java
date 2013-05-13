@@ -24,10 +24,14 @@ package com.ubhave.triggermanager.config;
 
 import java.util.HashMap;
 
-
 public class TriggerConfig
 {
-	public final static String IGNORE_USER_PREFERENCES = "ignoreCap";
+	/*
+	 * Config Keys
+	 */
+	public static final String IGNORE_USER_PREFERENCES = "ignoreCap";
+	public static final String MAX_DAILY_NOTIFICATION_CAP = "limitDailyCap";
+	public static final String TRIGGER_ENABLED = "isEnabled";
 	
 	// Clock based Triggers
 	public final static String CLOCK_TRIGGER_DATE_MILLIS = "clockTriggerDate";
@@ -40,8 +44,10 @@ public class TriggerConfig
 	public final static String NOTIFICATION_PROBABILITY = "notificationProb";
 	public final static String POST_SENSE_WAIT_INTERVAL_MILLIS = "postSenseWait";
 	
-	// Hybrid Triggers
-	public static final String SENSOR_TRIGGER_WINDOW_MILLIS = "sensorTriggerWindow";
+	// Time Boundaries
+	public static final String DO_NOT_DISTURB_BEFORE_MINUTES = "limitBeforeHour";
+	public static final String DO_NOT_DISTURB_AFTER_MINUTES = "limitAfterHour";
+	public static final String MIN_TRIGGER_INTERVAL_MINUTES = "notificationMinInterval";
 	
 	private final HashMap<String, Object> parameters;
 	
@@ -50,18 +56,85 @@ public class TriggerConfig
 		parameters = new HashMap<String, Object>();
 	}
 	
-	public void addParameter(String key, Object value)
+	public void addParameter(final String key, final Object value)
 	{
 		parameters.put(key, value);
 	}
 	
-	public Object getParameter(String key)
+	public Object getParameter(final String key)
 	{
-		return parameters.get(key);
+		if (parameters.containsKey(key))
+		{
+			return parameters.get(key);
+		}
+		else
+		{
+			return defaultValue(key);
+		}
+	}
+	
+	private Object defaultValue(final String key)
+	{
+		if (key.equals(DO_NOT_DISTURB_BEFORE_MINUTES))
+		{
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES;
+		}
+		else if (key.equals(DO_NOT_DISTURB_AFTER_MINUTES))
+		{
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES;
+		}
+		else if (key.equals(MIN_TRIGGER_INTERVAL_MINUTES))
+		{
+			return TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES;
+		}
+		else if (key.equals(MAX_DAILY_NOTIFICATION_CAP))
+		{
+			return TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP;
+		}
+		else if (key.equals(TRIGGER_ENABLED))
+		{
+			return TriggerManagerConstants.DEFAULT_TRIGGER_ENABLED;
+		}
+		else if (key.equals(DO_NOT_DISTURB_BEFORE_MINUTES))
+		{
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES;
+		}
+		else if (key.equals(DO_NOT_DISTURB_AFTER_MINUTES))
+		{
+			return TriggerManagerConstants.DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES;
+		}
+		else if (key.equals(MIN_TRIGGER_INTERVAL_MINUTES))
+		{
+			return TriggerManagerConstants.DEFAULT_MIN_TRIGGER_INTERVAL_MINUTES;
+		}
+		else if (key.equals(IGNORE_USER_PREFERENCES))
+		{
+			return TriggerManagerConstants.DEFAULT_IS_SYSTEM_TRIGGER;
+		}
+		else
+		{
+			System.err.println("Key not found: "+key);
+			return null;
+		}
 	}
 	
 	public boolean containsKey(String key)
 	{
 		return parameters.containsKey(key);
+	}
+	
+	public boolean isSystemTrigger()
+	{
+		return (Boolean) getParameter(TriggerConfig.IGNORE_USER_PREFERENCES);
+	}
+	
+	public int numberOfNotifications()
+	{
+		return (Integer) getParameter(TriggerConfig.NUMBER_OF_NOTIFICATIONS);
+	}
+	
+	public int getValueInMinutes(String key)
+	{
+		return (Integer) getParameter(key);
 	}
 }
