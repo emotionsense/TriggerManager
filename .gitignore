@@ -2,9 +2,6 @@ bin/*
 *.class
 *.project
 res/*
-lib/*
-libs/*
 gen/*
 *.classpath
-.DS_Store
 .DS_Store
