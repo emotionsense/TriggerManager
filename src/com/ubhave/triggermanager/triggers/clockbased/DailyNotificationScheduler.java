@@ -105,19 +105,8 @@ public class DailyNotificationScheduler implements TriggerReceiver
 				int time = pickRandomTimeWithinPreferences(currentMinute, earlyLimit, lateLimit);
 				if (selectedTimeFitsGroup(time, times, minInterval))
 				{
-					for (int j=0; j<times.size(); j++)
-					{
-						if (times.get(j) < time)
-						{
-							times.add(j, time);
-							entryAdded = true;
-							break;
-						}
-					}
-					if (!entryAdded)
-					{
-						times.add(time);
-					}
+					times.add(time);
+					entryAdded = true;
 				}
 			}
 		}
@@ -133,7 +122,7 @@ public class DailyNotificationScheduler implements TriggerReceiver
 	
 	private int pickRandomTimeWithinPreferences(int currentMinute, int earlyLimit, int lateLimit)
 	{
-		int from = max(earlyLimit, currentMinute+1);
+		int from = max(earlyLimit, currentMinute);
 		if (lateLimit - from > 0)
 		{
 			return random.nextInt(lateLimit - from) + from;
