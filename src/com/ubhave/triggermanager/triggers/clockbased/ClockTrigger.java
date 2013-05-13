@@ -22,50 +22,72 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers.clockbased;
 
-import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.triggers.Trigger;
 
-public class OneTimeTrigger extends ClockTrigger
+public abstract class ClockTrigger extends Trigger
 {
-	public OneTimeTrigger(Context context, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
-	{
-		super(context, listener, parameters);
-	}
+	/*
+	 * Abstract Clock Trigger
+	 * For any kind of triggers that are based on time.
+	 * Note that clock triggers cannot be paused; a call to pause them will kill them.
+	 */
 	
-	protected void initialise() throws TriggerException
+	protected Timer surveyTimer;
+
+	protected class SurveyNotification extends TimerTask
 	{
-		super.initialise();
-		long surveyDate = getSurveyDate();
-		long waitTime = surveyDate - System.currentTimeMillis();
-		if (waitTime > 0)
+		@Override
+		public void run()
 		{
-			surveyTimer.schedule(new SurveyNotification(), waitTime);
-		}
-		else
-		{
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(surveyDate);
-			throw new TriggerException(TriggerException.DATE_IN_PAST, "Scheduled time is in the past: "+calendar.getTime().toString());
+			sendNotification();
 		}
 	}
-	
-	private long getSurveyDate() throws TriggerException
+
+	public ClockTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
-		if (params.containsKey(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS))
+		super(context, listener, params);
+	}
+
+	@Override
+	public void kill() throws TriggerException
+	{
+		super.kill();
+		if (surveyTimer != null)
 		{
-			return (Long) params.getParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS);
+			surveyTimer.cancel();
+			surveyTimer = null;
 		}
-		else throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.CLOCK_TRIGGER_DATE");
+	}
+
+	@Override
+	public void pause() throws TriggerException
+	{
+		super.pause();
+		kill();
+	}
+
+	@Override
+	public void resume() throws TriggerException
+	{
+		super.resume();
+		if (state != RUNNING)
+		{
+			initialise();
+		}
 	}
 	
 	@Override
-	protected String getTriggerTag()
+	protected void initialise() throws TriggerException
 	{
-		return "OneTimeTrigger";
+		super.initialise();
+		surveyTimer = new Timer();
 	}
 }

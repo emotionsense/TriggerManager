@@ -24,9 +24,7 @@ package com.ubhave.triggermanager.triggers.sensorbased;
 
 import java.util.Random;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
@@ -35,9 +33,8 @@ import com.ubhave.sensormanager.ESSensorManagerInterface;
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.classifier.SensorClassifiers;
 import com.ubhave.sensormanager.classifier.SensorDataClassifier;
-import com.ubhave.sensormanager.config.sensors.pull.AccelerometerConfig;
-import com.ubhave.sensormanager.config.sensors.pull.MicrophoneConfig;
-import com.ubhave.sensormanager.config.sensors.pull.PullSensorConfig;
+import com.ubhave.sensormanager.config.SensorConfig;
+import com.ubhave.sensormanager.config.SensorManagerConstants;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
@@ -45,7 +42,6 @@ import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
-import com.ubhave.triggermanager.triggers.TriggerUtils;
 
 public class ImmediateSensorTrigger extends Trigger implements SensorDataListener
 {
@@ -53,20 +49,15 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 	protected SensorDataClassifier classifier;
 	private int subscriptionId;
 
-	public ImmediateSensorTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
+	public ImmediateSensorTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
 	{
-		super(context, id, listener, params);
-	}
-	
-	protected String getActionName()
-	{
-		return null; // TODO;
+		super(context, listener, params);
 	}
 
 	@Override
-	public void start() throws TriggerException
+	protected void initialise() throws TriggerException
 	{
-		super.start();
+		super.initialise();
 		int sensorType = getSensorType();
 		try
 		{
@@ -131,9 +122,9 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 	}
 
 	@Override
-	public void stop() throws TriggerException
+	public void kill() throws TriggerException
 	{
-		super.stop();
+		super.kill();
 		try
 		{
 			setupParams(getSensorType(), false);
@@ -154,6 +145,36 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 		listener.onCrossingLowBatteryThreshold(isBelowThreshold);
 	}
 
+	@Override
+	public void pause() throws TriggerException
+	{
+		super.pause();
+		try
+		{
+			setupParams(getSensorType(), false);
+			sensorManager.pauseSubscription(subscriptionId);
+		}
+		catch (ESException e)
+		{
+			throw new TriggerException(TriggerException.INVALID_STATE, "Cannot pause sensor subscription.");
+		}
+	}
+
+	@Override
+	public void resume() throws TriggerException
+	{
+		super.resume();
+		try
+		{
+			setupParams(getSensorType(), true);
+			sensorManager.unPauseSubscription(subscriptionId);
+		}
+		catch (ESException e)
+		{
+			throw new TriggerException(TriggerException.INVALID_STATE, "Cannot resume sensor subscription.");
+		}
+	}
+
 	private void setupParams(int sensorType, boolean settingUp) // hack
 	{
 		if (sensorManager != null)
@@ -165,23 +186,23 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 				case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
 					if (settingUp)
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 10));
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 10));
 					}
 					else
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
-								AccelerometerConfig.DEFAULT_SLEEP_INTERVAL);
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
+								SensorManagerConstants.ACCELEROMETER_SLEEP_INTERVAL);
 					}
 					break;
 				case SensorUtils.SENSOR_TYPE_MICROPHONE:
 					if (settingUp)
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 30));
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, (long) (1000 * 30));
 					}
 					else
 					{
-						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
-								MicrophoneConfig.DEFAULT_SLEEP_INTERVAL);
+						sensorManager.setSensorConfig(SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS,
+								SensorManagerConstants.MICROPHONE_SLEEP_INTERVAL);
 					}
 					break;
 				}
@@ -205,20 +226,5 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 			e.printStackTrace();
 			return "ImmediateSensorTrigger";
 		}
-	}
-
-	@Override
-	protected PendingIntent getPendingIntent()
-	{
-		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
-		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER);
-		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-	}
-
-	@Override
-	protected void startAlarm() throws TriggerException
-	{
-		// TODO Auto-generated method stub
-		
 	}
 }

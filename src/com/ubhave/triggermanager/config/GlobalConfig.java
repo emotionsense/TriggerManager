@@ -109,21 +109,5 @@ public class GlobalConfig
 		else
 			throw new TriggerException(TriggerException.INVALID_CONFIG_KEY, "Key: " + key + " does not exist");
 	}
-	
-	
-	public boolean notificationsAllowed()
-	{
-		boolean triggersAllowed;
-		try
-		{
-			triggersAllowed = (Boolean) globalConfig.getParameter(GlobalConfig.TRIGGERS_ENABLED);
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-			triggersAllowed = TriggerManagerConstants.DEFAULT_TRIGGERS_ENABLED;
-		}
-		return triggersAllowed;
-	}
 
 }

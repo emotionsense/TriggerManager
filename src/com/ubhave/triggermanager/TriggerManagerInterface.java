@@ -34,8 +34,12 @@ public interface TriggerManagerInterface
 	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException;
 
 	public void removeTrigger(int triggerId) throws TriggerException;
+
+	public void pauseTrigger(int triggerId) throws TriggerException;
+
+	public void unPauseTrigger(int triggerId) throws TriggerException;
 	
-//	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException;
+	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException;
 	
 	public void removeAllTriggers() throws TriggerException;
 

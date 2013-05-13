@@ -36,9 +36,9 @@ public class DelayedSensorTrigger extends ImmediateSensorTrigger
 	private Thread waitThread;
 	private boolean isDataInteresting;
 
-	public DelayedSensorTrigger(Context context, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
+	public DelayedSensorTrigger(Context context, TriggerReceiver listener, TriggerConfig params) throws TriggerException, ESException
 	{
-		super(context, id, listener, params);
+		super(context, listener, params);
 	}
 
 	private long postSenseWaitInterval()

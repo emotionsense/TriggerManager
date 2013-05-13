@@ -33,28 +33,28 @@ import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
 
-public class ESTriggerManager implements TriggerManagerInterface
+public class TriggerManager implements TriggerManagerInterface
 {
-	private static ESTriggerManager triggerManager;
+	private static TriggerManager triggerManager;
 	private static final Object lock = new Object();
 
 	private final GlobalConfig config;
 	private final Context context;
 	private final TriggerList triggers;
 
-	public static ESTriggerManager getTriggerManager(Context context) throws TriggerException, ESException
+	public static TriggerManager getTriggerManager(Context context) throws TriggerException, ESException
 	{
 		if (triggerManager == null)
 		{
 			synchronized (lock)
 			{
-				triggerManager = new ESTriggerManager(context);
+				triggerManager = new TriggerManager(context);
 			}
 		}
 		return triggerManager;
 	}
 
-	private ESTriggerManager(final Context appContext) throws TriggerException, ESException
+	private TriggerManager(final Context appContext) throws TriggerException, ESException
 	{
 		context = appContext;
 		config = GlobalConfig.getGlobalConfig(appContext);
@@ -64,15 +64,12 @@ public class ESTriggerManager implements TriggerManagerInterface
 	@Override
 	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException
 	{
-		int key = triggers.randomKey();
-		Trigger trigger = TriggerList.createTrigger(context, triggerType, key, listener, parameters);
+		Trigger trigger = TriggerList.createTrigger(context, triggerType, listener, parameters);
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
 			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list.");
 		}
-		trigger.start();
-		triggers.add(key, trigger);
-		return key;
+		return triggers.add(trigger);
 	}
 
 	@Override
@@ -86,16 +83,36 @@ public class ESTriggerManager implements TriggerManagerInterface
 	{
 		triggers.removeAll();
 	}
+
+	@Override
+	public void pauseTrigger(int triggerId) throws TriggerException
+	{
+		Trigger trigger = triggers.get(triggerId);
+		if (trigger != null)
+		{
+			trigger.pause();
+		}
+	}
+
+	@Override
+	public void unPauseTrigger(int triggerId) throws TriggerException
+	{
+		Trigger trigger = triggers.get(triggerId);
+		if (trigger != null)
+		{
+			trigger.resume();
+		}
+	}
 	
-//	@Override
-//	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
-//	{
-//		Trigger trigger = triggers.get(triggerId);
-//		if (trigger != null)
-//		{
-//			trigger.reset(params);
-//		}
-//	}
+	@Override
+	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
+	{
+		Trigger trigger = triggers.get(triggerId);
+		if (trigger != null)
+		{
+			trigger.reset(params);
+		}
+	}
 
 	@Override
 	public void setGlobalConfig(String configKey, Object configValue)

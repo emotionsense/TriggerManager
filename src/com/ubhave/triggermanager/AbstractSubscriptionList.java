@@ -37,9 +37,11 @@ public abstract class AbstractSubscriptionList<H>
 		map = new SparseArray<H>();
 	}
 	
-	public void add(int key, H s) throws TriggerException
+	public int add(H s) throws TriggerException
 	{
-		map.append(key, s);
+		int id = randomKey();
+		map.append(id, s);
+		return id;
 	}
 
 	public void remove(int id) throws TriggerException
@@ -56,7 +58,7 @@ public abstract class AbstractSubscriptionList<H>
 		return map.get(id);
 	}
 
-	public int randomKey() throws TriggerException
+	protected int randomKey() throws TriggerException
 	{
 		int id = keyGenerator.nextInt();
 		int loopCount = 0;
