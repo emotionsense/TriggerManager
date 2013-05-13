@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Random;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.ubhave.triggermanager.ESTriggerManager;
 import com.ubhave.triggermanager.TriggerException;
@@ -44,8 +43,6 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		{
 			stop();
 		}
-		scheduleNotifications();
-		
 		TriggerConfig params = new TriggerConfig();
 		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY, millisUntilMidnight());
 		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS, DAILY_INTERVAL);
@@ -69,20 +66,24 @@ public class DailyNotificationScheduler implements TriggerReceiver
 	{
 		if (triggerId == dailySchedulerId)
 		{
-			scheduleNotifications();
+			ArrayList<Integer> selectedTimes = pickTimes();
+			for (Integer time : selectedTimes)
+			{
+				trigger.subscribeTriggerFor(time);
+			}
 		}
 	}
 	
-	private void scheduleNotifications()
+	public ArrayList<Integer> pickTimes()
 	{
 		ArrayList<Integer> times = new ArrayList<Integer>();
+		
 		int currentMinute = currentMinute();
 		int earlyLimit = params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_BEFORE_MINUTES);
 		int lateLimit = params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_AFTER_MINUTES);
 		int minInterval = params.getValueInMinutes(TriggerConfig.MIN_TRIGGER_INTERVAL_MINUTES);
 		
 		int numberOfNotifications = params.numberOfNotifications();
-		Log.d("Daily Scheduler", "Attempting to schedule: "+numberOfNotifications);
 		for (int i=0; i<numberOfNotifications; i++)
 		{
 			boolean entryAdded = false;
@@ -98,14 +99,7 @@ public class DailyNotificationScheduler implements TriggerReceiver
 				}
 			}
 		}
-		
-		Calendar calendar = Calendar.getInstance();
-		for (Integer minuteOfDay : times)
-		{
-			calendar.set(Calendar.HOUR_OF_DAY, (minuteOfDay / 60));
-			calendar.set(Calendar.MINUTE, (minuteOfDay % 60));
-			trigger.subscribeTriggerFor(calendar.getTimeInMillis());
-		}
+		return times;
 	}
 	
 	private int pickRandomTimeWithinPreferences(int currentMinute, int earlyLimit, int lateLimit)
