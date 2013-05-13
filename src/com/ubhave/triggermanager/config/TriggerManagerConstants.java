@@ -28,7 +28,6 @@ public class TriggerManagerConstants
 	
 	public static final boolean DEFAULT_TRIGGER_ENABLED = true;
 	public static final boolean DEFAULT_IS_TRIGGER_UNCAPPED = false;
-	public static final boolean DEFAULT_IS_SYSTEM_TRIGGER = false;
 	
 	public static final int DEFAULT_DO_NOT_DISTURB_BEFORE_MINUTES = 8 * 60;
 	public static final int DEFAULT_DO_NOT_DISTURB_AFTER_MINUTES = 22 * 60;
