@@ -51,7 +51,6 @@ public class OneTimeTrigger extends Trigger
 	{
 		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
 		Intent intent = new Intent(getActionName());
-		intent.putExtra(TRIGGER_ID, triggerId);
 		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
