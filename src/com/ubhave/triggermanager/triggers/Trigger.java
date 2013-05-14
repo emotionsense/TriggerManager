@@ -62,7 +62,6 @@ public abstract class Trigger extends BroadcastReceiver
 		this.isRunning = false;
 		
 		this.globalState = GlobalState.getGlobalState(context);
-		
 		alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		pendingIntent = getPendingIntent();
 	}
@@ -119,9 +118,11 @@ public abstract class Trigger extends BroadcastReceiver
 	{
 		Calendar calendar = Calendar.getInstance();	
 		int currentMinute = (60 * calendar.get(Calendar.HOUR_OF_DAY)) + calendar.get(Calendar.MINUTE);
+		int earlyLimit = params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_AFTER_MINUTES);
+		int lateLimit = params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_BEFORE_MINUTES);
 		
-		return (currentMinute < params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_AFTER_MINUTES)
-				&& currentMinute > params.getValueInMinutes(TriggerConfig.DO_NOT_DISTURB_BEFORE_MINUTES));
+		return (currentMinute < earlyLimit
+				|| currentMinute > lateLimit);
 	}
 
 	public void stop() throws TriggerException

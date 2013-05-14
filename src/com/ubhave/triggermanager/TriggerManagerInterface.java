@@ -36,6 +36,7 @@ public interface TriggerManagerInterface
 	public void resetCap();
 	
 	public void setNotificationCap(int value);
+	
 }
 
 	

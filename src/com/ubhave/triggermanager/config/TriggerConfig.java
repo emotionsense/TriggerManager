@@ -25,7 +25,7 @@ package com.ubhave.triggermanager.config;
 import java.util.HashMap;
 
 public class TriggerConfig
-{
+{	
 	/*
 	 * Config Keys
 	 */
