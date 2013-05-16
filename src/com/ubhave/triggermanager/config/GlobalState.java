@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 
@@ -63,7 +62,7 @@ public class GlobalState
 	
 	private final SharedPreferences preferences;
 	
-	public GlobalState(Context context) throws TriggerException
+	public GlobalState(final Context context) throws TriggerException
 	{
 		preferences = context.getSharedPreferences(TriggerManagerConstants.GLOBAL_STATE, Context.MODE_PRIVATE);
 	}
@@ -71,10 +70,6 @@ public class GlobalState
 	public void incrementNotificationsSent()
 	{
 		int notifications = getNotificationsSent() + 1;
-		if (TriggerManagerConstants.LOG_MESSAGES)
-		{
-			Log.d("GlobalState", "Incrementing to: "+notifications);
-		}
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(NOTIFICATIONS_SENT, notifications);
 		editor.commit();
@@ -102,12 +97,6 @@ public class GlobalState
 		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		String dateKey = formatter.format(System.currentTimeMillis());
 		String currentDate = preferences.getString(CURRENT_DAY, null);
-		
-		if (TriggerManagerConstants.LOG_MESSAGES)
-		{
-			Log.d("GlobalState", "Notifications for: "+dateKey+": "+currentDate+", same day? "+dateKey.equals(currentDate));
-		}
-		
 		if (currentDate == null || !dateKey.equals(currentDate))
 		{
 			reset(dateKey);

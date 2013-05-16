@@ -85,9 +85,9 @@ public class IntervalTrigger extends Trigger
 	
 	private long getIntervalLength() throws TriggerException
 	{
-		if (params.containsKey(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS))
+		if (params.containsKey(TriggerConfig.RESET_INTERVAL_TRIGGER_TIME_MILLIS))
 		{
-			return (Long) params.getParameter(TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS);
+			return (Long) params.getParameter(TriggerConfig.RESET_INTERVAL_TRIGGER_TIME_MILLIS);
 		}
 		else
 		{

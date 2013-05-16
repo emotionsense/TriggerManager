@@ -95,6 +95,7 @@ public class ESTriggerManager implements TriggerManagerInterface
 		state.reset();
 	}
 	
+	@Override
 	public void setNotificationCap(int value)
 	{
 		state.setNotificationCap(value);

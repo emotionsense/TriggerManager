@@ -35,7 +35,7 @@ public class TriggerConfig
 	
 	// Clock based Triggers
 	public final static String CLOCK_TRIGGER_DATE_MILLIS = "clockTriggerDate";
-	public final static String INTERVAL_TRIGGER_TIME_MILLIS = "intervalTriggerTime";
+	public final static String RESET_INTERVAL_TRIGGER_TIME_MILLIS = "intervalTriggerTime";
 	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
 	public final static String NUMBER_OF_NOTIFICATIONS = "numberOfNotifications";
 	
