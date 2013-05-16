@@ -124,13 +124,11 @@ public class DailyNotificationScheduler implements TriggerReceiver
 			Log.d("Daily Scheduler", "Attempting to schedule: "+numberOfNotifications);
 		}
 		
-		while (times.size() < numberOfNotifications)
+		for (int t=0; t<numberOfNotifications; t++)
 		{
 			boolean entryAdded = false;
-			int attempts = 0;
-			while (attempts < MAX_SCHEDULING_ATTEMPTS && !entryAdded)
+			for (int i=0; i<MAX_SCHEDULING_ATTEMPTS && !entryAdded; i++)
 			{
-				attempts++;
 				int time = pickRandomTimeWithinPreferences(currentMinute, earlyLimit, lateLimit);
 				if (selectedTimeFitsGroup(time, times, minInterval))
 				{
