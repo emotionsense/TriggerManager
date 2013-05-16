@@ -41,10 +41,12 @@ public class DailyNotificationScheduler implements TriggerReceiver
 	
 	public void start() throws TriggerException
 	{
+		Log.d("Daily", "start()");
 		if (isSubscribed)
 		{
 			stop();
 		}
+		
 		scheduleNotifications();
 		
 		TriggerConfig params = new TriggerConfig();
@@ -92,6 +94,7 @@ public class DailyNotificationScheduler implements TriggerReceiver
 	{
 		if (isSubscribed)
 		{
+			Log.d("Daily", "stop()");
 			triggerManager.removeTrigger(dailySchedulerId);
 			isSubscribed = false;
 		}
@@ -115,12 +118,13 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		int minInterval = params.getValueInMinutes(TriggerConfig.MIN_TRIGGER_INTERVAL_MINUTES);
 		
 		int numberOfNotifications = params.numberOfNotifications();
+		Log.d("Daily", "scheduleNotifications(), "+numberOfNotifications);
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
 			Log.d("Daily Scheduler", "Attempting to schedule: "+numberOfNotifications);
 		}
 		
-		for (int i=0; i<numberOfNotifications; i++)
+		while (times.size() < numberOfNotifications)
 		{
 			boolean entryAdded = false;
 			int attempts = 0;
@@ -142,9 +146,15 @@ public class DailyNotificationScheduler implements TriggerReceiver
 					if (!entryAdded)
 					{
 						times.add(time);
+						entryAdded = true;
 					}
 				}
 			}
+		}
+		
+		if (TriggerManagerConstants.LOG_MESSAGES)
+		{
+			Log.d("Daily Scheduler", "Selected: "+times.size());
 		}
 		
 		Calendar calendar = Calendar.getInstance();

@@ -154,12 +154,7 @@ public abstract class Trigger extends BroadcastReceiver
 			int id = intent.getIntExtra(TRIGGER_ID, -1);
 			if (triggerId == id)
 			{
-				Log.d("Trigger", "onReceive = " + triggerId+" == "+id);
 				sendNotification();
-			}
-			else
-			{
-				Log.d("Trigger", "onReceive = " + triggerId+" != "+id);
 			}
 		}
 	}
