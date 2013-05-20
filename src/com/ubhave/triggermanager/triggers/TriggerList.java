@@ -37,20 +37,19 @@ import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
 
 public class TriggerList extends AbstractSubscriptionList<Trigger>
 {
-
-	public static Trigger createTrigger(Context context, int type, TriggerReceiver listener, TriggerConfig params) throws ESException, TriggerException
+	public static Trigger createTrigger(Context context, int type, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		switch (type)
 		{
 		case TriggerUtils.CLOCK_TRIGGER_ONCE:
-			return new OneTimeTrigger(context, listener, params);
+			return new OneTimeTrigger(context, id, listener, params);
 		case TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL:
-			return new IntervalTrigger(context, listener, params);
+			return new IntervalTrigger(context, id, listener, params);
 		case TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM:
-			return new RandomFrequencyTrigger(context, listener, params);
+			return new RandomFrequencyTrigger(context, id, listener, params);
 
 		default:
-			Trigger trigger = getSensorTrigger(context, type, listener, params);
+			Trigger trigger = getSensorTrigger(context, type, id, listener, params);
 			if (trigger == null)
 			{
 				throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
@@ -62,16 +61,16 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 		}
 	}
 	
-	private static Trigger getSensorTrigger(Context context, int type, TriggerReceiver listener, TriggerConfig params) throws TriggerException
+	private static Trigger getSensorTrigger(Context context, int type, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
 		try
 		{
 			switch (type)
 			{
 			case TriggerUtils.SENSOR_TRIGGER_IMMEDIATE:
-				return new ImmediateSensorTrigger(context, listener, params);
+				return new ImmediateSensorTrigger(context, id, listener, params);
 			case TriggerUtils.SENSOR_TRIGGER_DELAYED:
-				return new DelayedSensorTrigger(context, listener, params);
+				return new DelayedSensorTrigger(context, id, listener, params);
 			default:
 				return null;
 			}
@@ -88,7 +87,7 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 		Trigger s = map.get(triggerId);
 		if (s != null)
 		{
-			s.kill();
+			s.stop();
 		}
 		super.remove(triggerId);
 	}
@@ -99,7 +98,7 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 		{
 			int key = map.keyAt(i);
 			Trigger trigger = map.get(key);
-			trigger.kill();
+			trigger.stop();
 		}
 		map.clear();
 	}

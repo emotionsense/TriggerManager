@@ -25,51 +25,56 @@ package com.ubhave.triggermanager;
 import android.content.Context;
 import android.util.Log;
 
-import com.ubhave.sensormanager.ESException;
-import com.ubhave.triggermanager.config.GlobalConfig;
 import com.ubhave.triggermanager.config.GlobalState;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.Trigger;
 import com.ubhave.triggermanager.triggers.TriggerList;
+import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class TriggerManager implements TriggerManagerInterface
+public class ESTriggerManager implements TriggerManagerInterface
 {
-	private static TriggerManager triggerManager;
+	private static ESTriggerManager triggerManager;
 	private static final Object lock = new Object();
 
-	private final GlobalConfig config;
 	private final Context context;
+	private final GlobalState state;
 	private final TriggerList triggers;
 
-	public static TriggerManager getTriggerManager(Context context) throws TriggerException, ESException
+	public static ESTriggerManager getTriggerManager(Context context) throws TriggerException
 	{
 		if (triggerManager == null)
 		{
 			synchronized (lock)
 			{
-				triggerManager = new TriggerManager(context);
+				if (triggerManager == null)
+				{
+					triggerManager = new ESTriggerManager(context);
+				}
 			}
 		}
 		return triggerManager;
 	}
 
-	private TriggerManager(final Context appContext) throws TriggerException, ESException
+	private ESTriggerManager(final Context appContext) throws TriggerException
 	{
 		context = appContext;
-		config = GlobalConfig.getGlobalConfig(appContext);
 		triggers = new TriggerList();
+		state = GlobalState.getGlobalState(context);
 	}
 
 	@Override
-	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws ESException, TriggerException
+	public int addTrigger(int triggerType, TriggerReceiver listener, TriggerConfig parameters) throws TriggerException
 	{
-		Trigger trigger = TriggerList.createTrigger(context, triggerType, listener, parameters);
+		int key = triggers.randomKey();
+		Trigger trigger = TriggerList.createTrigger(context, triggerType, key, listener, parameters);
 		if (TriggerManagerConstants.LOG_MESSAGES)
 		{
-			Log.d("TriggerManager", "Adding trigger type: "+triggerType+" to list.");
+			Log.d("TriggerManager", "Adding trigger type: "+TriggerUtils.getTriggerName(triggerType)+" to list, id = "+key);
 		}
-		return triggers.add(trigger);
+		trigger.start();
+		triggers.add(key, trigger);
+		return key;
 	}
 
 	@Override
@@ -83,60 +88,16 @@ public class TriggerManager implements TriggerManagerInterface
 	{
 		triggers.removeAll();
 	}
-
+	
 	@Override
-	public void pauseTrigger(int triggerId) throws TriggerException
+	public void resetCap()
 	{
-		Trigger trigger = triggers.get(triggerId);
-		if (trigger != null)
-		{
-			trigger.pause();
-		}
-	}
-
-	@Override
-	public void unPauseTrigger(int triggerId) throws TriggerException
-	{
-		Trigger trigger = triggers.get(triggerId);
-		if (trigger != null)
-		{
-			trigger.resume();
-		}
+		state.reset();
 	}
 	
 	@Override
-	public void resetTrigger(int triggerId, TriggerConfig params) throws TriggerException
+	public void setNotificationCap(int value)
 	{
-		Trigger trigger = triggers.get(triggerId);
-		if (trigger != null)
-		{
-			trigger.reset(params);
-		}
-	}
-
-	@Override
-	public void setGlobalConfig(String configKey, Object configValue)
-	{
-		config.setParameter(configKey, configValue);
-	}
-
-	@Override
-	public Object getGlobalConfigValue(String configKey) throws TriggerException
-	{
-		return config.getParameter(configKey);
-	}
-
-	@Override
-	public void resetDailyCap()
-	{
-		try
-		{
-			GlobalState state = GlobalState.getGlobalState(context);
-			state.reset();
-		}
-		catch (TriggerException e)
-		{
-			e.printStackTrace();
-		}
+		state.setNotificationCap(value);
 	}
 }

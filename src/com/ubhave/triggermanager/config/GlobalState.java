@@ -28,14 +28,15 @@ import java.text.SimpleDateFormat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 
 public class GlobalState
 {
 	private final static String CURRENT_DAY = "currentDay";
-	private final static String NOTIFICATIONS = "notifications";
+	private final static String NOTIFICATIONS_SENT = "notifications";
+	private final static String NOTIFICATION_CAP = "cap";
+	private final static String TRIGGERS_ENABLED = "allTriggersEnabled";
 	
 	private static GlobalState globalState;
 	private static final Object lock = new Object();
@@ -61,7 +62,7 @@ public class GlobalState
 	
 	private final SharedPreferences preferences;
 	
-	public GlobalState(Context context)
+	public GlobalState(final Context context) throws TriggerException
 	{
 		preferences = context.getSharedPreferences(TriggerManagerConstants.GLOBAL_STATE, Context.MODE_PRIVATE);
 	}
@@ -69,19 +70,24 @@ public class GlobalState
 	public void incrementNotificationsSent()
 	{
 		int notifications = getNotificationsSent() + 1;
-		if (TriggerManagerConstants.LOG_MESSAGES)
-		{
-			Log.d("GlobalState", "Incrementing to: "+notifications);
-		}
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putInt(NOTIFICATIONS, notifications);
+		editor.putInt(NOTIFICATIONS_SENT, notifications);
 		editor.commit();
 	}
 	
+	@SuppressLint("SimpleDateFormat")
 	public void reset()
 	{
+		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		String dateKey = formatter.format(System.currentTimeMillis());
+		reset(dateKey);
+	}
+	
+	private void reset(String dateKey)
+	{
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putInt(NOTIFICATIONS, 0);
+		editor.putString(CURRENT_DAY, dateKey);
+		editor.putInt(NOTIFICATIONS_SENT, 0);
 		editor.commit();
 	}
 	
@@ -91,23 +97,34 @@ public class GlobalState
 		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		String dateKey = formatter.format(System.currentTimeMillis());
 		String currentDate = preferences.getString(CURRENT_DAY, null);
-		
-		if (TriggerManagerConstants.LOG_MESSAGES)
-		{
-			Log.d("GlobalState", "Notifications for: "+dateKey+": "+currentDate+", same day? "+dateKey.equals(currentDate));
-		}
-		
 		if (currentDate == null || !dateKey.equals(currentDate))
 		{
-			if (TriggerManagerConstants.LOG_MESSAGES)
-			{
-				Log.d("GlobalState", "Dates are different, setting to zero");
-			}
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putString(CURRENT_DAY, dateKey);
-			editor.putInt(NOTIFICATIONS, 0);
-			editor.commit();
+			reset(dateKey);
 		}
-		return preferences.getInt(NOTIFICATIONS, 0);
+		return preferences.getInt(NOTIFICATIONS_SENT, 0);
+	}
+	
+	public boolean areNotificationsAllowed()
+	{
+		return preferences.getBoolean(TRIGGERS_ENABLED, TriggerManagerConstants.DEFAULT_TRIGGER_ENABLED);
+	}
+	
+	public void setNotificationsAllowed(boolean value)
+	{
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(TRIGGERS_ENABLED, value);
+		editor.commit();
+	}
+	
+	public int getNotificationCap()
+	{
+		return preferences.getInt(NOTIFICATION_CAP, TriggerManagerConstants.DEFAULT_DAILY_NOTIFICATION_CAP);
+	}
+	
+	public void setNotificationCap(int value)
+	{
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(NOTIFICATION_CAP, value);
+		editor.commit();
 	}
 }
