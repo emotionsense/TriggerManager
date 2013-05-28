@@ -114,7 +114,7 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 				listener.onNotificationTriggered(this.triggerId);
 				triggerManager.removeTrigger(alarmId);
 			}
-			catch (TriggerException e)
+			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
