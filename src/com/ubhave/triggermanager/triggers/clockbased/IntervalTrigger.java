@@ -51,7 +51,7 @@ public class IntervalTrigger extends Trigger
 	@Override
 	protected PendingIntent getPendingIntent()
 	{
-		int requestCode = TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL;
+		int requestCode = TriggerUtils.TYPE_CLOCK_TRIGGER_ON_INTERVAL;
 		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER);
 		intent.putExtra(TRIGGER_ID, triggerId);
 		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);

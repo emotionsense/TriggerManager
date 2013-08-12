@@ -39,25 +39,21 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 {
 	public static Trigger createTrigger(Context context, int type, int id, TriggerReceiver listener, TriggerConfig params) throws TriggerException
 	{
-		switch (type)
+		if (type == TriggerUtils.TYPE_CLOCK_TRIGGER_ONCE)
 		{
-		case TriggerUtils.CLOCK_TRIGGER_ONCE:
 			return new OneTimeTrigger(context, id, listener, params);
-		case TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL:
+		}
+		else if (type == TriggerUtils.TYPE_CLOCK_TRIGGER_ON_INTERVAL)
+		{
 			return new IntervalTrigger(context, id, listener, params);
-		case TriggerUtils.CLOCK_TRIGGER_DAILY_RANDOM:
+		}
+		else if (type == TriggerUtils.TYPE_CLOCK_TRIGGER_DAILY_RANDOM)
+		{
 			return new RandomFrequencyTrigger(context, id, listener, params);
-
-		default:
-			Trigger trigger = getSensorTrigger(context, type, id, listener, params);
-			if (trigger == null)
-			{
-				throw new TriggerException(TriggerException.INVALID_STATE, "Type unknown: " + type);
-			}
-			else
-			{
-				return trigger;
-			}
+		}
+		else
+		{
+			return getSensorTrigger(context, type, id, listener, params);
 		}
 	}
 	
@@ -65,14 +61,17 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 	{
 		try
 		{
-			switch (type)
+			if (type == TriggerUtils.TYPE_SENSOR_TRIGGER_IMMEDIATE)
 			{
-			case TriggerUtils.SENSOR_TRIGGER_IMMEDIATE:
 				return new ImmediateSensorTrigger(context, id, listener, params);
-			case TriggerUtils.SENSOR_TRIGGER_DELAYED:
+			}
+			else if (type == TriggerUtils.TYPE_SENSOR_TRIGGER_DELAYED)
+			{
 				return new DelayedSensorTrigger(context, id, listener, params);
-			default:
-				return null;
+			}
+			else
+			{
+				throw new TriggerException(TriggerException.INVALID_STATE, "Unknown trigger.");
 			}
 		}
 		catch (ESException e)

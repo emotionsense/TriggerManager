@@ -6,41 +6,70 @@ import com.ubhave.triggermanager.TriggerException;
 public class TriggerUtils
 {
 
-	public static final int CLOCK_TRIGGER_ONCE = 10000;
-	public static final int CLOCK_TRIGGER_ON_INTERVAL = 10001;
-	public static final int CLOCK_TRIGGER_DAILY_RANDOM = 10002;
-	public static final int SENSOR_TRIGGER_IMMEDIATE = 10003;
-	public static final int SENSOR_TRIGGER_DELAYED = 10004;
+	public static final int TYPE_CLOCK_TRIGGER_ONCE 			= 10000;
+	public static final int TYPE_CLOCK_TRIGGER_ON_INTERVAL 		= 10001;
+	public static final int TYPE_CLOCK_TRIGGER_DAILY_RANDOM 	= 10002;
+	public static final int TYPE_SENSOR_TRIGGER_IMMEDIATE 		= 10003;
+	public static final int TYPE_SENSOR_TRIGGER_DELAYED 		= 10004;
 
-	public static final int SENSOR_TRIGGER_ACCELEROMETER = SensorUtils.SENSOR_TYPE_ACCELEROMETER;
-	public static final int SENSOR_TRIGGER_MICROPHONE = SensorUtils.SENSOR_TYPE_MICROPHONE;
-	public static final int SENSOR_TRIGGER_CALLS = SensorUtils.SENSOR_TYPE_PHONE_STATE;
-	public static final int SENSOR_TRIGGER_SMS = SensorUtils.SENSOR_TYPE_SMS;
-	public static final int SENSOR_TRIGGER_SCREEN = SensorUtils.SENSOR_TYPE_SCREEN;
+	public static final int SENSOR_TRIGGER_ACCELEROMETER 	= SensorUtils.SENSOR_TYPE_ACCELEROMETER;
+	public static final int SENSOR_TRIGGER_MICROPHONE 		= SensorUtils.SENSOR_TYPE_MICROPHONE;
+	public static final int SENSOR_TRIGGER_CALLS 			= SensorUtils.SENSOR_TYPE_PHONE_STATE;
+	public static final int SENSOR_TRIGGER_SMS 				= SensorUtils.SENSOR_TYPE_SMS;
+	public static final int SENSOR_TRIGGER_SCREEN 			= SensorUtils.SENSOR_TYPE_SCREEN;
 	
-	public static final String CLOCK_TRIGGER_NAME = "Clock Trigger";
-	public static final String INTERVAL_TRIGGER_NAME = "Interval Trigger";
-	public static final String DAILY_RANDOM_TRIGGER_NAME = "Random Trigger";
-	public static final String SENSOR_TRIGGER_IMMEDIATE_NAME = "Sensor Immediate Trigger";
-	public static final String SENSOR_TRIGGER_DELAYED_NAME = "Sensor Delayed Trigger";
+	public static final String NAME_CLOCK_TRIGGER_ONCE 			= "type_clock_once";
+	public static final String NAME_CLOCK_TRIGGER_ON_INTERVAL 	= "type_clock_interval";
+	public static final String NAME_CLOCK_TRIGGER_DAILY_RANDOM 	= "type_clock_random";
+	public static final String NAME_SENSOR_TRIGGER_IMMEDIATE = "type_sensor_immediate";
+	public static final String NAME_SENSOR_TRIGGER_DELAYED 	= "type_sensor_delayed";
 	
-	public static final String ACCELEROMETER_TRIGGER_NAME = "Accelerometer Trigger";
-	public static final String MICROPHONE_TRIGGER_NAME = "Microphone Trigger";
-	public static final String CALL_STATE_TRIGGER_NAME = "Phone Call Trigger";
-	public static final String SMS_TRIGGER_NAME = "SMS Trigger";
-	public static final String SCREEN_TRIGGER_NAME = "Screen Trigger";
+	private static final String[] ALL_NAMES = new String[]{
+		NAME_CLOCK_TRIGGER_ONCE,
+		NAME_CLOCK_TRIGGER_ON_INTERVAL,
+		NAME_CLOCK_TRIGGER_DAILY_RANDOM,
+		NAME_SENSOR_TRIGGER_IMMEDIATE,
+		NAME_SENSOR_TRIGGER_DELAYED
+	};
+	
+	private static final int[] ALL_IDS = new int[]{
+		TYPE_CLOCK_TRIGGER_ONCE,
+		TYPE_CLOCK_TRIGGER_ON_INTERVAL,
+		TYPE_CLOCK_TRIGGER_DAILY_RANDOM,
+		TYPE_SENSOR_TRIGGER_IMMEDIATE,
+		TYPE_SENSOR_TRIGGER_DELAYED
+	};
+	
+	
+//	public static final String ACCELEROMETER_TRIGGER_NAME	= "Accelerometer Trigger";
+//	public static final String MICROPHONE_TRIGGER_NAME 		= "Microphone Trigger";
+//	public static final String CALL_STATE_TRIGGER_NAME 		= "Phone Call Trigger";
+//	public static final String SMS_TRIGGER_NAME 			= "SMS Trigger";
+//	public static final String SCREEN_TRIGGER_NAME 			= "Screen Trigger";
 	
 	public static String getTriggerName(int type) throws TriggerException
 	{
 		switch (type)
 		{
-		case CLOCK_TRIGGER_ONCE: return CLOCK_TRIGGER_NAME;
-		case CLOCK_TRIGGER_ON_INTERVAL: return INTERVAL_TRIGGER_NAME;
-		case CLOCK_TRIGGER_DAILY_RANDOM: return DAILY_RANDOM_TRIGGER_NAME;
-		case SENSOR_TRIGGER_IMMEDIATE: return SENSOR_TRIGGER_IMMEDIATE_NAME;
-		case SENSOR_TRIGGER_DELAYED: return SENSOR_TRIGGER_DELAYED_NAME;
+		case TYPE_CLOCK_TRIGGER_ONCE: return NAME_CLOCK_TRIGGER_ONCE;
+		case TYPE_CLOCK_TRIGGER_ON_INTERVAL: return NAME_CLOCK_TRIGGER_ON_INTERVAL;
+		case TYPE_CLOCK_TRIGGER_DAILY_RANDOM: return NAME_CLOCK_TRIGGER_DAILY_RANDOM;
+		case TYPE_SENSOR_TRIGGER_IMMEDIATE: return NAME_SENSOR_TRIGGER_IMMEDIATE;
+		case TYPE_SENSOR_TRIGGER_DELAYED: return NAME_SENSOR_TRIGGER_DELAYED;
 
 		default: throw new TriggerException(TriggerException.UNKNOWN_TRIGGER, "Unknown trigger: "+type);
 		}
+	}
+	
+	public static int getTriggerType(final String triggerName) throws TriggerException
+	{
+		for (int i=0; i<ALL_NAMES.length; i++)
+		{
+			if (ALL_NAMES[i].equals(triggerName))
+			{
+				return ALL_IDS[i];
+			}
+		}
+		throw new TriggerException(TriggerException.UNKNOWN_TRIGGER, "Unknown trigger: "+triggerName);
 	}
 }

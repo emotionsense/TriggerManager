@@ -214,7 +214,7 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 	@Override
 	protected PendingIntent getPendingIntent()
 	{
-		int requestCode = TriggerUtils.CLOCK_TRIGGER_ONCE;
+		int requestCode = TriggerUtils.TYPE_CLOCK_TRIGGER_ONCE;
 		Intent intent = new Intent(TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER);
 		return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}

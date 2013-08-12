@@ -59,7 +59,7 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 			TriggerConfig params = new TriggerConfig();
 			params.addParameter(TriggerConfig.CLOCK_TRIGGER_DATE_MILLIS, millis);
 			
-			int triggerId = triggerManager.addTrigger(TriggerUtils.CLOCK_TRIGGER_ONCE, this, params);
+			int triggerId = triggerManager.addTrigger(TriggerUtils.TYPE_CLOCK_TRIGGER_ONCE, this, params);
 			randomlySelectedTriggerIds.add(triggerId);
 			
 			if (TriggerManagerConstants.LOG_MESSAGES)

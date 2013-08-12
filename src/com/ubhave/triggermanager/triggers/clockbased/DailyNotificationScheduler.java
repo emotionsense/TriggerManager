@@ -54,7 +54,7 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		params.addParameter(TriggerConfig.INTERVAL_TIME_MILLIS, schedulerInterval());
 		params.addParameter(TriggerConfig.IGNORE_USER_PREFERENCES, true);
 		
-		dailySchedulerId = triggerManager.addTrigger(TriggerUtils.CLOCK_TRIGGER_ON_INTERVAL, this, params);
+		dailySchedulerId = triggerManager.addTrigger(TriggerUtils.TYPE_CLOCK_TRIGGER_ON_INTERVAL, this, params);
 		isSubscribed = true;
 	}
 	
