@@ -53,7 +53,8 @@ public class OneTimeTrigger extends Trigger
 		return PendingIntent.getBroadcast(context, triggerId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
-	protected String getActionName()
+	@Override
+	public String getActionName()
 	{
 		return TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER;
 	}

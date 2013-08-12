@@ -62,9 +62,10 @@ public class ImmediateSensorTrigger extends Trigger implements SensorDataListene
 		super(context, id, listener, params);
 	}
 	
-	protected String getActionName()
+	@Override
+	public String getActionName()
 	{
-		return null; // TODO;
+		return TriggerManagerConstants.ACTION_NAME_SENSOR_TRIGGER_IMMEDIATE;
 	}
 
 	@Override

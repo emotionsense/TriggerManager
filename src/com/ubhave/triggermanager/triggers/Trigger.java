@@ -70,7 +70,7 @@ public abstract class Trigger extends BroadcastReceiver
 
 	protected abstract String getTriggerTag();
 	
-	protected abstract String getActionName();
+	public abstract String getActionName();
 
 	protected abstract void startAlarm() throws TriggerException;
 

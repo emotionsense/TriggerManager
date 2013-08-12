@@ -43,7 +43,8 @@ public class IntervalTrigger extends Trigger
 		super(context, id, listener, parameters);
 	}
 	
-	protected String getActionName()
+	@Override
+	public String getActionName()
 	{
 		return TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER;
 	}

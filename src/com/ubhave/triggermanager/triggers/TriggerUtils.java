@@ -2,6 +2,7 @@ package com.ubhave.triggermanager.triggers;
 
 import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 
 public class TriggerUtils
 {
@@ -40,6 +41,14 @@ public class TriggerUtils
 		TYPE_SENSOR_TRIGGER_DELAYED
 	};
 	
+	private static final String[] ALL_ACTIONS = new String[]{
+		TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER,
+		TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER,
+		TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER,
+		TriggerManagerConstants.ACTION_NAME_SENSOR_TRIGGER_IMMEDIATE,
+		TriggerManagerConstants.ACTION_NAME_SENSOR_TRIGGER_DELAYED
+	};
+	
 	
 //	public static final String ACCELEROMETER_TRIGGER_NAME	= "Accelerometer Trigger";
 //	public static final String MICROPHONE_TRIGGER_NAME 		= "Microphone Trigger";
@@ -71,5 +80,17 @@ public class TriggerUtils
 			}
 		}
 		throw new TriggerException(TriggerException.UNKNOWN_TRIGGER, "Unknown trigger: "+triggerName);
+	}
+	
+	public static String getTriggerActionName(final String triggerType) throws TriggerException
+	{
+		for (int i=0; i<ALL_NAMES.length; i++)
+		{
+			if (ALL_NAMES[i].equals(triggerType))
+			{
+				return ALL_ACTIONS[i];
+			}
+		}
+		throw new TriggerException(TriggerException.UNKNOWN_TRIGGER, "Unknown trigger: "+triggerType);
 	}
 }

@@ -30,6 +30,7 @@ import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
+import com.ubhave.triggermanager.config.TriggerManagerConstants;
 
 public class DelayedSensorTrigger extends ImmediateSensorTrigger
 {
@@ -130,5 +131,11 @@ public class DelayedSensorTrigger extends ImmediateSensorTrigger
 			e.printStackTrace();
 			return "DelayedSensorTrigger";
 		}
+	}
+	
+	@Override
+	public String getActionName()
+	{
+		return TriggerManagerConstants.ACTION_NAME_SENSOR_TRIGGER_DELAYED;
 	}
 }

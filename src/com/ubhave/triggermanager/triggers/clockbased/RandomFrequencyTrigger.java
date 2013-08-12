@@ -128,7 +128,7 @@ public class RandomFrequencyTrigger extends Trigger implements TriggerReceiver
 	}
 	
 	@Override
-	protected String getActionName()
+	public String getActionName()
 	{
 		return null; // Unused
 	}
