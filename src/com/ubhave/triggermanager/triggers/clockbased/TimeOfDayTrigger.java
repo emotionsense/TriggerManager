@@ -25,7 +25,6 @@ package com.ubhave.triggermanager.triggers.clockbased;
 import java.util.Calendar;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
@@ -72,8 +71,7 @@ public class TimeOfDayTrigger extends IntervalTrigger
 			{
 				calendar.add(Calendar.DATE, 1);
 			}
-			Log.d("Trigger", "Start Delay: "+calendar.toString());
-			return System.currentTimeMillis() - calendar.getTimeInMillis();
+			return calendar.getTimeInMillis() - System.currentTimeMillis();
 		}
 		else
 		{
@@ -84,6 +82,6 @@ public class TimeOfDayTrigger extends IntervalTrigger
 	@Override
 	protected long getIntervalLength() throws TriggerException
 	{
-		return (1000L * 10);//60 * 60 * 24);
+		return (1000L * 60 * 60 * 24);
 	}
 }
