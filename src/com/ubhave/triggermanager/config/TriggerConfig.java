@@ -39,6 +39,9 @@ public class TriggerConfig
 	public final static String INTERVAL_TRIGGER_START_DELAY = "intervalTriggerStartDelay";
 	public final static String NUMBER_OF_NOTIFICATIONS = "numberOfNotifications";
 	
+	public final static String DAILY_HOUR = "dailyHour";
+	public final static String DAILY_MINUTE = "dailyMinute";
+	
 	// Sensor Based Triggers
 	public final static String SENSOR_TYPE = "sensorType";
 	public final static String NOTIFICATION_PROBABILITY = "notificationProb";

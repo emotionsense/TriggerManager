@@ -32,6 +32,7 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.OneTimeTrigger;
 import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
+import com.ubhave.triggermanager.triggers.clockbased.TimeOfDayTrigger;
 import com.ubhave.triggermanager.triggers.sensorbased.DelayedSensorTrigger;
 import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
 
@@ -50,6 +51,10 @@ public class TriggerList extends AbstractSubscriptionList<Trigger>
 		else if (type == TriggerUtils.TYPE_CLOCK_TRIGGER_DAILY_RANDOM)
 		{
 			return new RandomFrequencyTrigger(context, id, listener, params);
+		}
+		else if (type == TriggerUtils.TYPE_CLOCK_TRIGGER_DAY_INTERVAL)
+		{
+			return new TimeOfDayTrigger(context, id, listener, params);
 		}
 		else
 		{

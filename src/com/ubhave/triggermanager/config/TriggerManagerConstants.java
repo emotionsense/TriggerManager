@@ -46,6 +46,7 @@ public class TriggerManagerConstants
 	private final static String ACTION_NAME_ROOT = "com.ubhave.triggermanager.triggers";
 	public final static String ACTION_NAME_ONE_TIME_TRIGGER = ACTION_NAME_ROOT+".clockbased.ONE_TIME_TRIGGER";
 	public final static String ACTION_NAME_INTERVAL_TRIGGER = ACTION_NAME_ROOT+".clockbased.INTERVAL_TRIGGER";
+	public final static String ACTION_NAME_DAY_INTERVAL_TRIGGER = ACTION_NAME_ROOT+".clockbased.DAY_INTERVAL_TRIGGER";
 	
 	public final static String ACTION_NAME_SENSOR_TRIGGER_IMMEDIATE = ACTION_NAME_ROOT+".sensorbased.SENSOR_IMMEDIATE";
 	public final static String ACTION_NAME_SENSOR_TRIGGER_DELAYED = ACTION_NAME_ROOT+".sensorbased.SENSOR_DELAYED";

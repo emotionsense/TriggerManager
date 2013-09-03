@@ -22,7 +22,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager.triggers.clockbased;
 
-import android.app.AlarmManager;
+import java.util.Calendar;
+
 import android.content.Context;
 
 import com.ubhave.triggermanager.TriggerException;
@@ -31,11 +32,11 @@ import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
 import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class IntervalTrigger extends AbstractClockTrigger
+public class TimeOfDayTrigger extends IntervalTrigger
 {
-	private final static String TRIGGER_NAME = "IntervalTrigger";
+	private final static String TRIGGER_NAME = "TimeOfDayTrigger";
 
-	public IntervalTrigger(Context context, int id, final TriggerReceiver listener, final TriggerConfig parameters) throws TriggerException
+	public TimeOfDayTrigger(Context context, int id, final TriggerReceiver listener, final TriggerConfig parameters) throws TriggerException
 	{
 		super(context, id, listener, parameters);
 	}
@@ -43,21 +44,13 @@ public class IntervalTrigger extends AbstractClockTrigger
 	@Override
 	public String getActionName()
 	{
-		return TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER;
+		return TriggerManagerConstants.ACTION_NAME_DAY_INTERVAL_TRIGGER;
 	}
 	
 	@Override
 	protected int getRequestCode()
 	{
-		return TriggerUtils.TYPE_CLOCK_TRIGGER_ON_INTERVAL;
-	}
-	
-	@Override
-	protected void startAlarm() throws TriggerException
-	{
-		long firstAlarmTime = System.currentTimeMillis() + getStartDelay();
-		long intervalLengthInMillis = getIntervalLength();
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstAlarmTime, intervalLengthInMillis, pendingIntent);
+		return TriggerUtils.TYPE_CLOCK_TRIGGER_DAY_INTERVAL;
 	}
 	
 	@Override
@@ -66,27 +59,29 @@ public class IntervalTrigger extends AbstractClockTrigger
 		return TRIGGER_NAME;
 	}
 	
+	@Override
 	protected long getStartDelay() throws TriggerException
 	{
-		if (params.containsKey(TriggerConfig.INTERVAL_TRIGGER_START_DELAY))
+		if (params.containsKey(TriggerConfig.DAILY_HOUR) && params.containsKey(TriggerConfig.DAILY_MINUTE))
 		{
-			return (Long) params.getParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY);
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, (Integer) params.getParameter(TriggerConfig.DAILY_HOUR));
+			calendar.set(Calendar.MINUTE, (Integer) params.getParameter(TriggerConfig.DAILY_HOUR));
+			if (calendar.getTimeInMillis() < System.currentTimeMillis())
+			{
+				calendar.add(Calendar.DATE, 1);
+			}
+			return System.currentTimeMillis() - calendar.getTimeInMillis();
 		}
 		else
 		{
-			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.INTERVAL_TRIGGER_START_DELAY");
+			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.DAILY_HOUR and TriggerConfig.DAILY_MINUTE");
 		}
 	}
 	
+	@Override
 	protected long getIntervalLength() throws TriggerException
 	{
-		if (params.containsKey(TriggerConfig.INTERVAL_TIME_MILLIS))
-		{
-			return (Long) params.getParameter(TriggerConfig.INTERVAL_TIME_MILLIS);
-		}
-		else
-		{
-			throw new TriggerException(TriggerException.MISSING_PARAMETERS, "Parameters must include TriggerConfig.INTERVAL_TRIGGER_TIME_MILLIS");
-		}
+		return (1000L * 10);//60 * 60 * 24);
 	}
 }

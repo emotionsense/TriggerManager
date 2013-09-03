@@ -25,18 +25,16 @@ package com.ubhave.triggermanager.triggers.clockbased;
 import java.util.Calendar;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
 import com.ubhave.triggermanager.config.TriggerManagerConstants;
-import com.ubhave.triggermanager.triggers.Trigger;
+import com.ubhave.triggermanager.triggers.TriggerUtils;
 
-public class OneTimeTrigger extends Trigger
+public class OneTimeTrigger extends AbstractClockTrigger
 {
 	private final static String TRIGGER_NAME = "OneTimeTrigger";
 	
@@ -46,17 +44,15 @@ public class OneTimeTrigger extends Trigger
 	}
 	
 	@Override
-	protected PendingIntent getPendingIntent()
-	{
-		Intent intent = new Intent(getActionName());
-		intent.putExtra(TRIGGER_ID, triggerId);
-		return PendingIntent.getBroadcast(context, triggerId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-	}
-	
-	@Override
 	public String getActionName()
 	{
 		return TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER;
+	}
+	
+	@Override
+	protected int getRequestCode()
+	{
+		return TriggerUtils.TYPE_CLOCK_TRIGGER_ONCE;
 	}
 	
 	@Override
