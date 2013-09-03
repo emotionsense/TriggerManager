@@ -32,9 +32,9 @@ public class TriggerUtils
 		NAME_CLOCK_TRIGGER_ONCE,
 		NAME_CLOCK_TRIGGER_ON_INTERVAL,
 		NAME_CLOCK_TRIGGER_DAILY_RANDOM,
-		NAME_CLOCK_TRIGGER_DAILY,
 		NAME_SENSOR_TRIGGER_IMMEDIATE,
-		NAME_SENSOR_TRIGGER_DELAYED
+		NAME_SENSOR_TRIGGER_DELAYED,
+		NAME_CLOCK_TRIGGER_DAILY
 	};
 	
 	private static final int[] ALL_IDS = new int[]{
@@ -49,7 +49,7 @@ public class TriggerUtils
 	private static final String[] ALL_ACTIONS = new String[]{
 		TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER,
 		TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER,
-		TriggerManagerConstants.ACTION_NAME_INTERVAL_TRIGGER,
+		TriggerManagerConstants.ACTION_NAME_RANDOM_DAY_TRIGGER,
 		TriggerManagerConstants.ACTION_NAME_SENSOR_TRIGGER_IMMEDIATE,
 		TriggerManagerConstants.ACTION_NAME_SENSOR_TRIGGER_DELAYED,
 		TriggerManagerConstants.ACTION_NAME_DAY_INTERVAL_TRIGGER
