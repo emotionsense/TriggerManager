@@ -104,9 +104,10 @@ public class ESTriggerManager implements TriggerManagerInterface
 	}
 	
 	@Override
-	public boolean isTriggerAlive(String triggerType, int triggerId) throws TriggerException
+	public boolean isTriggerAlive(int triggerType, int triggerId) throws TriggerException
 	{
-		String actionName = TriggerUtils.getTriggerActionName(triggerType);
+		String triggerName = TriggerUtils.getTriggerName(triggerType);
+		String actionName = TriggerUtils.getTriggerActionName(triggerName);
 		PendingIntent intent = PendingIntent.getBroadcast(context, triggerId, new Intent(actionName), PendingIntent.FLAG_NO_CREATE);
 		return (intent != null);
 	}
