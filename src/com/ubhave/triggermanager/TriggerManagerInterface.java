@@ -37,6 +37,8 @@ public interface TriggerManagerInterface
 	
 	public void setNotificationCap(int value);
 	
+	public boolean isTriggerAlive(String triggerType, int triggerId) throws TriggerException;
+	
 }
 
 	

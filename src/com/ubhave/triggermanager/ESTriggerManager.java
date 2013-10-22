@@ -22,7 +22,9 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.triggermanager;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.ubhave.triggermanager.config.GlobalState;
@@ -99,5 +101,13 @@ public class ESTriggerManager implements TriggerManagerInterface
 	public void setNotificationCap(int value)
 	{
 		state.setNotificationCap(value);
+	}
+	
+	@Override
+	public boolean isTriggerAlive(String triggerType, int triggerId) throws TriggerException
+	{
+		String actionName = TriggerUtils.getTriggerActionName(triggerType);
+		PendingIntent intent = PendingIntent.getBroadcast(context, triggerId, new Intent(actionName), PendingIntent.FLAG_NO_CREATE);
+		return (intent != null);
 	}
 }

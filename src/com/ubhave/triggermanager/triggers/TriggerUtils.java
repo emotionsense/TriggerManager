@@ -55,13 +55,6 @@ public class TriggerUtils
 		TriggerManagerConstants.ACTION_NAME_DAY_INTERVAL_TRIGGER
 	};
 	
-	
-//	public static final String ACCELEROMETER_TRIGGER_NAME	= "Accelerometer Trigger";
-//	public static final String MICROPHONE_TRIGGER_NAME 		= "Microphone Trigger";
-//	public static final String CALL_STATE_TRIGGER_NAME 		= "Phone Call Trigger";
-//	public static final String SMS_TRIGGER_NAME 			= "SMS Trigger";
-//	public static final String SCREEN_TRIGGER_NAME 			= "Screen Trigger";
-	
 	public static String getTriggerName(int type) throws TriggerException
 	{
 		switch (type)

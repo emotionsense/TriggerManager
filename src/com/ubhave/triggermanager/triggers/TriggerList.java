@@ -29,12 +29,12 @@ import com.ubhave.triggermanager.AbstractSubscriptionList;
 import com.ubhave.triggermanager.TriggerException;
 import com.ubhave.triggermanager.TriggerReceiver;
 import com.ubhave.triggermanager.config.TriggerConfig;
-import com.ubhave.triggermanager.triggers.clockbased.IntervalTrigger;
-import com.ubhave.triggermanager.triggers.clockbased.OneTimeTrigger;
-import com.ubhave.triggermanager.triggers.clockbased.RandomFrequencyTrigger;
-import com.ubhave.triggermanager.triggers.clockbased.TimeOfDayTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.DelayedSensorTrigger;
-import com.ubhave.triggermanager.triggers.sensorbased.ImmediateSensorTrigger;
+import com.ubhave.triggermanager.triggers.clock.IntervalTrigger;
+import com.ubhave.triggermanager.triggers.clock.OneTimeTrigger;
+import com.ubhave.triggermanager.triggers.clock.TimeOfDayTrigger;
+import com.ubhave.triggermanager.triggers.clock.random.RandomFrequencyTrigger;
+import com.ubhave.triggermanager.triggers.sensor.DelayedSensorTrigger;
+import com.ubhave.triggermanager.triggers.sensor.ImmediateSensorTrigger;
 
 public class TriggerList extends AbstractSubscriptionList<Trigger>
 {

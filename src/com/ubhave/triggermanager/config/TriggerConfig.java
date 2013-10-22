@@ -133,7 +133,14 @@ public class TriggerConfig
 	
 	public int numberOfNotifications()
 	{
-		return (Integer) getParameter(TriggerConfig.NUMBER_OF_NOTIFICATIONS);
+		try
+		{
+			return (Integer) getParameter(TriggerConfig.NUMBER_OF_NOTIFICATIONS);
+		}
+		catch (java.lang.ClassCastException e)
+		{
+			return ((Long) getParameter(TriggerConfig.NUMBER_OF_NOTIFICATIONS)).intValue();
+		}	
 	}
 	
 	public int getValueInMinutes(String key)
