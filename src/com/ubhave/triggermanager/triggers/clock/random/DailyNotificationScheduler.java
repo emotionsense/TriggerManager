@@ -1,4 +1,4 @@
-package com.ubhave.triggermanager.triggers.clockbased;
+package com.ubhave.triggermanager.triggers.clock.random;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,14 +41,12 @@ public class DailyNotificationScheduler implements TriggerReceiver
 	
 	public void start() throws TriggerException
 	{
-		Log.d("Daily", "start()");
 		if (isSubscribed)
 		{
 			stop();
 		}
 		
-		scheduleNotifications();
-		
+		scheduleNotifications();	
 		TriggerConfig params = new TriggerConfig();
 		params.addParameter(TriggerConfig.INTERVAL_TRIGGER_START_DELAY, startDelay());
 		params.addParameter(TriggerConfig.INTERVAL_TIME_MILLIS, schedulerInterval());
@@ -80,13 +78,11 @@ public class DailyNotificationScheduler implements TriggerReceiver
 		{
 			// Milliseconds until midnight
 			Calendar calendar = Calendar.getInstance();
-			long now = calendar.getTimeInMillis();
-			
 			calendar.add(Calendar.HOUR_OF_DAY, 24 - calendar.get(Calendar.HOUR_OF_DAY));
 			calendar.set(Calendar.MINUTE, 0);
 			calendar.set(Calendar.SECOND, 0);
 			
-			return calendar.getTimeInMillis() - now;
+			return calendar.getTimeInMillis() - System.currentTimeMillis();
 		}
 	}
 	

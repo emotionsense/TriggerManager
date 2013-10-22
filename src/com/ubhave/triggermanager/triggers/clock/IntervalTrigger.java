@@ -20,7 +20,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  ************************************************** */
 
-package com.ubhave.triggermanager.triggers.clockbased;
+package com.ubhave.triggermanager.triggers.clock;
 
 import android.app.AlarmManager;
 import android.content.Context;
