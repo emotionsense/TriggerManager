@@ -46,7 +46,7 @@ public class OneTimeTrigger extends AbstractClockTrigger
 	@Override
 	public String getActionName()
 	{
-		return TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER;
+		return TriggerManagerConstants.ACTION_NAME_ONE_TIME_TRIGGER+"_"+triggerId;
 	}
 	
 	@Override
